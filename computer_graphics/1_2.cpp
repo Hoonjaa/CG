@@ -7,6 +7,7 @@
 
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
+GLvoid Mouse(int button, int state, int x, int y);
 
 std::random_device rd;
 std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
@@ -47,6 +48,7 @@ void main(int argc, char** argv)
 
 	glutDisplayFunc(drawScene);										//출력 함수의 지정
 	glutReshapeFunc(Reshape);										//다시 그리기 함수의 지정
+	glutMouseFunc(Mouse);
 	glutMainLoop();													//이벤트 처리 시작
 }
 
@@ -73,4 +75,10 @@ Rect::Rect(GLfloat x, GLfloat y) : r(distribution(rd)), g(distribution(rd)), b(d
 GLvoid Rect::draw_rect() {
 	glColor3f(distribution(rd), distribution(rd), distribution(rd));
 	glRectf(center_x - size, center_y - size, center_x + size, center_y + size);
+}
+
+GLvoid Mouse(int button, int state, int x, int y) {
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+
+	}
 }
