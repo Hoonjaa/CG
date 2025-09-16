@@ -10,7 +10,7 @@ GLvoid Reshape(int w, int h);
 GLvoid Keyboard(unsigned char key, int x, int y);
 
 std::random_device rd;
-std::uniform_int_distribution<float> distribution(0.0f, 1.0f);
+std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
 
 GLclampf r = 0.0f, g = 0.0f, b = 0.0f;
 
@@ -66,11 +66,13 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		r = 1.0f; g = 1.0f; b = 0.0f;
 		break;
 	case 'a':
-
+		r = distribution(rd); g = distribution(rd); b = distribution(rd);
 		break;
 	case 'w':
+		r = 1.0f; g = 1.0f; b = 1.0f;
 		break;
 	case 'k':
+		r = 0.0f; g = 0.0f; b = 0.0f;
 		break;
 	case 't':
 		break;
