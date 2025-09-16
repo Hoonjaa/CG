@@ -38,7 +38,6 @@ void main(int argc, char** argv)
 	glutDisplayFunc(drawScene);										//출력 함수의 지정
 	glutReshapeFunc(Reshape);										//다시 그리기 함수의 지정
 	glutKeyboardFunc(Keyboard);
-	
 	glutMainLoop();													//이벤트 처리 시작
 }
 
@@ -85,6 +84,7 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		Timer = false;
 		break;
 	case 'q':
+		glutLeaveMainLoop();
 		break;
 	}
 	glutPostRedisplay();
