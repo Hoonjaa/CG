@@ -8,11 +8,13 @@
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 GLvoid Keyboard(unsigned char key, int x, int y);
+GLvoid TimerFunction(int value);
 
 std::random_device rd;
 std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
 
 GLclampf r = 0.0f, g = 0.0f, b = 0.0f;
+bool Timer = false;
 
 void main(int argc, char** argv)
 {
@@ -36,6 +38,7 @@ void main(int argc, char** argv)
 	glutDisplayFunc(drawScene);										//출력 함수의 지정
 	glutReshapeFunc(Reshape);										//다시 그리기 함수의 지정
 	glutKeyboardFunc(Keyboard);
+	
 	glutMainLoop();													//이벤트 처리 시작
 }
 
@@ -75,11 +78,23 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		r = 0.0f; g = 0.0f; b = 0.0f;
 		break;
 	case 't':
+		Timer = true;
+		glutTimerFunc(100, TimerFunction, 1);
 		break;
 	case 's':
+		Timer = false;
 		break;
 	case 'q':
 		break;
 	}
 	glutPostRedisplay();
+}
+
+GLvoid TimerFunction(int value)
+{
+	r = distribution(rd); g = distribution(rd); b = distribution(rd);
+	glutPostRedisplay();
+	if (Timer) {
+		glutTimerFunc(100, TimerFunction, 1);
+	}
 }
