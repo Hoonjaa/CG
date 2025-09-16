@@ -73,7 +73,7 @@ GLvoid Reshape(int w, int h)
 Rect::Rect(GLfloat x, GLfloat y) : r(distribution(rd)), g(distribution(rd)), b(distribution(rd)), center_x(x), center_y(y), size(0.5f) {}
 
 GLvoid Rect::draw_rect() {
-	glColor3f(distribution(rd), distribution(rd), distribution(rd));
+	glColor3f(r, g, b);
 	glRectf(center_x - size, center_y - size, center_x + size, center_y + size);
 }
 
