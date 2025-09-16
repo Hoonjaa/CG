@@ -8,6 +8,24 @@
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 
+std::random_device rd;
+std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
+
+class Rect {
+	GLclampf r, g, b;
+	GLfloat center_x, center_y;
+	GLfloat size;
+public:
+	Rect(GLfloat x, GLfloat y);
+
+	GLvoid draw_rect();
+};
+
+Rect rect1(-0.5f, 0.5f);
+Rect rect2(0.5f, 0.5f);
+Rect rect3(0.5f, -0.5f);
+Rect rect4(-0.5f, -0.5f);
+
 void main(int argc, char** argv)
 {
 	//윈도우 생성
@@ -38,12 +56,21 @@ GLvoid drawScene()													//--- 콜백 함수 : 그리기 콜백 함수
 	glClear(GL_COLOR_BUFFER_BIT);									//설정된 색으로 전체를 칠하기
 	//그리기 부분 구현
 	//--- 그리기 관련 부분이 여기에 포함된다.
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glRectf(0.2f, 0.8f, 0.8f, 0.2f);
+	rect1.draw_rect();
+	rect2.draw_rect();
+	rect3.draw_rect();
+	rect4.draw_rect();
 	glutSwapBuffers();												//화면에 출력하기
 }
 
 GLvoid Reshape(int w, int h)
 {
 	glViewport(0, 0, w, h);
+}
+
+Rect::Rect(GLfloat x, GLfloat y) : r(distribution(rd)), g(distribution(rd)), b(distribution(rd)), center_x(x), center_y(y), size(0.5f) {}
+
+GLvoid Rect::draw_rect() {
+	glColor3f(distribution(rd), distribution(rd), distribution(rd));
+	glRectf(center_x - size, center_y - size, center_x + size, center_y + size);
 }
