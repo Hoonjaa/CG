@@ -22,6 +22,7 @@ public:
 
 	GLvoid draw_rect();
 	GLvoid change_color();
+	GLvoid size_up();
 	GLvoid size_down();
 	bool mouse_check_in_rect(GLfloat x, GLfloat y);
 };
@@ -108,16 +109,23 @@ GLvoid Mouse(int button, int state, int x, int y) {
 			rect1.size_down();
 		}
 		else if (rect2.mouse_check_in_rect(gl_x, gl_y)) {
-			
+			rect2.size_down();
 		}
 		else if (rect3.mouse_check_in_rect(gl_x, gl_y)) {
-			
+			rect3.size_down();
 		}
 		else if (rect4.mouse_check_in_rect(gl_x, gl_y)) {
-			
+			rect4.size_down();
 		}
 		else {
-			
+			if (gl_x < 0.0f && gl_y > 0.0f)
+				rect1.size_up();
+			if (gl_x > 0.0f && gl_y > 0.0f)
+				rect2.size_up();
+			if (gl_x > 0.0f && gl_y < 0.0f)
+				rect3.size_up();
+			if (gl_x < 0.0f && gl_y < 0.0f)
+				rect4.size_up();
 		}
 	}
 	glutPostRedisplay();
@@ -139,6 +147,12 @@ GLvoid Rect::change_color() {
 
 GLvoid Rect::size_down() {
 	size -= 0.05f;
-	if (size < 0.3f)
-		size = 0.3f;
+	if (size < 0.2f)
+		size = 0.2f;
+}
+
+GLvoid Rect::size_up() {
+	size += 0.05f;
+	if (size > 0.5f)
+		size = 0.5f;
 }
