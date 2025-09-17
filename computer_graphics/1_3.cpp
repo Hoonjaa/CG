@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <vector>
 
 #include <gl/glew.h>
 #include <gl/freeglut.h>
@@ -8,6 +9,7 @@
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 GLvoid Mouse(int button, int state, int x, int y);
+GLvoid Keyboard(unsigned char key, int x, int y);
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 
 std::random_device rd;
@@ -16,7 +18,7 @@ std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
 class Rect {
 	GLclampf r, g, b;
 	GLfloat center_x, center_y;
-	GLfloat size;
+	GLfloat size_w, size_h;
 public:
 	Rect(GLfloat x, GLfloat y);
 
@@ -26,6 +28,7 @@ public:
 };
 
 int WindowWidth = 500, WindowHeight = 500;
+std::vector<Rect> rects;
 
 void main(int argc, char** argv)
 {
@@ -49,6 +52,7 @@ void main(int argc, char** argv)
 	glutDisplayFunc(drawScene);										//출력 함수의 지정
 	glutReshapeFunc(Reshape);										//다시 그리기 함수의 지정
 	glutMouseFunc(Mouse);
+	glutKeyboardFunc(Keyboard);
 	glutMainLoop();													//이벤트 처리 시작
 }
 
@@ -58,6 +62,9 @@ GLvoid drawScene()													//--- 콜백 함수 : 그리기 콜백 함수
 	glClear(GL_COLOR_BUFFER_BIT);									//설정된 색으로 전체를 칠하기
 	//그리기 부분 구현
 	//--- 그리기 관련 부분이 여기에 포함된다.
+	for (auto& rect : rects) {
+		rect.draw_rect();
+	}
 	glutSwapBuffers();												//화면에 출력하기
 }
 
@@ -78,11 +85,20 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	glutPostRedisplay();
 }
 
-Rect::Rect(GLfloat x, GLfloat y) : r(distribution(rd)), g(distribution(rd)), b(distribution(rd)), center_x(x), center_y(y), size(0.5f) {}
+GLvoid Keyboard(unsigned char key, int x, int y)
+{
+	switch (key) {
+	case 'a':
+		break;
+	}
+	glutPostRedisplay();
+}
+
+Rect::Rect(GLfloat x, GLfloat y) : r(distribution(rd)), g(distribution(rd)), b(distribution(rd)), center_x(x), center_y(y), size_w(0.5f), size_h(0.5f) {}
 
 GLvoid Rect::draw_rect() {
 	glColor3f(r, g, b);
-	glRectf(center_x - size, center_y - size, center_x + size, center_y + size);
+	glRectf(center_x - size_w, center_y - size_h, center_x + size_w, center_y + size_h);
 }
 
 GLvoid Rect::change_color() {
@@ -90,8 +106,8 @@ GLvoid Rect::change_color() {
 }
 
 bool Rect::mouse_check_in_rect(GLfloat x, GLfloat y) {
-	return (x >= center_x - size && x <= center_x + size &&
-		y >= center_y - size && y <= center_y + size);
+	return (x >= center_x - size_w && x <= center_x + size_w &&
+		y >= center_y - size_h && y <= center_y + size_h);
 }
 
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
