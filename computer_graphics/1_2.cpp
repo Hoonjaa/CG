@@ -8,6 +8,7 @@
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 GLvoid Mouse(int button, int state, int x, int y);
+GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 
 std::random_device rd;
 std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
@@ -23,6 +24,7 @@ public:
 	bool mouse_check_in_rect(int x, int y);
 };
 
+int WindowWidth = 500, WindowHeight = 500;
 Rect rect1(-0.5f, 0.5f);
 Rect rect2(0.5f, 0.5f);
 Rect rect3(0.5f, -0.5f);
@@ -34,7 +36,7 @@ void main(int argc, char** argv)
 	glutInit(&argc, argv);											//glut 초기화
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);					//디스플레이 모드 설정
 	glutInitWindowPosition(100, 100);								//윈도우 위치 설정
-	glutInitWindowSize(500, 500);									//윈도우 크기 지정
+	glutInitWindowSize(WindowWidth, WindowHeight);									//윈도우 크기 지정
 	glutCreateWindow("Example1");									//윈도우 생성 (윈도우 이름)
 
 	//GLEW 초기화
@@ -79,6 +81,8 @@ GLvoid Rect::draw_rect() {
 }
 
 GLvoid Mouse(int button, int state, int x, int y) {
+	GLfloat gl_x, gl_y;
+	Win_to_GL_mouse(x, y, gl_x, gl_y);
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		if (rect1.mouse_check_in_rect(x, y)) {
 
@@ -100,4 +104,9 @@ GLvoid Mouse(int button, int state, int x, int y) {
 
 bool Rect::mouse_check_in_rect(int x, int y) {
 	return false;
+}
+
+GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
+	gl_x = (x / (float)WindowWidth) * 2.0f - 1.0f;
+	gl_y = 1.0f - (y / (float)WindowHeight) * 2.0f;
 }
