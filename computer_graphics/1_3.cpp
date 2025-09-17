@@ -9,7 +9,9 @@
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 GLvoid Mouse(int button, int state, int x, int y);
+GLvoid Motion(int x, int y);
 GLvoid Keyboard(unsigned char key, int x, int y);
+
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 
 std::random_device rd;
@@ -20,16 +22,25 @@ class Rect {
 	GLclampf r, g, b;
 	GLfloat center_x, center_y;
 	GLfloat size_w, size_h;
+
+	bool dragging = false;
+	GLfloat offset_x = 0.0f, offset_y = 0.0f;
 public:
 	Rect(GLfloat x, GLfloat y);
 
 	GLvoid draw_rect();
 	GLvoid change_color();
 	bool mouse_check_in_rect(GLfloat x, GLfloat y);
+
+	GLvoid start_drag(GLfloat mouse_x, GLfloat mouse_y);
+	GLvoid stop_drag() { dragging = false; }
+	GLvoid drag_move(GLfloat mouse_x, GLfloat mouse_y);
 };
 
 int WindowWidth = 500, WindowHeight = 500;
 std::vector<Rect> rects;
+bool left_button = false;
+int dragging_rect = -1;
 
 void main(int argc, char** argv)
 {
@@ -53,6 +64,7 @@ void main(int argc, char** argv)
 	glutDisplayFunc(drawScene);										//출력 함수의 지정
 	glutReshapeFunc(Reshape);										//다시 그리기 함수의 지정
 	glutMouseFunc(Mouse);
+	glutMotionFunc(Motion);
 	glutKeyboardFunc(Keyboard);
 	glutMainLoop();													//이벤트 처리 시작
 }
@@ -78,10 +90,31 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	GLfloat gl_x, gl_y;
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		
+		left_button = true;
+		for (auto& rect : rects) {
+			if (rect.mouse_check_in_rect(gl_x, gl_y)) {
+				rect.start_drag(gl_x, gl_y);
+			}
+			else {
+				rect.stop_drag();
+			}
+		}
+	}
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
+		left_button = false;
+		for (auto& rect : rects) rect.stop_drag();
 	}
 	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
 		
+	}
+	glutPostRedisplay();
+}
+
+GLvoid Motion(int x, int y) {
+	GLfloat gl_x, gl_y;
+	Win_to_GL_mouse(x, y, gl_x, gl_y);
+	for (auto& rect : rects) {
+		rect.drag_move(gl_x, gl_y);
 	}
 	glutPostRedisplay();
 }
@@ -115,4 +148,17 @@ bool Rect::mouse_check_in_rect(GLfloat x, GLfloat y) {
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
 	gl_x = (x / (float)WindowWidth) * 2.0f - 1.0f;
 	gl_y = 1.0f - (y / (float)WindowHeight) * 2.0f;
+}
+
+GLvoid Rect::start_drag(GLfloat mouse_x, GLfloat mouse_y) {
+	dragging = true;
+	offset_x = mouse_x - center_x;
+	offset_y = mouse_y - center_y;
+}
+
+GLvoid Rect::drag_move(GLfloat mouse_x, GLfloat mouse_y) {
+	if (dragging) {
+		center_x = mouse_x - offset_x;
+		center_y = mouse_y - offset_y;
+	}
 }
