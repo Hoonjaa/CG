@@ -7,6 +7,23 @@
 
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
+GLvoid Mouse(int button, int state, int x, int y);
+GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
+
+std::random_device rd;
+std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
+
+class Rect {
+	GLclampf r, g, b;
+	GLfloat center_x, center_y;
+	GLfloat size;
+public:
+	Rect(GLfloat x, GLfloat y);
+
+	GLvoid draw_rect();
+	GLvoid change_color();
+	bool mouse_check_in_rect(GLfloat x, GLfloat y);
+};
 
 int WindowWidth = 500, WindowHeight = 500;
 
@@ -31,6 +48,7 @@ void main(int argc, char** argv)
 
 	glutDisplayFunc(drawScene);										//출력 함수의 지정
 	glutReshapeFunc(Reshape);										//다시 그리기 함수의 지정
+	glutMouseFunc(Mouse);
 	glutMainLoop();													//이벤트 처리 시작
 }
 
@@ -46,4 +64,37 @@ GLvoid drawScene()													//--- 콜백 함수 : 그리기 콜백 함수
 GLvoid Reshape(int w, int h)
 {
 	glViewport(0, 0, w, h);
+}
+
+GLvoid Mouse(int button, int state, int x, int y) {
+	GLfloat gl_x, gl_y;
+	Win_to_GL_mouse(x, y, gl_x, gl_y);
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		
+	}
+	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+		
+	}
+	glutPostRedisplay();
+}
+
+Rect::Rect(GLfloat x, GLfloat y) : r(distribution(rd)), g(distribution(rd)), b(distribution(rd)), center_x(x), center_y(y), size(0.5f) {}
+
+GLvoid Rect::draw_rect() {
+	glColor3f(r, g, b);
+	glRectf(center_x - size, center_y - size, center_x + size, center_y + size);
+}
+
+GLvoid Rect::change_color() {
+	r = distribution(rd); g = distribution(rd); b = distribution(rd);
+}
+
+bool Rect::mouse_check_in_rect(GLfloat x, GLfloat y) {
+	return (x >= center_x - size && x <= center_x + size &&
+		y >= center_y - size && y <= center_y + size);
+}
+
+GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
+	gl_x = (x / (float)WindowWidth) * 2.0f - 1.0f;
+	gl_y = 1.0f - (y / (float)WindowHeight) * 2.0f;
 }
