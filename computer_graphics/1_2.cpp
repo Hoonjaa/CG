@@ -8,11 +8,11 @@
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 GLvoid Mouse(int button, int state, int x, int y);
-GLvoid check_mouse_pressed_in_rect1(int x, int y);
-GLvoid check_mouse_pressed_in_rect2(int x, int y);
-GLvoid check_mouse_pressed_in_rect3(int x, int y);
-GLvoid check_mouse_pressed_in_rect4(int x, int y);
-GLvoid check_mouse_pressed_in_BG(int x, int y);
+bool check_mouse_pressed_in_rect1(int x, int y);
+bool check_mouse_pressed_in_rect2(int x, int y);
+bool check_mouse_pressed_in_rect3(int x, int y);
+bool check_mouse_pressed_in_rect4(int x, int y);
+bool check_mouse_pressed_in_BG(int x, int y);
 
 std::random_device rd;
 std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
@@ -92,18 +92,18 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	}
 }
 
-GLvoid check_mouse_pressed_in_rect1(int x, int y) {
-
+bool check_mouse_pressed_in_rect1(int x, int y) {
+	return true;
 }
-GLvoid check_mouse_pressed_in_rect2(int x, int y) {
-
+bool check_mouse_pressed_in_rect2(int x, int y) {
+	return true;
 }
-GLvoid check_mouse_pressed_in_rect3(int x, int y) {
-
+bool check_mouse_pressed_in_rect3(int x, int y) {
+	return true;
 }
-GLvoid check_mouse_pressed_in_rect4(int x, int y) {
-
+bool check_mouse_pressed_in_rect4(int x, int y) {
+	return true;
 }
-GLvoid check_mouse_pressed_in_BG(int x, int y) {
-
+bool check_mouse_pressed_in_BG(int x, int y) {
+	return true;
 }
