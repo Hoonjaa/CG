@@ -22,6 +22,7 @@ public:
 
 	GLvoid draw_rect();
 	GLvoid change_color();
+	GLvoid size_down();
 	bool mouse_check_in_rect(GLfloat x, GLfloat y);
 };
 
@@ -104,7 +105,7 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	}
 	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
 		if (rect1.mouse_check_in_rect(gl_x, gl_y)) {
-			
+			rect1.size_down();
 		}
 		else if (rect2.mouse_check_in_rect(gl_x, gl_y)) {
 			
@@ -134,4 +135,10 @@ GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
 
 GLvoid Rect::change_color() {
 	r = distribution(rd); g = distribution(rd); b = distribution(rd);
+}
+
+GLvoid Rect::size_down() {
+	size -= 0.05f;
+	if (size < 0.3f)
+		size = 0.3f;
 }
