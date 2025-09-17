@@ -26,6 +26,7 @@ public:
 };
 
 int WindowWidth = 500, WindowHeight = 500;
+GLclampf BG_r = 0.0f, BG_g = 0.0f, BG_b = 0.0f;
 Rect rect1(-0.5f, 0.5f);
 Rect rect2(0.5f, 0.5f);
 Rect rect3(0.5f, -0.5f);
@@ -58,7 +59,7 @@ void main(int argc, char** argv)
 
 GLvoid drawScene()													//--- 콜백 함수 : 그리기 콜백 함수
 {
-	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);							//바탕색을 'blue'로 지정
+	glClearColor(BG_r, BG_g, BG_b, 1.0f);							//바탕색을 'blue'로 지정
 	glClear(GL_COLOR_BUFFER_BIT);									//설정된 색으로 전체를 칠하기
 	//그리기 부분 구현
 	//--- 그리기 관련 부분이 여기에 포함된다.
@@ -89,19 +90,19 @@ GLvoid Mouse(int button, int state, int x, int y) {
 			rect1.change_color();
 		}
 		else if (rect2.mouse_check_in_rect(gl_x, gl_y)) {
-
+			rect2.change_color();
 		}
-		else if (rect2.mouse_check_in_rect(gl_x, gl_y)) {
-
+		else if (rect3.mouse_check_in_rect(gl_x, gl_y)) {
+			rect3.change_color();
 		}
-		else if (rect2.mouse_check_in_rect(gl_x, gl_y)) {
-
+		else if (rect4.mouse_check_in_rect(gl_x, gl_y)) {
+			rect4.change_color();
 		}
 		else {
-
+			BG_r = distribution(rd); BG_g = distribution(rd); BG_b = distribution(rd);
 		}
-		glutPostRedisplay();
 	}
+	glutPostRedisplay();
 }
 
 bool Rect::mouse_check_in_rect(GLfloat x, GLfloat y) {
