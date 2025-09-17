@@ -13,7 +13,8 @@ GLvoid Keyboard(unsigned char key, int x, int y);
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 
 std::random_device rd;
-std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
+std::uniform_real_distribution<float> distribution_color(0.0f, 1.0f);
+std::uniform_real_distribution<float> distribution_coordinate(-0.9f, 0.9f);
 
 class Rect {
 	GLclampf r, g, b;
@@ -58,7 +59,7 @@ void main(int argc, char** argv)
 
 GLvoid drawScene()													//--- 콜백 함수 : 그리기 콜백 함수
 {
-	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);									//바탕색을 'blue'로 지정
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);									//바탕색을 'blue'로 지정
 	glClear(GL_COLOR_BUFFER_BIT);									//설정된 색으로 전체를 칠하기
 	//그리기 부분 구현
 	//--- 그리기 관련 부분이 여기에 포함된다.
@@ -89,12 +90,13 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 {
 	switch (key) {
 	case 'a':
+		rects.emplace_back(distribution_coordinate(rd), distribution_coordinate(rd));
 		break;
 	}
 	glutPostRedisplay();
 }
 
-Rect::Rect(GLfloat x, GLfloat y) : r(distribution(rd)), g(distribution(rd)), b(distribution(rd)), center_x(x), center_y(y), size_w(0.5f), size_h(0.5f) {}
+Rect::Rect(GLfloat x, GLfloat y) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(0.1f), size_h(0.1f) {}
 
 GLvoid Rect::draw_rect() {
 	glColor3f(r, g, b);
@@ -102,7 +104,7 @@ GLvoid Rect::draw_rect() {
 }
 
 GLvoid Rect::change_color() {
-	r = distribution(rd); g = distribution(rd); b = distribution(rd);
+	r = distribution_color(rd); g = distribution_color(rd); b = distribution_color(rd);
 }
 
 bool Rect::mouse_check_in_rect(GLfloat x, GLfloat y) {
