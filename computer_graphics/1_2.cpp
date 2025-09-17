@@ -21,7 +21,8 @@ public:
 	Rect(GLfloat x, GLfloat y);
 
 	GLvoid draw_rect();
-	bool mouse_check_in_rect(int x, int y);
+	GLvoid change_color();
+	bool mouse_check_in_rect(GLfloat x, GLfloat y);
 };
 
 int WindowWidth = 500, WindowHeight = 500;
@@ -84,29 +85,35 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	GLfloat gl_x, gl_y;
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		if (rect1.mouse_check_in_rect(x, y)) {
+		if (rect1.mouse_check_in_rect(gl_x, gl_y)) {
+			rect1.change_color();
+		}
+		else if (rect2.mouse_check_in_rect(gl_x, gl_y)) {
 
 		}
-		else if (rect2.mouse_check_in_rect(x, y)) {
+		else if (rect2.mouse_check_in_rect(gl_x, gl_y)) {
 
 		}
-		else if (rect2.mouse_check_in_rect(x, y)) {
-
-		}
-		else if (rect2.mouse_check_in_rect(x, y)) {
+		else if (rect2.mouse_check_in_rect(gl_x, gl_y)) {
 
 		}
 		else {
 
 		}
+		glutPostRedisplay();
 	}
 }
 
-bool Rect::mouse_check_in_rect(int x, int y) {
-	return false;
+bool Rect::mouse_check_in_rect(GLfloat x, GLfloat y) {
+	return (x >= center_x - size && x <= center_x + size &&
+		y >= center_y - size && y <= center_y + size);
 }
 
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
 	gl_x = (x / (float)WindowWidth) * 2.0f - 1.0f;
 	gl_y = 1.0f - (y / (float)WindowHeight) * 2.0f;
+}
+
+GLvoid Rect::change_color() {
+	r = distribution(rd); g = distribution(rd); b = distribution(rd);
 }
