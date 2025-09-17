@@ -102,6 +102,23 @@ GLvoid Mouse(int button, int state, int x, int y) {
 			BG_r = distribution(rd); BG_g = distribution(rd); BG_b = distribution(rd);
 		}
 	}
+	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+		if (rect1.mouse_check_in_rect(gl_x, gl_y)) {
+			
+		}
+		else if (rect2.mouse_check_in_rect(gl_x, gl_y)) {
+			
+		}
+		else if (rect3.mouse_check_in_rect(gl_x, gl_y)) {
+			
+		}
+		else if (rect4.mouse_check_in_rect(gl_x, gl_y)) {
+			
+		}
+		else {
+			
+		}
+	}
 	glutPostRedisplay();
 }
 
