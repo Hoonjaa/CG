@@ -27,15 +27,19 @@ class Rect {
 	GLfloat offset_x = 0.0f, offset_y = 0.0f;
 public:
 	Rect(GLfloat x, GLfloat y);
-
+	//그리기 함수
 	GLvoid draw_rect();
 	GLvoid change_color();
+	//마우스
+	//마우스가 안에 있는지 체크
 	bool mouse_check_in_rect(GLfloat x, GLfloat y);
-
+	//마우스로 드래그 할 시
 	GLvoid start_drag(GLfloat mouse_x, GLfloat mouse_y);
 	GLvoid stop_drag() { dragging = false; }
 	GLvoid drag_move(GLfloat mouse_x, GLfloat mouse_y);
 	bool is_dragging() const { return dragging; }
+	//마우스 우클릭 시
+	GLvoid slice_rect();
 };
 
 int WindowWidth = 500, WindowHeight = 500;
@@ -106,7 +110,11 @@ GLvoid Mouse(int button, int state, int x, int y) {
 		for (auto& rect : rects) rect.stop_drag();
 	}
 	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
-		
+		for (auto& rect : rects) {
+			if (rect.mouse_check_in_rect(gl_x, gl_y)) {
+				rect.slice_rect();
+			}
+		}
 	}
 	glutPostRedisplay();
 }
@@ -164,4 +172,8 @@ GLvoid Rect::drag_move(GLfloat mouse_x, GLfloat mouse_y) {
 		center_x = mouse_x - offset_x;
 		center_y = mouse_y - offset_y;
 	}
+}
+
+GLvoid Rect::slice_rect() {
+
 }
