@@ -35,6 +35,7 @@ public:
 	GLvoid start_drag(GLfloat mouse_x, GLfloat mouse_y);
 	GLvoid stop_drag() { dragging = false; }
 	GLvoid drag_move(GLfloat mouse_x, GLfloat mouse_y);
+	bool is_dragging() const { return dragging; }
 };
 
 int WindowWidth = 500, WindowHeight = 500;
@@ -114,7 +115,9 @@ GLvoid Motion(int x, int y) {
 	GLfloat gl_x, gl_y;
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
 	for (auto& rect : rects) {
-		rect.drag_move(gl_x, gl_y);
+		if (rect.is_dragging()) {
+			rect.drag_move(gl_x, gl_y);
+		}
 	}
 	glutPostRedisplay();
 }
