@@ -101,6 +101,7 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'm':
 		break;
 	case 'r':
+		rects.clear();
 		break;
 	case 'q':
 		glutLeaveMainLoop();
