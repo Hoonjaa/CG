@@ -15,6 +15,19 @@ GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 std::random_device rd;
 std::uniform_real_distribution<float> distribution_color(0.0f, 1.0f);
 
+class Rect {
+	GLclampf r, g, b;
+	GLfloat center_x, center_y;
+	GLfloat size_w, size_h;
+
+public:
+	Rect(GLfloat x, GLfloat y);
+	Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h);
+	//그리기 함수
+	GLvoid draw_rect();
+	GLvoid change_color();
+};
+
 int WindowWidth = 500, WindowHeight = 500;
 
 void main(int argc, char** argv)
@@ -24,7 +37,7 @@ void main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);					//디스플레이 모드 설정
 	glutInitWindowPosition(100, 100);								//윈도우 위치 설정
 	glutInitWindowSize(WindowWidth, WindowHeight);					//윈도우 크기 지정
-	glutCreateWindow("Example1");									//윈도우 생성 (윈도우 이름)
+	glutCreateWindow("Example1-4");									//윈도우 생성 (윈도우 이름)
 
 	//GLEW 초기화
 	glewExperimental = GL_TRUE;
@@ -95,4 +108,16 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
 	gl_x = (x / (float)WindowWidth) * 2.0f - 1.0f;
 	gl_y = 1.0f - (y / (float)WindowHeight) * 2.0f;
+}
+
+Rect::Rect(GLfloat x, GLfloat y) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(0.1f), size_h(0.1f) {}
+Rect::Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(w), size_h(h) {}
+
+GLvoid Rect::draw_rect() {
+	glColor3f(r, g, b);
+	glRectf(center_x - size_w, center_y - size_h, center_x + size_w, center_y + size_h);
+}
+
+GLvoid Rect::change_color() {
+	r = distribution_color(rd); g = distribution_color(rd); b = distribution_color(rd);
 }
