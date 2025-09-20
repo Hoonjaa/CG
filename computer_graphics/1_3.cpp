@@ -27,6 +27,7 @@ class Rect {
 	GLfloat offset_x = 0.0f, offset_y = 0.0f;
 public:
 	Rect(GLfloat x, GLfloat y);
+	Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h);
 	//그리기 함수
 	GLvoid draw_rect();
 	GLvoid change_color();
@@ -141,6 +142,7 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 }
 
 Rect::Rect(GLfloat x, GLfloat y) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(0.1f), size_h(0.1f) {}
+Rect::Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(w), size_h(h) {}
 
 GLvoid Rect::draw_rect() {
 	glColor3f(r, g, b);
@@ -175,5 +177,16 @@ GLvoid Rect::drag_move(GLfloat mouse_x, GLfloat mouse_y) {
 }
 
 GLvoid Rect::slice_rect() {
-
+	//세로로 자르기
+	if (size_h <= size_w) {
+		center_x = center_x - (size_w / 2);
+		size_w = (size_w / 2);
+		rects.emplace_back(center_x + (2 * size_w), center_y, size_w, size_h);
+	}
+	//가로로 자르기
+	else if (size_w < size_h) {
+		center_y = center_y - (size_h / 2);
+		size_h = (size_h / 2);
+		rects.emplace_back(center_x, center_y + (2 * size_h), size_w, size_h);
+	}
 }
