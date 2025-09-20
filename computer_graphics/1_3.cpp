@@ -34,19 +34,22 @@ public:
 	//마우스
 	//마우스가 안에 있는지 체크
 	bool mouse_check_in_rect(GLfloat x, GLfloat y);
-	//마우스로 드래그 할 시
+	//마우스 드래그 함수
 	GLvoid start_drag(GLfloat mouse_x, GLfloat mouse_y);
 	GLvoid stop_drag() { dragging = false; }
 	GLvoid drag_move(GLfloat mouse_x, GLfloat mouse_y);
 	bool is_dragging() const { return dragging; }
-	//마우스 우클릭 시
+	//사각형 나누기 함수
 	GLvoid slice_rect();
+	//사각형 충돌 함수
+	bool collide_check(const Rect& other) const;
+	//사각형 병합 함수
+	GLvoid merge_rect(Rect& other);
 };
 
 int WindowWidth = 500, WindowHeight = 500;
 std::vector<Rect> rects;
 bool left_button = false;
-int dragging_rect = -1;
 
 void main(int argc, char** argv)
 {
@@ -100,6 +103,7 @@ GLvoid Mouse(int button, int state, int x, int y) {
 		for (auto& rect : rects) {
 			if (rect.mouse_check_in_rect(gl_x, gl_y)) {
 				rect.start_drag(gl_x, gl_y);
+				break;
 			}
 			else {
 				rect.stop_drag();
@@ -108,6 +112,17 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	}
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
 		left_button = false;
+		for (auto& rect : rects) {
+			if (rect.is_dragging()) {
+				for (int i = 0; i < rects.size(); i++) {
+					if (&rect != &rects[i] && rect.collide_check(rects[i])) {
+						rect.merge_rect(rects[i]);
+						rects.erase(rects.begin() + i);
+						break;
+					}
+				}
+			}
+		}
 		for (auto& rect : rects) rect.stop_drag();
 	}
 	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
@@ -189,4 +204,42 @@ GLvoid Rect::slice_rect() {
 		size_h = (size_h / 2);
 		rects.emplace_back(center_x, center_y + (2 * size_h), size_w, size_h);
 	}
+}
+
+bool Rect::collide_check(const Rect& other) const {
+	GLfloat leftA = center_x - size_w;
+	GLfloat rightA = center_x + size_w;
+	GLfloat topA = center_y + size_h;
+	GLfloat bottomA = center_y - size_h;
+
+	GLfloat leftB = other.center_x - other.size_w;
+	GLfloat rightB = other.center_x + other.size_w;
+	GLfloat topB = other.center_y + other.size_h;
+	GLfloat bottomB = other.center_y - other.size_h;
+
+	if (leftA > rightB || rightA < leftB) return false;
+	if (topA < bottomB || bottomA > topB) return false;
+	return true;
+}
+
+GLvoid Rect::merge_rect(Rect& other) {
+	GLfloat leftA = center_x - size_w;
+	GLfloat rightA = center_x + size_w;
+	GLfloat topA = center_y + size_h;
+	GLfloat bottomA = center_y - size_h;
+
+	GLfloat leftB = other.center_x - other.size_w;
+	GLfloat rightB = other.center_x + other.size_w;
+	GLfloat topB = other.center_y + other.size_h;
+	GLfloat bottomB = other.center_y - other.size_h;
+
+	GLfloat left, right, top, bottom;
+	left = (leftA <= leftB) ? leftA : leftB;
+	right = (rightB <= rightA) ? rightA : rightB;
+	top = (topB <= topA) ? topA : topB;
+	bottom = (bottomA <= bottomB) ? bottomA : bottomB;
+
+	size_w = (right - left) / 2; size_h = (top - bottom) / 2;
+	center_x = right - size_w; center_y = top - size_h;
+	r = distribution_color(rd); g = distribution_color(rd); b = distribution_color(rd);
 }
