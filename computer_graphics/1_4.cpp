@@ -29,6 +29,7 @@ public:
 };
 
 int WindowWidth = 500, WindowHeight = 500;
+std::vector<Rect> rects;
 
 void main(int argc, char** argv)
 {
@@ -58,10 +59,13 @@ void main(int argc, char** argv)
 
 GLvoid drawScene()													//--- 콜백 함수 : 그리기 콜백 함수
 {
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);									//바탕색을 'blue'로 지정
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);									//설정된 색으로 전체를 칠하기
 	//그리기 부분 구현
 	//--- 그리기 관련 부분이 여기에 포함된다.
+	for (auto& rect : rects) {
+		rect.draw_rect();
+	}
 	glutSwapBuffers();												//화면에 출력하기
 }
 
@@ -74,7 +78,7 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	GLfloat gl_x, gl_y;
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		
+		rects.emplace_back(gl_x, gl_y);
 	}
 	glutPostRedisplay();
 }
