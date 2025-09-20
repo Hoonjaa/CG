@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <vector>
 
 #include <gl/glew.h>
 #include <gl/freeglut.h>
@@ -7,6 +8,12 @@
 
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
+GLvoid Mouse(int button, int state, int x, int y);
+GLvoid Keyboard(unsigned char key, int x, int y);
+GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
+
+std::random_device rd;
+std::uniform_real_distribution<float> distribution_color(0.0f, 1.0f);
 
 int WindowWidth = 500, WindowHeight = 500;
 
@@ -31,6 +38,8 @@ void main(int argc, char** argv)
 
 	glutDisplayFunc(drawScene);										//출력 함수의 지정
 	glutReshapeFunc(Reshape);										//다시 그리기 함수의 지정
+	glutMouseFunc(Mouse);
+	glutKeyboardFunc(Keyboard);
 	glutMainLoop();													//이벤트 처리 시작
 }
 
@@ -46,4 +55,44 @@ GLvoid drawScene()													//--- 콜백 함수 : 그리기 콜백 함수
 GLvoid Reshape(int w, int h)
 {
 	glViewport(0, 0, w, h);
+}
+
+GLvoid Mouse(int button, int state, int x, int y) {
+	GLfloat gl_x, gl_y;
+	Win_to_GL_mouse(x, y, gl_x, gl_y);
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		
+	}
+	glutPostRedisplay();
+}
+
+GLvoid Keyboard(unsigned char key, int x, int y)
+{
+	switch (key) {
+	case '1':
+		break;
+	case '2':
+		break;
+	case '3':
+		break;
+	case '4':
+		break;
+	case '5':
+		break;
+	case 's':
+		break;
+	case 'm':
+		break;
+	case 'r':
+		break;
+	case 'q':
+		glutLeaveMainLoop();
+		break;
+	}
+	glutPostRedisplay();
+}
+
+GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
+	gl_x = (x / (float)WindowWidth) * 2.0f - 1.0f;
+	gl_y = 1.0f - (y / (float)WindowHeight) * 2.0f;
 }
