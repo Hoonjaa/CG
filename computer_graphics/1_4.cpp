@@ -10,6 +10,7 @@ GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 GLvoid Mouse(int button, int state, int x, int y);
 GLvoid Keyboard(unsigned char key, int x, int y);
+GLvoid TimerFunction(int value);
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 
 std::random_device rd;
@@ -28,11 +29,15 @@ public:
 	GLvoid draw_rect();
 	GLvoid change_color();
 	//애니메이션
-	GLvoid start_animation(GLint move_type);
+	GLvoid set_animation(GLint type) { move_type = type; }
+	GLvoid start_animation();
+	GLvoid move_diagonal();
+	GLint get_move_type() const { return move_type; }
 };
 
 int WindowWidth = 500, WindowHeight = 500;
 std::vector<Rect> rects;
+bool Timer = false;
 
 void main(int argc, char** argv)
 {
@@ -91,12 +96,14 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	switch (key) {
 	case '1':
 		for (auto& rect : rects) {
-			rect.start_animation(1);
+			rect.set_animation(1);
+			rect.start_animation();
 		}
 		break;
 	case '2':
 		for (auto& rect : rects) {
-			rect.start_animation(2);
+			rect.set_animation(2);
+			rect.start_animation();
 		}
 		break;
 	case '3':
@@ -142,13 +149,28 @@ GLvoid Rect::change_color() {
 	r = distribution_color(rd); g = distribution_color(rd); b = distribution_color(rd);
 }
 
-GLvoid Rect::start_animation(GLint move_type) {
-	if (move_type == 0) return;
+GLvoid Rect::start_animation() {
+	if (move_type == 0) { Timer = false; return; }
+	Timer = true;
+	glutTimerFunc(16, TimerFunction, 1);
+}
 
-	if (move_type == 1) {
-		
+GLvoid Rect::move_diagonal() {
+	
+}
+
+GLvoid TimerFunction(int value)
+{
+	for (auto& rect : rects) {
+		if (rect.get_move_type() == 1) {
+			rect.move_diagonal();
+		}
+		if (rect.get_move_type() == 2) {
+			
+		}
 	}
-	if (move_type == 2) {
-
+	glutPostRedisplay();
+	if (Timer) {
+		glutTimerFunc(16, TimerFunction, 1);
 	}
 }
