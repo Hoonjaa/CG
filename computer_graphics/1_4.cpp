@@ -26,12 +26,14 @@ class Rect {
 
 	GLint move_type = 0;										//0 : 정지, 1 : 대각선, 2 : 지그재그
 	GLfloat dis_x = 0.02f, dis_y = 0.02f;
+	GLfloat add_size = 0.01f;
 public:
 	Rect(GLfloat x, GLfloat y);
 	Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h);
 	//그리기 함수
 	GLvoid draw_rect();
 	GLvoid change_color();
+	GLvoid change_size();
 	//애니메이션
 	GLvoid set_animation(GLint type) { move_type = type; }
 	GLvoid move_diagonal();
@@ -43,7 +45,7 @@ public:
 int WindowWidth = 500, WindowHeight = 500;
 std::vector<Rect> rects;
 bool Timer = false;
-bool ani1 = false, ani2 = false;
+bool ani1 = false, ani2 = false, ani3 = false;
 
 void main(int argc, char** argv)
 {
@@ -138,8 +140,9 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		}
 		break;
 	case '3':
-		for (auto& rect : rects) {
-			
+		ani3 = !ani3;
+		if (!Timer) {
+			start_animation();
 		}
 		break;
 	case '4':
@@ -202,7 +205,7 @@ GLvoid Rect::move_zigzag() {
 	if (center_y + size_h >= 1.0f || center_y - size_h <= -1.0f) {
 		dis_y = -dis_y;
 	}
-	else if (center_y + size_h >= old_y + 0.2f || center_y - size_h <= old_y - 0.2f) {
+	else if (center_y + size_h >= old_y + size_h + 0.2f || center_y - size_h <= old_y - size_h - 0.2f) {
 		dis_y = -dis_y;
 	}
 }
@@ -216,9 +219,18 @@ GLvoid TimerFunction(int value)
 		if (rect.get_move_type() == 2) {
 			rect.move_zigzag();
 		}
+		if (ani3) {
+			rect.change_size();
+		}
 	}
 	glutPostRedisplay();
 	if (Timer) {
 		glutTimerFunc(16, TimerFunction, 1);
 	}
+}
+
+GLvoid Rect::change_size() {
+	size_w += add_size; size_h += add_size;
+	if (size_w <= 0.03f || size_h <= 0.03f) add_size = -add_size;
+	else if (size_w >= 0.2f || size_h >= 0.2f) add_size = -add_size;
 }
