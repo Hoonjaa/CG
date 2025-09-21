@@ -26,6 +26,8 @@ public:
 	//그리기 함수
 	GLvoid draw_rect();
 	GLvoid change_color();
+	//애니메이션
+	GLvoid animation();
 };
 
 int WindowWidth = 500, WindowHeight = 500;
@@ -87,12 +89,24 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 {
 	switch (key) {
 	case '1':
+		for (auto& rect : rects) {
+			rect.animation();
+		}
 		break;
 	case '2':
+		for (auto& rect : rects) {
+			rect.animation();
+		}
 		break;
 	case '3':
+		for (auto& rect : rects) {
+			rect.animation();
+		}
 		break;
 	case '4':
+		for (auto& rect : rects) {
+			rect.animation();
+		}
 		break;
 	case '5':
 		break;
@@ -125,4 +139,8 @@ GLvoid Rect::draw_rect() {
 
 GLvoid Rect::change_color() {
 	r = distribution_color(rd); g = distribution_color(rd); b = distribution_color(rd);
+}
+
+GLvoid Rect::animation() {
+
 }
