@@ -20,6 +20,7 @@ class Rect {
 	GLfloat center_x, center_y;
 	GLfloat size_w, size_h;
 
+	GLint move_type = 0;										//0 : 정지, 1 : 대각선, 2 : 지그재그
 public:
 	Rect(GLfloat x, GLfloat y);
 	Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h);
@@ -27,7 +28,7 @@ public:
 	GLvoid draw_rect();
 	GLvoid change_color();
 	//애니메이션
-	GLvoid animation();
+	GLvoid start_animation(GLint move_type);
 };
 
 int WindowWidth = 500, WindowHeight = 500;
@@ -90,22 +91,22 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	switch (key) {
 	case '1':
 		for (auto& rect : rects) {
-			rect.animation();
+			rect.start_animation(1);
 		}
 		break;
 	case '2':
 		for (auto& rect : rects) {
-			rect.animation();
+			rect.start_animation(2);
 		}
 		break;
 	case '3':
 		for (auto& rect : rects) {
-			rect.animation();
+			
 		}
 		break;
 	case '4':
 		for (auto& rect : rects) {
-			rect.animation();
+			
 		}
 		break;
 	case '5':
@@ -141,6 +142,13 @@ GLvoid Rect::change_color() {
 	r = distribution_color(rd); g = distribution_color(rd); b = distribution_color(rd);
 }
 
-GLvoid Rect::animation() {
+GLvoid Rect::start_animation(GLint move_type) {
+	if (move_type == 0) return;
 
+	if (move_type == 1) {
+		
+	}
+	if (move_type == 2) {
+
+	}
 }
