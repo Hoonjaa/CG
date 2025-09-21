@@ -24,6 +24,7 @@ class Rect {
 	GLfloat size_w, size_h;
 
 	GLint move_type = 0;										//0 : 정지, 1 : 대각선, 2 : 지그재그
+	GLfloat dis_x = 0.02f, dis_y = 0.02f;
 public:
 	Rect(GLfloat x, GLfloat y);
 	Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h);
@@ -96,10 +97,15 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 {
 	switch (key) {
 	case '1':
-		for (auto& rect : rects) {
-			rect.set_animation(1);
+		if (!Timer) {
+			for (auto& rect : rects) {
+				rect.set_animation(1);
+			}
+			start_animation();
 		}
-		start_animation();
+		else {
+			Timer = false;
+		}
 		break;
 	case '2':
 		for (auto& rect : rects) {
@@ -156,7 +162,13 @@ GLvoid start_animation() {
 }
 
 GLvoid Rect::move_diagonal() {
-	
+	center_x += dis_x; center_y += dis_y;
+	if (center_x + size_w >= 1.0f || center_x - size_w <= -1.0f) {
+		dis_x = -dis_x;
+	}
+	if (center_y + size_h >= 1.0f || center_y - size_h <= -1.0f) {
+		dis_y = -dis_y;
+	}
 }
 
 GLvoid TimerFunction(int value)
