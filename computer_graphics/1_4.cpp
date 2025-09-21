@@ -25,6 +25,9 @@ class Rect {
 	GLfloat size_w, size_h;
 	GLfloat old_x, old_y;
 
+	GLfloat begin_x, begin_y;
+	GLfloat begin_w = 0.1f, begin_h = 0.1f;
+
 	GLint move_type = 0;										//0 : 정지, 1 : 대각선, 2 : 지그재그
 	bool is_change_color = false;
 	bool is_change_size = false;
@@ -50,6 +53,8 @@ public:
 	bool get_color_state() const { return is_change_color; }
 	bool get_size_state() const { return is_change_size; }
 	GLvoid stop();
+	//
+	GLvoid goto_begin();
 };
 
 int WindowWidth = 500, WindowHeight = 500;
@@ -200,8 +205,12 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		all_stop();
 		break;
 	case 'm':
+		for (auto& rect : rects) {
+			rect.goto_begin();
+		}
 		break;
 	case 'r':
+		all_stop();
 		rects.clear();
 		break;
 	case 'q':
@@ -216,7 +225,8 @@ GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
 	gl_y = 1.0f - (y / (float)WindowHeight) * 2.0f;
 }
 
-Rect::Rect(GLfloat x, GLfloat y) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(0.1f), size_h(0.1f), old_x(x), old_y(y) {}
+Rect::Rect(GLfloat x, GLfloat y) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y)
+, size_w(0.1f), size_h(0.1f), old_x(x), old_y(y), begin_x(x), begin_y(y) {}
 
 GLvoid Rect::draw_rect() {
 	glColor3f(r, g, b);
@@ -298,4 +308,9 @@ GLvoid all_stop() {
 	for (auto& rect : rects) {
 		rect.stop();
 	}
+}
+
+GLvoid Rect::goto_begin() {
+	center_x = begin_x; center_y = begin_y;
+	size_w = begin_w; size_h = begin_h;
 }
