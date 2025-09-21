@@ -22,6 +22,7 @@ class Rect {
 	GLclampf r, g, b;
 	GLfloat center_x, center_y;
 	GLfloat size_w, size_h;
+	GLfloat old_x, old_y;
 
 	GLint move_type = 0;										//0 : 정지, 1 : 대각선, 2 : 지그재그
 	GLfloat dis_x = 0.02f, dis_y = 0.02f;
@@ -34,12 +35,15 @@ public:
 	//애니메이션
 	GLvoid set_animation(GLint type) { move_type = type; }
 	GLvoid move_diagonal();
+	GLvoid move_zigzag();
+	GLvoid set_old_coord() { old_x = center_x; old_y = center_y; }
 	GLint get_move_type() const { return move_type; }
 };
 
 int WindowWidth = 500, WindowHeight = 500;
 std::vector<Rect> rects;
 bool Timer = false;
+bool ani1 = false, ani2 = false;
 
 void main(int argc, char** argv)
 {
@@ -97,21 +101,41 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 {
 	switch (key) {
 	case '1':
-		if (!Timer) {
+		ani1 = !ani1;
+		ani2 = false;
+		if (ani1) {
 			for (auto& rect : rects) {
 				rect.set_animation(1);
 			}
-			start_animation();
+			if (!Timer) {
+				start_animation();
+			}
 		}
 		else {
+			for (auto& rect : rects) {
+				rect.set_animation(0);
+			}
 			Timer = false;
 		}
 		break;
 	case '2':
-		for (auto& rect : rects) {
-			rect.set_animation(2);
+		ani2 = !ani2;
+		ani1 = false;
+		if (ani2) {
+			for (auto& rect : rects) {
+				rect.set_animation(2);
+				rect.set_old_coord();
+			}
+			if (!Timer) {
+				start_animation();
+			}
 		}
-		start_animation();
+		else {
+			for (auto& rect : rects) {
+				rect.set_animation(0);
+			}
+			Timer = false;
+		}
 		break;
 	case '3':
 		for (auto& rect : rects) {
@@ -144,8 +168,7 @@ GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
 	gl_y = 1.0f - (y / (float)WindowHeight) * 2.0f;
 }
 
-Rect::Rect(GLfloat x, GLfloat y) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(0.1f), size_h(0.1f) {}
-Rect::Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(w), size_h(h) {}
+Rect::Rect(GLfloat x, GLfloat y) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(0.1f), size_h(0.1f), old_x(x), old_y(y) {}
 
 GLvoid Rect::draw_rect() {
 	glColor3f(r, g, b);
@@ -171,6 +194,19 @@ GLvoid Rect::move_diagonal() {
 	}
 }
 
+GLvoid Rect::move_zigzag() {
+	center_x += dis_x; center_y += dis_y;
+	if (center_x + size_w >= 1.0f || center_x - size_w <= -1.0f) {
+		dis_x = -dis_x;
+	}
+	if (center_y + size_h >= 1.0f || center_y - size_h <= -1.0f) {
+		dis_y = -dis_y;
+	}
+	else if (center_y + size_h >= old_y + 0.2f || center_y - size_h <= old_y - 0.2f) {
+		dis_y = -dis_y;
+	}
+}
+
 GLvoid TimerFunction(int value)
 {
 	for (auto& rect : rects) {
@@ -178,7 +214,7 @@ GLvoid TimerFunction(int value)
 			rect.move_diagonal();
 		}
 		if (rect.get_move_type() == 2) {
-			
+			rect.move_zigzag();
 		}
 	}
 	glutPostRedisplay();
