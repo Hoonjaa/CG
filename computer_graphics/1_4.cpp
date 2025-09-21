@@ -11,6 +11,8 @@ GLvoid Reshape(int w, int h);
 GLvoid Mouse(int button, int state, int x, int y);
 GLvoid Keyboard(unsigned char key, int x, int y);
 GLvoid TimerFunction(int value);
+
+GLvoid start_animation();
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 
 std::random_device rd;
@@ -30,7 +32,6 @@ public:
 	GLvoid change_color();
 	//애니메이션
 	GLvoid set_animation(GLint type) { move_type = type; }
-	GLvoid start_animation();
 	GLvoid move_diagonal();
 	GLint get_move_type() const { return move_type; }
 };
@@ -97,14 +98,14 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case '1':
 		for (auto& rect : rects) {
 			rect.set_animation(1);
-			rect.start_animation();
 		}
+		start_animation();
 		break;
 	case '2':
 		for (auto& rect : rects) {
 			rect.set_animation(2);
-			rect.start_animation();
 		}
+		start_animation();
 		break;
 	case '3':
 		for (auto& rect : rects) {
@@ -149,8 +150,7 @@ GLvoid Rect::change_color() {
 	r = distribution_color(rd); g = distribution_color(rd); b = distribution_color(rd);
 }
 
-GLvoid Rect::start_animation() {
-	if (move_type == 0) { Timer = false; return; }
+GLvoid start_animation() {
 	Timer = true;
 	glutTimerFunc(16, TimerFunction, 1);
 }
