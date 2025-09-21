@@ -45,7 +45,7 @@ public:
 int WindowWidth = 500, WindowHeight = 500;
 std::vector<Rect> rects;
 bool Timer = false;
-bool ani1 = false, ani2 = false, ani3 = false;
+bool ani1 = false, ani2 = false, ani3 = false, ani4 = false;
 
 void main(int argc, char** argv)
 {
@@ -146,8 +146,9 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		}
 		break;
 	case '4':
-		for (auto& rect : rects) {
-			
+		ani4 = !ani4;
+		if (!Timer) {
+			start_animation();
 		}
 		break;
 	case '5':
@@ -221,6 +222,9 @@ GLvoid TimerFunction(int value)
 		}
 		if (ani3) {
 			rect.change_size();
+		}
+		if (ani4) {
+			rect.change_color();
 		}
 	}
 	glutPostRedisplay();
