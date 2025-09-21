@@ -13,6 +13,7 @@ GLvoid Keyboard(unsigned char key, int x, int y);
 GLvoid TimerFunction(int value);
 
 GLvoid start_animation();
+GLvoid all_stop();
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 
 std::random_device rd;
@@ -25,6 +26,8 @@ class Rect {
 	GLfloat old_x, old_y;
 
 	GLint move_type = 0;										//0 : 정지, 1 : 대각선, 2 : 지그재그
+	bool is_change_color = false;
+	bool is_change_size = false;
 	GLfloat dis_x = 0.02f, dis_y = 0.02f;
 	GLfloat add_size = 0.01f;
 public:
@@ -40,12 +43,19 @@ public:
 	GLvoid move_zigzag();
 	GLvoid set_old_coord() { old_x = center_x; old_y = center_y; }
 	GLint get_move_type() const { return move_type; }
+	GLvoid color_mode_on() { is_change_color = true; }
+	GLvoid color_mode_off() { is_change_color = false; }
+	GLvoid size_mode_on() { is_change_size = true; }
+	GLvoid size_mode_off() { is_change_size = false; }
+	bool get_color_state() const { return is_change_color; }
+	bool get_size_state() const { return is_change_size; }
+	GLvoid stop();
 };
 
 int WindowWidth = 500, WindowHeight = 500;
 std::vector<Rect> rects;
 bool Timer = false;
-bool ani1 = false, ani2 = false, ani3 = false, ani4 = false;
+bool ani1 = false, ani2 = false, ani3 = false, ani4 = false, ani5 = false;
 
 void main(int argc, char** argv)
 {
@@ -117,7 +127,6 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 			for (auto& rect : rects) {
 				rect.set_animation(0);
 			}
-			Timer = false;
 		}
 		break;
 	case '2':
@@ -125,8 +134,8 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		ani1 = false;
 		if (ani2) {
 			for (auto& rect : rects) {
-				rect.set_animation(2);
 				rect.set_old_coord();
+				rect.set_animation(2);
 			}
 			if (!Timer) {
 				start_animation();
@@ -136,7 +145,6 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 			for (auto& rect : rects) {
 				rect.set_animation(0);
 			}
-			Timer = false;
 		}
 		break;
 	case '3':
@@ -144,16 +152,52 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		if (!Timer) {
 			start_animation();
 		}
+		if (ani3) {
+			for (auto& rect : rects) {
+				rect.size_mode_on();
+			}
+		}
+		else {
+			for (auto& rect : rects) {
+				rect.size_mode_off();
+			}
+		}
 		break;
 	case '4':
 		ani4 = !ani4;
 		if (!Timer) {
 			start_animation();
 		}
+		if (ani4) {
+			for (auto& rect : rects) {
+				rect.color_mode_on();
+			}
+		}
+		else {
+			for (auto& rect : rects) {
+				rect.color_mode_off();
+			}
+		}
 		break;
 	case '5':
+		ani5 = !ani5;
+		if (ani5) {
+			for (int i = 0; i < rects.size(); i++) {
+				if (i % 4 == 0) rects[i].set_animation(1);
+				if (i % 4 == 1) rects[i].set_animation(2);
+				if (i % 4 == 2) rects[i].size_mode_on();
+				if (i % 4 == 3) rects[i].color_mode_on();
+			}
+			if (!Timer) {
+				start_animation();
+			}
+		}
+		else {
+			all_stop();
+		}
 		break;
 	case 's':
+		all_stop();
 		break;
 	case 'm':
 		break;
@@ -220,10 +264,10 @@ GLvoid TimerFunction(int value)
 		if (rect.get_move_type() == 2) {
 			rect.move_zigzag();
 		}
-		if (ani3) {
+		if (rect.get_size_state()) {
 			rect.change_size();
 		}
-		if (ani4) {
+		if (rect.get_color_state()) {
 			rect.change_color();
 		}
 	}
@@ -237,4 +281,21 @@ GLvoid Rect::change_size() {
 	size_w += add_size; size_h += add_size;
 	if (size_w <= 0.03f || size_h <= 0.03f) add_size = -add_size;
 	else if (size_w >= 0.2f || size_h >= 0.2f) add_size = -add_size;
+}
+
+GLvoid Rect::stop() {
+	is_change_color = false; is_change_size = false;
+	move_type = 0;
+}
+
+GLvoid all_stop() {
+	Timer = false;
+	ani1 = false;
+	ani2 = false;
+	ani3 = false;
+	ani4 = false;
+	ani5 = false;
+	for (auto& rect : rects) {
+		rect.stop();
+	}
 }
