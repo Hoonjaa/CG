@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <vector>
 
 #include <gl/glew.h>
 #include <gl/freeglut.h>
@@ -41,6 +42,8 @@ public:
 };
 
 int WindowWidth = 500, WindowHeight = 500;
+std::vector<Rect> rects;
+Rect player(0.0f, 0.0f, 0.1f, 0.1f);
 
 void main(int argc, char** argv)
 {
@@ -66,6 +69,9 @@ void main(int argc, char** argv)
 	glutMouseFunc(Mouse);
 	glutMotionFunc(Motion);
 	glutKeyboardFunc(Keyboard);
+	for (int i = 0; i < 20; i++) {
+		rects.emplace_back(distribution_coordinate(rd), distribution_coordinate(rd));
+	}
 	glutMainLoop();													//이벤트 처리 시작
 }
 
@@ -75,6 +81,10 @@ GLvoid drawScene()													//--- 콜백 함수 : 그리기 콜백 함수
 	glClear(GL_COLOR_BUFFER_BIT);									//설정된 색으로 전체를 칠하기
 	//그리기 부분 구현
 	//--- 그리기 관련 부분이 여기에 포함된다.
+	for (auto& rect : rects) {
+		rect.draw_rect();
+	}
+	player.draw_rect();
 	glutSwapBuffers();												//화면에 출력하기
 }
 
@@ -115,7 +125,7 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	glutPostRedisplay();
 }
 
-Rect::Rect(GLfloat x, GLfloat y) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(0.1f), size_h(0.1f) {}
+Rect::Rect(GLfloat x, GLfloat y) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(0.05f), size_h(0.05f) {}
 Rect::Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(w), size_h(h) {}
 
 GLvoid Rect::draw_rect() {
