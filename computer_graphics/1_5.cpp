@@ -184,7 +184,15 @@ GLvoid Rect::player_setting() {
 }
 
 GLvoid Rect::crash_check() {
-
+	for (int i = 0; i < rects.size(); i++) {
+		if (rects[i].center_x >= center_x - size_w
+			&& rects[i].center_x <= center_x + size_w
+			&& rects[i].center_y >= center_y - size_h
+			&& rects[i].center_y <= center_y + size_h) {
+			rects.erase(rects.begin() + i);
+			size_w += 0.02f; size_h += 0.02f;
+		}
+	}
 }
 
 GLvoid Rect::set_coordinate(GLfloat x, GLfloat y) {
