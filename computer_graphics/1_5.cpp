@@ -107,6 +107,7 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		player_on = true;
+		player.set_coordinate(gl_x, gl_y);
 	}
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
 		player_on = false;
@@ -187,5 +188,5 @@ GLvoid Rect::crash_check() {
 }
 
 GLvoid Rect::set_coordinate(GLfloat x, GLfloat y) {
-
+	center_x = x; center_y = y;
 }
