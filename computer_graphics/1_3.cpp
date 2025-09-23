@@ -150,7 +150,8 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 {
 	switch (key) {
 	case 'a':
-		rects.emplace_back(distribution_coordinate(rd), distribution_coordinate(rd));
+		if(rects.size() < 10)
+			rects.emplace_back(distribution_coordinate(rd), distribution_coordinate(rd));
 		break;
 	}
 	glutPostRedisplay();
