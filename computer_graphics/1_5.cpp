@@ -111,6 +111,7 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	}
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
 		player_on = false;
+		player.player_setting();
 	}
 	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
 		
@@ -189,6 +190,7 @@ GLvoid Rect::crash_check() {
 			&& rects[i].center_x <= center_x + size_w
 			&& rects[i].center_y >= center_y - size_h
 			&& rects[i].center_y <= center_y + size_h) {
+			r = rects[i].r; g = rects[i].g; b = rects[i].b;
 			rects.erase(rects.begin() + i);
 			size_w += 0.02f; size_h += 0.02f;
 		}
