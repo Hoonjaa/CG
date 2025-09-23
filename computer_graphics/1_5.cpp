@@ -46,6 +46,8 @@ public:
 	GLvoid crash_check();
 	//위치 지정
 	GLvoid set_coordinate(GLfloat x, GLfloat y);
+	//먹이 추가
+	GLvoid add_feed();
 };
 
 int WindowWidth = 500, WindowHeight = 500;
@@ -114,7 +116,8 @@ GLvoid Mouse(int button, int state, int x, int y) {
 		player.player_setting();
 	}
 	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
-		
+		if(rects.size() < 20 )
+			player.add_feed();
 	}
 	glutPostRedisplay();
 }
@@ -199,4 +202,9 @@ GLvoid Rect::crash_check() {
 
 GLvoid Rect::set_coordinate(GLfloat x, GLfloat y) {
 	center_x = x; center_y = y;
+}
+
+GLvoid Rect::add_feed() {
+	size_w -= 0.01f; size_h -= 0.01f;
+	rects.emplace_back(distribution_coordinate(rd), distribution_coordinate(rd));
 }
