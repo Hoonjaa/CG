@@ -42,11 +42,16 @@ public:
 	bool is_dragging() const { return dragging; }
 	//플레이어
 	GLvoid player_setting();
+	//충돌 체크
+	GLvoid crash_check();
+	//위치 지정
+	GLvoid set_coordinate(GLfloat x, GLfloat y);
 };
 
 int WindowWidth = 500, WindowHeight = 500;
 std::vector<Rect> rects;
 Rect player(0.0f, 0.0f, 0.1f, 0.1f, 0.0f, 0.0f, 0.0f);
+bool player_on = false;
 
 void main(int argc, char** argv)
 {
@@ -87,7 +92,8 @@ GLvoid drawScene()													//--- 콜백 함수 : 그리기 콜백 함수
 	for (auto& rect : rects) {
 		rect.draw_rect();
 	}
-	player.draw_rect();
+	if(player_on)
+		player.draw_rect();
 	glutSwapBuffers();												//화면에 출력하기
 }
 
@@ -100,10 +106,10 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	GLfloat gl_x, gl_y;
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		
+		player_on = true;
 	}
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
-		
+		player_on = false;
 	}
 	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
 		
@@ -114,7 +120,10 @@ GLvoid Mouse(int button, int state, int x, int y) {
 GLvoid Motion(int x, int y) {
 	GLfloat gl_x, gl_y;
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
-	
+	if (player_on) {
+		player.set_coordinate(gl_x, gl_y);
+		player.crash_check();
+	}
 	glutPostRedisplay();
 }
 
@@ -171,4 +180,12 @@ GLvoid Rect::drag_move(GLfloat mouse_x, GLfloat mouse_y) {
 GLvoid Rect::player_setting() {
 	r = 0.0f; g = 0.0f; b = 0.0f;
 	size_w = 0.1f; size_h = 0.1f;
+}
+
+GLvoid Rect::crash_check() {
+
+}
+
+GLvoid Rect::set_coordinate(GLfloat x, GLfloat y) {
+
 }
