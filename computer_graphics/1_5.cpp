@@ -27,7 +27,8 @@ class Rect {
 	GLfloat offset_x = 0.0f, offset_y = 0.0f;
 public:
 	Rect(GLfloat x, GLfloat y);
-	Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h);
+	Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h); 
+	Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h, GLfloat r, GLfloat g, GLfloat b);
 	//그리기 함수
 	GLvoid draw_rect();
 	GLvoid change_color();
@@ -39,11 +40,13 @@ public:
 	GLvoid stop_drag() { dragging = false; }
 	GLvoid drag_move(GLfloat mouse_x, GLfloat mouse_y);
 	bool is_dragging() const { return dragging; }
+	//플레이어
+	GLvoid player_setting();
 };
 
 int WindowWidth = 500, WindowHeight = 500;
 std::vector<Rect> rects;
-Rect player(0.0f, 0.0f, 0.1f, 0.1f);
+Rect player(0.0f, 0.0f, 0.1f, 0.1f, 0.0f, 0.0f, 0.0f);
 
 void main(int argc, char** argv)
 {
@@ -77,7 +80,7 @@ void main(int argc, char** argv)
 
 GLvoid drawScene()													//--- 콜백 함수 : 그리기 콜백 함수
 {
-	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);									//바탕색을 'blue'로 지정
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);							//바탕색을 'blue'로 지정
 	glClear(GL_COLOR_BUFFER_BIT);									//설정된 색으로 전체를 칠하기
 	//그리기 부분 구현
 	//--- 그리기 관련 부분이 여기에 포함된다.
@@ -119,7 +122,11 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 {
 	switch (key) {
 	case 'r':
-		
+		rects.clear();
+		for (int i = 0; i < 20; i++) {
+			rects.emplace_back(distribution_coordinate(rd), distribution_coordinate(rd));
+		}
+		player.player_setting();
 		break;
 	}
 	glutPostRedisplay();
@@ -127,6 +134,7 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 
 Rect::Rect(GLfloat x, GLfloat y) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(0.05f), size_h(0.05f) {}
 Rect::Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(w), size_h(h) {}
+Rect::Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h, GLfloat r, GLfloat g, GLfloat b) : r(r), g(g), b(b), center_x(x), center_y(y), size_w(w), size_h(h) {}
 
 GLvoid Rect::draw_rect() {
 	glColor3f(r, g, b);
@@ -158,4 +166,9 @@ GLvoid Rect::drag_move(GLfloat mouse_x, GLfloat mouse_y) {
 		center_x = mouse_x - offset_x;
 		center_y = mouse_y - offset_y;
 	}
+}
+
+GLvoid Rect::player_setting() {
+	r = 0.0f; g = 0.0f; b = 0.0f;
+	size_w = 0.1f; size_h = 0.1f;
 }
