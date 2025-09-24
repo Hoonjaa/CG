@@ -12,6 +12,10 @@ GLvoid Keyboard(unsigned char key, int x, int y);
 
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 
+std::random_device rd;
+std::uniform_real_distribution<float> distribution_color(0.0f, 1.0f);
+std::uniform_real_distribution<float> distribution_coordinate(-0.9f, 0.9f);
+
 int WindowWidth = 500, WindowHeight = 500;
 
 void main(int argc, char** argv)
