@@ -9,6 +9,7 @@ GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 GLvoid Mouse(int button, int state, int x, int y);
 GLvoid Keyboard(unsigned char key, int x, int y);
+GLvoid TimerFunction(int value);
 
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 
@@ -114,4 +115,11 @@ GLvoid Rect::change_color() {
 bool Rect::mouse_check_in_rect(GLfloat x, GLfloat y) {
 	return (x >= center_x - size_w && x <= center_x + size_w &&
 		y >= center_y - size_h && y <= center_y + size_h);
+}
+
+GLvoid TimerFunction(int value)
+{
+	
+	glutPostRedisplay();
+	glutTimerFunc(16, TimerFunction, 1);
 }
