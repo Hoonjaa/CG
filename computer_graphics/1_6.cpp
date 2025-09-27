@@ -25,9 +25,11 @@ class Rect {
 	GLfloat size_w, size_h;
 
 	bool animation = false;
+	GLint ani_type = 0;
 public:
 	Rect(GLfloat x, GLfloat y);
 	Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h);
+	Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h, GLfloat r, GLfloat g, GLfloat b);
 	//그리기 함수
 	GLvoid draw_rect();
 	GLvoid change_color();
@@ -37,11 +39,15 @@ public:
 	//애니메이션
 	GLvoid animation_on() { animation = true; }
 	bool animation_check() { return animation; }
-	GLvoid first_animation();
+	//서브 사각형 생성
+	GLvoid create_sub_rects();
 };
 
 int WindowWidth = 500, WindowHeight = 500;
 std::vector<Rect> rects;
+std::vector<Rect> first_sub_rects;
+std::vector<Rect> second_sub_rects;
+std::vector<Rect> third_sub_rects;
 bool animation1 = false, animation2 = false, animation3 = false, animation4 = false;
 
 void main(int argc, char** argv)
@@ -134,6 +140,7 @@ GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
 
 Rect::Rect(GLfloat x, GLfloat y) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(0.1f), size_h(0.1f) {}
 Rect::Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(w), size_h(h) {}
+Rect::Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h, GLfloat r, GLfloat g, GLfloat b) : r(r), g(g), b(b), center_x(x), center_y(y), size_w(w), size_h(h) {}
 
 GLvoid Rect::draw_rect() {
 	glColor3f(r, g, b);
@@ -153,13 +160,31 @@ GLvoid TimerFunction(int value)
 {
 	for(auto& rect : rects) {
 		if (rect.animation_check()) {
-			if (animation1) { rect.first_animation(); }
+			rect.create_sub_rects();
+			if (animation1) {  }
 		}
 	}
 	glutPostRedisplay();
 	glutTimerFunc(16, TimerFunction, 1);
 }
 
-GLvoid Rect::first_animation() {
-	
+GLvoid Rect::create_sub_rects() {
+	if (first_sub_rects.empty()) {
+		first_sub_rects.emplace_back(center_x - size_w / 2, center_y + size_h / 2, size_w / 2, size_h / 2, 0.0f, 1.0f, 0.0f);
+		first_sub_rects.emplace_back(center_x + size_w / 2, center_y + size_h / 2, size_w / 2, size_h / 2, 0.0f, 1.0f, 0.0f);
+		first_sub_rects.emplace_back(center_x + size_w / 2, center_y - size_h / 2, size_w / 2, size_h / 2, 0.0f, 1.0f, 0.0f);
+		first_sub_rects.emplace_back(center_x - size_w / 2, center_y - size_h / 2, size_w / 2, size_h / 2, 0.0f, 1.0f, 0.0f);
+	}
+	else if (second_sub_rects.empty()) {
+		second_sub_rects.emplace_back(center_x - size_w / 2, center_y + size_h / 2, size_w / 2, size_h / 2, 0.0f, 1.0f, 0.0f);
+		second_sub_rects.emplace_back(center_x + size_w / 2, center_y + size_h / 2, size_w / 2, size_h / 2, 0.0f, 1.0f, 0.0f);
+		second_sub_rects.emplace_back(center_x + size_w / 2, center_y - size_h / 2, size_w / 2, size_h / 2, 0.0f, 1.0f, 0.0f);
+		second_sub_rects.emplace_back(center_x - size_w / 2, center_y - size_h / 2, size_w / 2, size_h / 2, 0.0f, 1.0f, 0.0f);
+	}
+	else if (third_sub_rects.empty()) {
+		third_sub_rects.emplace_back(center_x - size_w / 2, center_y + size_h / 2, size_w / 2, size_h / 2, 0.0f, 1.0f, 0.0f);
+		third_sub_rects.emplace_back(center_x + size_w / 2, center_y + size_h / 2, size_w / 2, size_h / 2, 0.0f, 1.0f, 0.0f);
+		third_sub_rects.emplace_back(center_x + size_w / 2, center_y - size_h / 2, size_w / 2, size_h / 2, 0.0f, 1.0f, 0.0f);
+		third_sub_rects.emplace_back(center_x - size_w / 2, center_y - size_h / 2, size_w / 2, size_h / 2, 0.0f, 1.0f, 0.0f);
+	}
 }
