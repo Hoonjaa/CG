@@ -39,6 +39,7 @@ public:
 
 int WindowWidth = 500, WindowHeight = 500;
 std::vector<Rect> rects;
+bool animation1 = false, animation2 = false, animation3 = false, animation4 = false;
 
 void main(int argc, char** argv)
 {
@@ -99,6 +100,20 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 {
 	switch (key) {
 	case '1':
+		animation1 = false; animation2 = false; animation3 = false; animation4 = false;
+		animation1 = true;
+		break;
+	case '2':
+		animation1 = false; animation2 = false; animation3 = false; animation4 = false;
+		animation2 = true;
+		break;
+	case '3':
+		animation1 = false; animation2 = false; animation3 = false; animation4 = false;
+		animation3 = true;
+		break;
+	case '4':
+		animation1 = false; animation2 = false; animation3 = false; animation4 = false;
+		animation4 = true;
 		break;
 	}
 	glutPostRedisplay();
