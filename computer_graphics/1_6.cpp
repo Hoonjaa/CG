@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <vector>
 
 #include <gl/glew.h>
 #include <gl/freeglut.h>
@@ -15,7 +16,8 @@ GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 
 std::random_device rd;
 std::uniform_real_distribution<float> distribution_color(0.0f, 1.0f);
-std::uniform_real_distribution<float> distribution_coordinate(-0.9f, 0.9f);
+std::uniform_real_distribution<float> distribution_coordinate(-0.8f, 0.8f);
+std::uniform_real_distribution<float> distribution_size(0.05f, 0.15f);
 
 class Rect {
 	GLclampf r, g, b;
@@ -36,6 +38,7 @@ public:
 };
 
 int WindowWidth = 500, WindowHeight = 500;
+std::vector<Rect> rects;
 
 void main(int argc, char** argv)
 {
@@ -60,6 +63,9 @@ void main(int argc, char** argv)
 	glutReshapeFunc(Reshape);										//다시 그리기 함수의 지정
 	glutMouseFunc(Mouse);
 	glutKeyboardFunc(Keyboard);
+	for (int i = 0; i < 5; i++) {
+		rects.emplace_back(distribution_coordinate(rd), distribution_coordinate(rd), distribution_size(rd), distribution_size(rd));
+	}
 	glutMainLoop();													//이벤트 처리 시작
 }
 
@@ -69,6 +75,9 @@ GLvoid drawScene()													//--- 콜백 함수 : 그리기 콜백 함수
 	glClear(GL_COLOR_BUFFER_BIT);									//설정된 색으로 전체를 칠하기
 	//그리기 부분 구현
 	//--- 그리기 관련 부분이 여기에 포함된다.
+	for (auto& rect : rects) {
+		rect.draw_rect();
+	}
 	glutSwapBuffers();												//화면에 출력하기
 }
 
