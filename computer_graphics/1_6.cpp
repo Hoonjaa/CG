@@ -24,8 +24,7 @@ class Rect {
 	GLfloat center_x, center_y;
 	GLfloat size_w, size_h;
 
-	bool dragging = false;
-	GLfloat offset_x = 0.0f, offset_y = 0.0f;
+	bool animation = false;
 public:
 	Rect(GLfloat x, GLfloat y);
 	Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h);
@@ -35,6 +34,8 @@ public:
 	//마우스
 	//마우스가 안에 있는지 체크
 	bool mouse_check_in_rect(GLfloat x, GLfloat y);
+	//애니메이션 온
+	GLvoid animation_on() { animation = true; }
 };
 
 int WindowWidth = 500, WindowHeight = 500;
@@ -91,7 +92,11 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	GLfloat gl_x, gl_y;
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-
+		for(auto& rect : rects) {
+			if (rect.mouse_check_in_rect(gl_x, gl_y)) {
+				rect.animation_on();
+			}
+		}
 	}
 	glutPostRedisplay();
 }
@@ -147,3 +152,4 @@ GLvoid TimerFunction(int value)
 	glutPostRedisplay();
 	glutTimerFunc(16, TimerFunction, 1);
 }
+
