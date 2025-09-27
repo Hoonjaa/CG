@@ -45,10 +45,13 @@ public:
 
 int WindowWidth = 500, WindowHeight = 500;
 std::vector<Rect> rects;
+<<<<<<< HEAD
 std::vector<Rect> first_sub_rects;
 std::vector<Rect> second_sub_rects;
 std::vector<Rect> third_sub_rects;
 bool animation1 = false, animation2 = false, animation3 = false, animation4 = false;
+=======
+>>>>>>> parent of da20fc9 ([25.09.27] Update 1-6 // 애니메이션 상태값 생성)
 
 void main(int argc, char** argv)
 {
@@ -114,20 +117,6 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 {
 	switch (key) {
 	case '1':
-		animation1 = false; animation2 = false; animation3 = false; animation4 = false;
-		animation1 = true;
-		break;
-	case '2':
-		animation1 = false; animation2 = false; animation3 = false; animation4 = false;
-		animation2 = true;
-		break;
-	case '3':
-		animation1 = false; animation2 = false; animation3 = false; animation4 = false;
-		animation3 = true;
-		break;
-	case '4':
-		animation1 = false; animation2 = false; animation3 = false; animation4 = false;
-		animation4 = true;
 		break;
 	}
 	glutPostRedisplay();
