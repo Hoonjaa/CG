@@ -34,8 +34,10 @@ public:
 	//마우스
 	//마우스가 안에 있는지 체크
 	bool mouse_check_in_rect(GLfloat x, GLfloat y);
-	//애니메이션 온
+	//애니메이션
 	GLvoid animation_on() { animation = true; }
+	bool animation_check() { return animation; }
+	GLvoid first_animation();
 };
 
 int WindowWidth = 500, WindowHeight = 500;
@@ -95,6 +97,7 @@ GLvoid Mouse(int button, int state, int x, int y) {
 		for(auto& rect : rects) {
 			if (rect.mouse_check_in_rect(gl_x, gl_y)) {
 				rect.animation_on();
+				glutTimerFunc(16, TimerFunction, 1);
 			}
 		}
 	}
@@ -148,8 +151,15 @@ bool Rect::mouse_check_in_rect(GLfloat x, GLfloat y) {
 
 GLvoid TimerFunction(int value)
 {
-	
+	for(auto& rect : rects) {
+		if (rect.animation_check()) {
+			if (animation1) { rect.first_animation(); }
+		}
+	}
 	glutPostRedisplay();
 	glutTimerFunc(16, TimerFunction, 1);
 }
 
+GLvoid Rect::first_animation() {
+	
+}
