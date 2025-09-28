@@ -76,8 +76,8 @@ void main(int argc, char** argv)
 	glutReshapeFunc(Reshape);										//다시 그리기 함수의 지정
 	glutMouseFunc(Mouse);
 	glutKeyboardFunc(Keyboard);
-	glutTimerFunc(60, TimerFunction, 1);
-	for (int i = 0; i < 5; i++) {
+	glutTimerFunc(180, TimerFunction, 1);
+	for (int i = 0; i < 10; i++) {
 		rects.emplace_back(distribution_coordinate(rd), distribution_coordinate(rd), distribution_size(rd), distribution_size(rd));
 	}
 	glutMainLoop();													//이벤트 처리 시작
@@ -179,8 +179,74 @@ GLvoid TimerFunction(int value)
 		first_sub_rects[3].size_h -= 0.01f;
 		if (first_sub_rects[0].size_w <= 0.0f || first_sub_rects[0].size_h <= 0.0f) first_sub_rects.clear();
 	}
+	if (!first_sub_rects.empty() && first_sub_rects[0].get_animation_state() == 2) {
+		first_sub_rects[0].center_x -= 0.05f;
+		first_sub_rects[0].center_y += 0.05f;
+		first_sub_rects[0].size_w -= 0.01f;
+		first_sub_rects[0].size_h -= 0.01f;
+		first_sub_rects[1].center_y += 0.05f;
+		first_sub_rects[1].center_x += 0.05f;
+		first_sub_rects[1].size_w -= 0.01f;
+		first_sub_rects[1].size_h -= 0.01f;
+		first_sub_rects[2].center_x += 0.05f;
+		first_sub_rects[2].center_y -= 0.05f;
+		first_sub_rects[2].size_w -= 0.01f;
+		first_sub_rects[2].size_h -= 0.01f;
+		first_sub_rects[3].center_y -= 0.05f;
+		first_sub_rects[3].center_x -= 0.05f;
+		first_sub_rects[3].size_w -= 0.01f;
+		first_sub_rects[3].size_h -= 0.01f;
+		if (first_sub_rects[0].size_w <= 0.0f || first_sub_rects[0].size_h <= 0.0f) first_sub_rects.clear();
+	}
+	if (!first_sub_rects.empty() && first_sub_rects[0].get_animation_state() == 3) {
+		first_sub_rects[0].center_x += 0.05f;
+		first_sub_rects[0].size_w -= 0.01f;
+		first_sub_rects[0].size_h -= 0.01f;
+		first_sub_rects[1].center_x += 0.05f;
+		first_sub_rects[1].size_w -= 0.01f;
+		first_sub_rects[1].size_h -= 0.01f;
+		first_sub_rects[2].center_x += 0.05f;
+		first_sub_rects[2].size_w -= 0.01f;
+		first_sub_rects[2].size_h -= 0.01f;
+		first_sub_rects[3].center_x += 0.05f;
+		first_sub_rects[3].size_w -= 0.01f;
+		first_sub_rects[3].size_h -= 0.01f;
+		if (first_sub_rects[0].size_w <= 0.0f || first_sub_rects[0].size_h <= 0.0f) first_sub_rects.clear();
+	}
+	if (!first_sub_rects.empty() && first_sub_rects[0].get_animation_state() == 4) {
+		first_sub_rects[0].center_x -= 0.05f;
+		first_sub_rects[0].size_w -= 0.01f;
+		first_sub_rects[0].size_h -= 0.01f;
+		first_sub_rects[1].center_y += 0.05f;
+		first_sub_rects[1].size_w -= 0.01f;
+		first_sub_rects[1].size_h -= 0.01f;
+		first_sub_rects[2].center_x += 0.05f;
+		first_sub_rects[2].size_w -= 0.01f;
+		first_sub_rects[2].size_h -= 0.01f;
+		first_sub_rects[3].center_y -= 0.05f;
+		first_sub_rects[3].size_w -= 0.01f;
+		first_sub_rects[3].size_h -= 0.01f;
+
+		first_sub_rects[4].center_x -= 0.05f;
+		first_sub_rects[4].center_y += 0.05f;
+		first_sub_rects[4].size_w -= 0.01f;
+		first_sub_rects[4].size_h -= 0.01f;
+		first_sub_rects[5].center_y += 0.05f;
+		first_sub_rects[5].center_x += 0.05f;
+		first_sub_rects[5].size_w -= 0.01f;
+		first_sub_rects[5].size_h -= 0.01f;
+		first_sub_rects[6].center_x += 0.05f;
+		first_sub_rects[6].center_y -= 0.05f;
+		first_sub_rects[6].size_w -= 0.01f;
+		first_sub_rects[6].size_h -= 0.01f;
+		first_sub_rects[7].center_y -= 0.05f;
+		first_sub_rects[7].center_x -= 0.05f;
+		first_sub_rects[7].size_w -= 0.01f;
+		first_sub_rects[7].size_h -= 0.01f;
+		if (first_sub_rects[0].size_w <= 0.0f || first_sub_rects[0].size_h <= 0.0f) first_sub_rects.clear();
+	}
 	glutPostRedisplay();
-	glutTimerFunc(60, TimerFunction, 1);
+	glutTimerFunc(180, TimerFunction, 1);
 }
 
 Sub_Rect::Sub_Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h, GLint state) 
@@ -201,4 +267,10 @@ GLvoid Rect::create_sub_rect() {
 	first_sub_rects.emplace_back(center_x + size_w / 2, center_y + size_h / 2, size_w / 2, size_h / 2, state);
 	first_sub_rects.emplace_back(center_x + size_w / 2, center_y - size_h / 2, size_w / 2, size_h / 2, state);
 	first_sub_rects.emplace_back(center_x - size_w / 2, center_y - size_h / 2, size_w / 2, size_h / 2, state);
+	if (animation4) {
+		first_sub_rects.emplace_back(center_x - size_w / 2, center_y + size_h / 2, size_w / 2, size_h / 2, state);
+		first_sub_rects.emplace_back(center_x + size_w / 2, center_y + size_h / 2, size_w / 2, size_h / 2, state);
+		first_sub_rects.emplace_back(center_x + size_w / 2, center_y - size_h / 2, size_w / 2, size_h / 2, state);
+		first_sub_rects.emplace_back(center_x - size_w / 2, center_y - size_h / 2, size_w / 2, size_h / 2, state);
+	}
 }
