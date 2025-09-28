@@ -38,8 +38,9 @@ class Sub_Rect {
 	GLclampf r, g, b;
 	GLfloat center_x, center_y;
 	GLfloat size_w, size_h;
+	GLint animation_state = 0;
 public:
-	Sub_Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h, GLfloat r, GLfloat g, GLfloat b);
+	Sub_Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h, GLint state);
 	GLvoid draw_sub_rect();
 };
 
@@ -97,7 +98,11 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	GLfloat gl_x, gl_y;
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-
+		for (int i = 0; i < rects.size(); i++) {
+			if (rects[i].mouse_check_in_rect(gl_x, gl_y)) {
+				rects.erase(rects.begin() + i);
+			}
+		}
 	}
 	glutPostRedisplay();
 }
@@ -154,8 +159,8 @@ GLvoid TimerFunction(int value)
 	glutTimerFunc(16, TimerFunction, 1);
 }
 
-Sub_Rect::Sub_Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h, GLfloat r, GLfloat g, GLfloat b) 
-	: center_x(x), center_y(y), size_w(w), size_h(h), r(r), g(g), b(b) {}
+Sub_Rect::Sub_Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h, GLint state) 
+	: center_x(x), center_y(y), size_w(w), size_h(h), r(r), g(g), b(b), animation_state(state) {}
 
 GLvoid Sub_Rect::draw_sub_rect() {
 	glColor3f(r, g, b);
