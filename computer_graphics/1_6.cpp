@@ -32,9 +32,11 @@ public:
 	//마우스
 	//마우스가 안에 있는지 체크
 	bool mouse_check_in_rect(GLfloat x, GLfloat y);
+	GLvoid create_sub_rect();
 };
 
 class Sub_Rect {
+public:
 	GLclampf r, g, b;
 	GLfloat center_x, center_y;
 	GLfloat size_w, size_h;
@@ -42,10 +44,13 @@ class Sub_Rect {
 public:
 	Sub_Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h, GLint state);
 	GLvoid draw_sub_rect();
+	GLvoid animation1();
+	GLint get_animation_state() const { return animation_state; }
 };
 
 int WindowWidth = 500, WindowHeight = 500;
 std::vector<Rect> rects;
+std::vector<Sub_Rect> first_sub_rects;
 bool animation1 = false, animation2 = false, animation3 = false, animation4 = false;
 
 void main(int argc, char** argv)
@@ -71,6 +76,7 @@ void main(int argc, char** argv)
 	glutReshapeFunc(Reshape);										//다시 그리기 함수의 지정
 	glutMouseFunc(Mouse);
 	glutKeyboardFunc(Keyboard);
+	glutTimerFunc(60, TimerFunction, 1);
 	for (int i = 0; i < 5; i++) {
 		rects.emplace_back(distribution_coordinate(rd), distribution_coordinate(rd), distribution_size(rd), distribution_size(rd));
 	}
@@ -86,6 +92,9 @@ GLvoid drawScene()													//--- 콜백 함수 : 그리기 콜백 함수
 	for (auto& rect : rects) {
 		rect.draw_rect();
 	}
+	for(auto& sub_rect : first_sub_rects) {
+		sub_rect.draw_sub_rect();
+	}
 	glutSwapBuffers();												//화면에 출력하기
 }
 
@@ -100,6 +109,7 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		for (int i = 0; i < rects.size(); i++) {
 			if (rects[i].mouse_check_in_rect(gl_x, gl_y)) {
+				rects[i].create_sub_rect();
 				rects.erase(rects.begin() + i);
 			}
 		}
@@ -154,15 +164,41 @@ bool Rect::mouse_check_in_rect(GLfloat x, GLfloat y) {
 
 GLvoid TimerFunction(int value)
 {
-	
+	if (!first_sub_rects.empty() && first_sub_rects[0].get_animation_state() == 1) {
+		first_sub_rects[0].center_x -= 0.05f;
+		first_sub_rects[0].size_w -= 0.01f;
+		first_sub_rects[0].size_h -= 0.01f;
+		first_sub_rects[1].center_y += 0.05f;
+		first_sub_rects[1].size_w -= 0.01f;
+		first_sub_rects[1].size_h -= 0.01f;
+		first_sub_rects[2].center_x += 0.05f;
+		first_sub_rects[2].size_w -= 0.01f;
+		first_sub_rects[2].size_h -= 0.01f;
+		first_sub_rects[3].center_y -= 0.05f;
+		first_sub_rects[3].size_w -= 0.01f;
+		first_sub_rects[3].size_h -= 0.01f;
+		if (first_sub_rects[0].size_w <= 0.0f || first_sub_rects[0].size_h <= 0.0f) first_sub_rects.clear();
+	}
 	glutPostRedisplay();
-	glutTimerFunc(16, TimerFunction, 1);
+	glutTimerFunc(60, TimerFunction, 1);
 }
 
 Sub_Rect::Sub_Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h, GLint state) 
-	: center_x(x), center_y(y), size_w(w), size_h(h), r(r), g(g), b(b), animation_state(state) {}
+	: center_x(x), center_y(y), size_w(w), size_h(h), r(0.0f), g(1.0f), b(0.0f), animation_state(state) {}
 
 GLvoid Sub_Rect::draw_sub_rect() {
 	glColor3f(r, g, b);
 	glRectf(center_x - size_w, center_y - size_h, center_x + size_w, center_y + size_h);
+}
+
+GLvoid Rect::create_sub_rect() {
+	GLint state = 1;
+	if (animation1) state = 1;
+	else if (animation2) state = 2;
+	else if (animation3) state = 3;
+	else if (animation4) state = 4;
+	first_sub_rects.emplace_back(center_x - size_w / 2, center_y + size_h / 2, size_w / 2, size_h / 2, state);
+	first_sub_rects.emplace_back(center_x + size_w / 2, center_y + size_h / 2, size_w / 2, size_h / 2, state);
+	first_sub_rects.emplace_back(center_x + size_w / 2, center_y - size_h / 2, size_w / 2, size_h / 2, state);
+	first_sub_rects.emplace_back(center_x - size_w / 2, center_y - size_h / 2, size_w / 2, size_h / 2, state);
 }
