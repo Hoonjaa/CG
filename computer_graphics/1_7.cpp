@@ -13,6 +13,35 @@ GLvoid Keyboard(unsigned char key, int x, int y);
 
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 
+std::random_device rd;
+std::uniform_real_distribution<float> distribution_color(0.0f, 1.0f);
+std::uniform_real_distribution<float> distribution_coordinate(-0.9f, 0.9f);
+
+class Rect {
+	GLclampf r, g, b;
+	GLfloat center_x, center_y;
+	GLfloat size_w, size_h;
+
+	bool dragging = false;
+	GLfloat offset_x = 0.0f, offset_y = 0.0f;
+public:
+	Rect(GLfloat x, GLfloat y);
+	Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h);
+	Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h, GLfloat r, GLfloat g, GLfloat b);
+	//그리기 함수
+	GLvoid draw_rect();
+	GLvoid change_color();
+	//마우스
+	//마우스가 안에 있는지 체크
+	bool mouse_check_in_rect(GLfloat x, GLfloat y);
+	//마우스 드래그 함수
+	GLvoid start_drag(GLfloat mouse_x, GLfloat mouse_y);
+	GLvoid stop_drag() { dragging = false; }
+	GLvoid drag_move(GLfloat mouse_x, GLfloat mouse_y);
+	bool is_dragging() const { return dragging; }
+};
+
+bool left_button = false;
 int WindowWidth = 500, WindowHeight = 500;
 
 void main(int argc, char** argv)
@@ -86,4 +115,35 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
 	gl_x = (x / (float)WindowWidth) * 2.0f - 1.0f;
 	gl_y = 1.0f - (y / (float)WindowHeight) * 2.0f;
+}
+
+Rect::Rect(GLfloat x, GLfloat y) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(0.05f), size_h(0.05f) {}
+Rect::Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h) : r(distribution_color(rd)), g(distribution_color(rd)), b(distribution_color(rd)), center_x(x), center_y(y), size_w(w), size_h(h) {}
+Rect::Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h, GLfloat r, GLfloat g, GLfloat b) : r(r), g(g), b(b), center_x(x), center_y(y), size_w(w), size_h(h) {}
+
+GLvoid Rect::draw_rect() {
+	glColor3f(r, g, b);
+	glRectf(center_x - size_w, center_y - size_h, center_x + size_w, center_y + size_h);
+}
+
+GLvoid Rect::change_color() {
+	r = distribution_color(rd); g = distribution_color(rd); b = distribution_color(rd);
+}
+
+bool Rect::mouse_check_in_rect(GLfloat x, GLfloat y) {
+	return (x >= center_x - size_w && x <= center_x + size_w &&
+		y >= center_y - size_h && y <= center_y + size_h);
+}
+
+GLvoid Rect::start_drag(GLfloat mouse_x, GLfloat mouse_y) {
+	dragging = true;
+	offset_x = mouse_x - center_x;
+	offset_y = mouse_y - center_y;
+}
+
+GLvoid Rect::drag_move(GLfloat mouse_x, GLfloat mouse_y) {
+	if (dragging) {
+		center_x = mouse_x - offset_x;
+		center_y = mouse_y - offset_y;
+	}
 }
