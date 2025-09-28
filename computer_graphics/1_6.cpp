@@ -23,9 +23,6 @@ class Rect {
 	GLclampf r, g, b;
 	GLfloat center_x, center_y;
 	GLfloat size_w, size_h;
-
-	bool dragging = false;
-	GLfloat offset_x = 0.0f, offset_y = 0.0f;
 public:
 	Rect(GLfloat x, GLfloat y);
 	Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h);
@@ -35,6 +32,15 @@ public:
 	//마우스
 	//마우스가 안에 있는지 체크
 	bool mouse_check_in_rect(GLfloat x, GLfloat y);
+};
+
+class Sub_Rect {
+	GLclampf r, g, b;
+	GLfloat center_x, center_y;
+	GLfloat size_w, size_h;
+public:
+	Sub_Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h, GLfloat r, GLfloat g, GLfloat b);
+	GLvoid draw_sub_rect();
 };
 
 int WindowWidth = 500, WindowHeight = 500;
@@ -146,4 +152,12 @@ GLvoid TimerFunction(int value)
 	
 	glutPostRedisplay();
 	glutTimerFunc(16, TimerFunction, 1);
+}
+
+Sub_Rect::Sub_Rect(GLfloat x, GLfloat y, GLfloat w, GLfloat h, GLfloat r, GLfloat g, GLfloat b) 
+	: center_x(x), center_y(y), size_w(w), size_h(h), r(r), g(g), b(b) {}
+
+GLvoid Sub_Rect::draw_sub_rect() {
+	glColor3f(r, g, b);
+	glRectf(center_x - size_w, center_y - size_h, center_x + size_w, center_y + size_h);
 }
