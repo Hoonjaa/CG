@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <vector>
 
 #include <gl/glew.h>
 #include <gl/freeglut.h>
@@ -13,12 +14,18 @@ void make_fragmentShaders();
 GLuint make_shaderProgram();
 GLvoid drawScene();
 GLvoid Reshape(int w, int h);
+GLvoid Mouse(int button, int state, int x, int y);
+
+GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 
 //--- 필요한 변수 선언
 GLint width, height;
 GLuint shaderProgramID;													//--- 세이더 프로그램 이름
 GLuint vertexShader;													//--- 버텍스 세이더 객체
 GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
+
+GLint WindowWidth = 500, WindowHeight = 500;
+std::vector<GLfloat> points;
 
 char* filetobuf(const char* file)
 {
@@ -40,13 +47,11 @@ char* filetobuf(const char* file)
 //--- 메인 함수
 void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 {
-	width = 500;
-	height = 500;
 	//--- 윈도우 생성하기
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
-	glutInitWindowSize(width, height);
+	glutInitWindowSize(WindowWidth, WindowHeight);
 	glutCreateWindow("Example1");
 	//--- GLEW 초기화하기
 	glewExperimental = GL_TRUE;
@@ -58,6 +63,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	//--- 세이더 프로그램 만들기
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
+	glutMouseFunc(Mouse);
 	glutMainLoop();
 }
 
@@ -136,12 +142,35 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glClearColor(rColor, gColor, bColor, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(shaderProgramID);
+
 	glPointSize(5.0);
-	glDrawArrays(GL_TRIANGLES, 0, 3);									//--- 렌더링하기: 0번 인덱스에서 1개의 버텍스를 사용하여 점 그리기
+
+	GLint loc = glGetUniformLocation(shaderProgramID, "u_position");
+	for (size_t i = 0; i < points.size(); i += 4) {
+		glUniform4fv(loc, 1, &points[i]);
+		glDrawArrays(GL_POINTS, 0, 1);									
+	}
 	glutSwapBuffers();													// 화면에 출력하기
 }
 //--- 다시그리기 콜백 함수
 GLvoid Reshape(int w, int h)											//--- 콜백 함수: 다시 그리기 콜백 함수
 {
 	glViewport(0, 0, w, h);
+}
+
+GLvoid Mouse(int button, int state, int x, int y) {
+	GLfloat gl_x, gl_y;
+	Win_to_GL_mouse(x, y, gl_x, gl_y);
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		points.push_back(gl_x);
+		points.push_back(gl_y);
+		points.push_back(0.0f);
+		points.push_back(1.0f);
+	}
+	glutPostRedisplay();
+}
+
+GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
+	gl_x = (x / (float)WindowWidth) * 2.0f - 1.0f;
+	gl_y = 1.0f - (y / (float)WindowHeight) * 2.0f;
 }
