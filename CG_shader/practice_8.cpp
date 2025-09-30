@@ -26,6 +26,7 @@ GLvoid Keyboard(unsigned char key, int x, int y);
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 GLvoid add_point(GLfloat x, GLfloat y);
 GLvoid add_line(GLfloat x, GLfloat y);
+GLvoid add_triangle(GLfloat x, GLfloat y);
 GLvoid change_mode(unsigned char key);
 
 //--- 필요한 변수 선언
@@ -39,11 +40,14 @@ GLuint max_objects = 10;
 GLuint object_count = 0;
 bool vertex_mode = true;
 bool line_mode = false;
+bool triangle_mode = false;
 std::vector<vec2> points;
 std::vector<vec2> lines;
+std::vector<vec2> triangles;
 
 GLuint pVAO, pVBO;
 GLuint lVAO, lVBO;
+GLuint tVAO, tVBO;
 
 char* filetobuf(const char* file)
 {
@@ -175,6 +179,16 @@ GLvoid InitBuffer() {
 
 	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), 0);
 	glEnableVertexAttribArray(posAttrib);
+	// 삼각형 VAO, VBO
+	glGenVertexArrays(1, &tVAO);
+	glBindVertexArray(tVAO);
+
+	glGenBuffers(1, &tVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, tVBO);
+	glBufferData(GL_ARRAY_BUFFER, max_objects * 3 * sizeof(vec2), nullptr, GL_DYNAMIC_DRAW);
+
+	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), 0);
+	glEnableVertexAttribArray(posAttrib);
 }
 
 //--- 출력 콜백 함수
@@ -194,6 +208,9 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glBindVertexArray(lVAO);
 	glDrawArrays(GL_LINES, 0, lines.size() * 2);
 
+	glBindVertexArray(tVAO);
+	glDrawArrays(GL_TRIANGLES, 0, triangles.size() * 3);
+
 	glutSwapBuffers();													// 화면에 출력하기
 }
 //--- 다시그리기 콜백 함수
@@ -210,6 +227,8 @@ GLvoid Mouse(int button, int state, int x, int y) {
 			add_point(gl_x, gl_y);
 		else if (line_mode)
 			add_line(gl_x, gl_y);
+		else if (triangle_mode)
+			add_triangle(gl_x, gl_y);
 	}
 	glutPostRedisplay();
 }
@@ -226,6 +245,9 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		change_mode(key);
 		break;
 	case 'l':
+		change_mode(key);
+		break;
+	case 't':
 		change_mode(key);
 		break;
 	}
@@ -250,12 +272,27 @@ GLvoid add_line(GLfloat x, GLfloat y) {
 	glBufferSubData(GL_ARRAY_BUFFER, (lines.size() - 1) * 2 * sizeof(vec2) + sizeof(vec2), sizeof(vec2), &second_point);
 }
 
+GLvoid add_triangle(GLfloat x, GLfloat y) {
+	if (object_count >= max_objects) return;
+	triangles.push_back(vec2(x, y + 0.1f));
+	vec2 second_point = vec2(x - 0.075f, y - 0.05f);
+	vec2 third_point = vec2(x + 0.075f, y - 0.05f);
+	object_count++;
+	glBindBuffer(GL_ARRAY_BUFFER, tVBO);
+	glBufferSubData(GL_ARRAY_BUFFER, (triangles.size() - 1) * 3 * sizeof(vec2), sizeof(vec2), &triangles.back());
+	glBufferSubData(GL_ARRAY_BUFFER, (triangles.size() - 1) * 3 * sizeof(vec2) + sizeof(vec2), sizeof(vec2), &second_point);
+	glBufferSubData(GL_ARRAY_BUFFER, (triangles.size() - 1) * 3 * sizeof(vec2) + 2 * sizeof(vec2), sizeof(vec2), &third_point);
+}
+
 GLvoid change_mode(unsigned char key) {
-	vertex_mode = false; line_mode = false;
+	vertex_mode = false; line_mode = false; triangle_mode = false;
 	if (key == 'p') {
 		vertex_mode = true;
 	}
 	else if (key == 'l') {
 		line_mode = true;
+	}
+	else if (key == 't') {
+		triangle_mode = true;
 	}
 }
