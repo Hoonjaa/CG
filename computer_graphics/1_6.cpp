@@ -258,6 +258,7 @@ GLvoid Sub_Rect::draw_sub_rect() {
 }
 
 GLvoid Rect::create_sub_rect() {
+	first_sub_rects.clear();
 	GLint state = 1;
 	if (animation1) state = 1;
 	else if (animation2) state = 2;
