@@ -171,6 +171,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
 
+	glBindVertexArray(pVAO);
 	glDrawArrays(GL_POINTS, 0, points.size());
 
 	glutSwapBuffers();													// 화면에 출력하기
@@ -199,7 +200,7 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 {
 	switch (key) {
 	case 'p':
-		glBindVertexArray(pVAO);
+		
 		break;
 	}
 	glutPostRedisplay();
