@@ -25,6 +25,8 @@ GLvoid Mouse(int button, int state, int x, int y);
 GLvoid Keyboard(unsigned char key, int x, int y);
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 GLvoid add_point(GLfloat x, GLfloat y);
+GLvoid add_line(GLfloat x, GLfloat y);
+GLvoid change_mode(unsigned char key);
 
 //--- 필요한 변수 선언
 GLint width, height;
@@ -33,11 +35,15 @@ GLuint vertexShader;													//--- 버텍스 세이더 객체
 GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
 GLint WindowWidth = 500, WindowHeight = 500;
-std::vector<vec2> points;
 GLuint max_objects = 10;
 GLuint object_count = 0;
+bool vertex_mode = true;
+bool line_mode = false;
+std::vector<vec2> points;
+std::vector<vec2> lines;
 
 GLuint pVAO, pVBO;
+GLuint lVAO, lVBO;
 
 char* filetobuf(const char* file)
 {
@@ -148,6 +154,7 @@ GLuint make_shaderProgram()
 }
 
 GLvoid InitBuffer() {
+	// 점 VAO, VBO
 	glGenVertexArrays(1, &pVAO);
 	glBindVertexArray(pVAO);
 
@@ -155,7 +162,17 @@ GLvoid InitBuffer() {
 	glBindBuffer(GL_ARRAY_BUFFER, pVBO);
 	glBufferData(GL_ARRAY_BUFFER, max_objects * sizeof(vec2), nullptr, GL_DYNAMIC_DRAW);
 
-	GLint posAttrib = glGetAttribLocation(shaderProgramID, "spot");
+	GLint posAttrib = glGetAttribLocation(shaderProgramID, "loc");
+	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), 0);
+	glEnableVertexAttribArray(posAttrib);
+	// 선 VAO, VBO
+	glGenVertexArrays(1, &lVAO);
+	glBindVertexArray(lVAO);
+
+	glGenBuffers(1, &lVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, lVBO);
+	glBufferData(GL_ARRAY_BUFFER, max_objects * 2 * sizeof(vec2), nullptr, GL_DYNAMIC_DRAW);
+
 	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), 0);
 	glEnableVertexAttribArray(posAttrib);
 }
@@ -174,6 +191,9 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glBindVertexArray(pVAO);
 	glDrawArrays(GL_POINTS, 0, points.size());
 
+	glBindVertexArray(lVAO);
+	glDrawArrays(GL_LINES, 0, lines.size() * 2);
+
 	glutSwapBuffers();													// 화면에 출력하기
 }
 //--- 다시그리기 콜백 함수
@@ -186,7 +206,10 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	GLfloat gl_x, gl_y;
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		add_point(gl_x, gl_y);
+		if (vertex_mode)
+			add_point(gl_x, gl_y);
+		else if (line_mode)
+			add_line(gl_x, gl_y);
 	}
 	glutPostRedisplay();
 }
@@ -200,7 +223,10 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 {
 	switch (key) {
 	case 'p':
-		
+		change_mode(key);
+		break;
+	case 'l':
+		change_mode(key);
 		break;
 	}
 	glutPostRedisplay();
@@ -212,4 +238,24 @@ GLvoid add_point(GLfloat x, GLfloat y) {
 	object_count++;
 	glBindBuffer(GL_ARRAY_BUFFER, pVBO);
 	glBufferSubData(GL_ARRAY_BUFFER, (points.size() - 1) * sizeof(vec2), sizeof(vec2), &points.back());
+}
+
+GLvoid add_line(GLfloat x, GLfloat y) {
+	if (object_count >= max_objects) return;
+	lines.push_back(vec2(x, y));
+	vec2 second_point = vec2(x + 0.1f, y + 0.1f);
+	object_count++;
+	glBindBuffer(GL_ARRAY_BUFFER, lVBO);
+	glBufferSubData(GL_ARRAY_BUFFER, (lines.size() - 1) * 2 * sizeof(vec2), sizeof(vec2), &lines.back());
+	glBufferSubData(GL_ARRAY_BUFFER, (lines.size() - 1) * 2 * sizeof(vec2) + sizeof(vec2), sizeof(vec2), &second_point);
+}
+
+GLvoid change_mode(unsigned char key) {
+	vertex_mode = false; line_mode = false;
+	if (key == 'p') {
+		vertex_mode = true;
+	}
+	else if (key == 'l') {
+		line_mode = true;
+	}
 }
