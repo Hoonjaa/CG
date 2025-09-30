@@ -8,15 +8,22 @@
 #include <gl/freeglut.h>
 #include <gl/freeglut_ext.h>
 
+struct vec2 {
+	GLfloat x, y;
+	vec2(GLfloat x = 0, GLfloat y = 0) : x(x), y(y) {}
+};
+
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
 void make_fragmentShaders();
 GLuint make_shaderProgram();
 GLvoid drawScene();
 GLvoid Reshape(int w, int h);
-GLvoid Mouse(int button, int state, int x, int y);
+GLvoid InitBuffer();
 
+GLvoid Mouse(int button, int state, int x, int y);
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
+GLvoid add_point(GLfloat x, GLfloat y);
 
 //--- 필요한 변수 선언
 GLint width, height;
@@ -25,7 +32,11 @@ GLuint vertexShader;													//--- 버텍스 세이더 객체
 GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
 GLint WindowWidth = 500, WindowHeight = 500;
-std::vector<GLfloat> points;
+std::vector<vec2> points;
+GLuint max_objects = 10;
+GLuint object_count = 0;
+
+GLuint pVAO, pVBO;
 
 char* filetobuf(const char* file)
 {
@@ -60,6 +71,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	make_vertexShaders();												//--- 버텍스 세이더 만들기
 	make_fragmentShaders();												//--- 프래그먼트 세이더 만들기
 	shaderProgramID = make_shaderProgram();
+	InitBuffer();
 	//--- 세이더 프로그램 만들기
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
@@ -133,6 +145,19 @@ GLuint make_shaderProgram()
 	return shaderID;
 }
 
+GLvoid InitBuffer() {
+	glGenVertexArrays(1, &pVAO);
+	glBindVertexArray(pVAO);
+
+	glGenBuffers(1, &pVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, pVBO);
+	glBufferData(GL_ARRAY_BUFFER, max_objects * sizeof(vec2), nullptr, GL_DYNAMIC_DRAW);
+
+	GLint posAttrib = glGetAttribLocation(shaderProgramID, "spot");
+	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), 0);
+	glEnableVertexAttribArray(posAttrib);
+}
+
 //--- 출력 콜백 함수
 GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 {
@@ -142,14 +167,13 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glClearColor(rColor, gColor, bColor, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(shaderProgramID);
-
 	glPointSize(5.0);
 
-	GLint loc = glGetUniformLocation(shaderProgramID, "u_position");
-	for (size_t i = 0; i < points.size(); i += 4) {
-		glUniform4fv(loc, 1, &points[i]);
-		glDrawArrays(GL_POINTS, 0, 1);									
-	}
+
+	glBindVertexArray(pVAO);
+	glDrawArrays(GL_POINTS, 0, points.size());
+
+
 	glutSwapBuffers();													// 화면에 출력하기
 }
 //--- 다시그리기 콜백 함수
@@ -162,10 +186,7 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	GLfloat gl_x, gl_y;
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		points.push_back(gl_x);
-		points.push_back(gl_y);
-		points.push_back(0.0f);
-		points.push_back(1.0f);
+		add_point(gl_x, gl_y);
 	}
 	glutPostRedisplay();
 }
@@ -173,4 +194,12 @@ GLvoid Mouse(int button, int state, int x, int y) {
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
 	gl_x = (x / (float)WindowWidth) * 2.0f - 1.0f;
 	gl_y = 1.0f - (y / (float)WindowHeight) * 2.0f;
+}
+
+GLvoid add_point(GLfloat x, GLfloat y) {
+	if (object_count >= max_objects) return;
+	points.push_back(vec2(x, y));
+	object_count++;
+	glBindBuffer(GL_ARRAY_BUFFER, pVBO);
+	glBufferSubData(GL_ARRAY_BUFFER, (points.size() - 1) * sizeof(vec2), sizeof(vec2), &points.back());
 }

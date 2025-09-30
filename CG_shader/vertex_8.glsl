@@ -1,8 +1,8 @@
 #version 330 core
 
-uniform vec4 u_position;
+in vec2 spot;
 
 void main()
 {
-	gl_Position =  u_position;
+	gl_Position =  vec4(spot.x, spot.y, 0.0f, 1.0f);
 }
