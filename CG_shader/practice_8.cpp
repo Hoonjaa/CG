@@ -22,6 +22,7 @@ GLvoid Reshape(int w, int h);
 GLvoid InitBuffer();
 
 GLvoid Mouse(int button, int state, int x, int y);
+GLvoid Keyboard(unsigned char key, int x, int y);
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 GLvoid add_point(GLfloat x, GLfloat y);
 
@@ -76,6 +77,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
 	glutMouseFunc(Mouse);
+	glutKeyboardFunc(Keyboard);
 	glutMainLoop();
 }
 
@@ -169,10 +171,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
 
-
-	glBindVertexArray(pVAO);
 	glDrawArrays(GL_POINTS, 0, points.size());
-
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
@@ -194,6 +193,16 @@ GLvoid Mouse(int button, int state, int x, int y) {
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
 	gl_x = (x / (float)WindowWidth) * 2.0f - 1.0f;
 	gl_y = 1.0f - (y / (float)WindowHeight) * 2.0f;
+}
+
+GLvoid Keyboard(unsigned char key, int x, int y)
+{
+	switch (key) {
+	case 'p':
+		glBindVertexArray(pVAO);
+		break;
+	}
+	glutPostRedisplay();
 }
 
 GLvoid add_point(GLfloat x, GLfloat y) {
