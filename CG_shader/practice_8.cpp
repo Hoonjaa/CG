@@ -27,6 +27,7 @@ GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 GLvoid add_point(GLfloat x, GLfloat y);
 GLvoid add_line(GLfloat x, GLfloat y);
 GLvoid add_triangle(GLfloat x, GLfloat y);
+GLvoid add_rectangle(GLfloat x, GLfloat y);
 GLvoid change_mode(unsigned char key);
 
 //--- 필요한 변수 선언
@@ -41,13 +42,17 @@ GLuint object_count = 0;
 bool vertex_mode = true;
 bool line_mode = false;
 bool triangle_mode = false;
+bool rect_mode = false;
 std::vector<vec2> points;
 std::vector<vec2> lines;
 std::vector<vec2> triangles;
+std::vector<vec2> rects;
+std::vector<GLubyte> rect_indices;
 
 GLuint pVAO, pVBO;
 GLuint lVAO, lVBO;
 GLuint tVAO, tVBO;
+GLuint rVAO, rVBO, rEBO;
 
 char* filetobuf(const char* file)
 {
@@ -189,6 +194,20 @@ GLvoid InitBuffer() {
 
 	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), 0);
 	glEnableVertexAttribArray(posAttrib);
+	// 사각형 VAO, VBO, EBO
+	glGenVertexArrays(1, &rVAO);
+	glBindVertexArray(rVAO);
+
+	glGenBuffers(1, &rVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, rVBO);
+	glBufferData(GL_ARRAY_BUFFER, max_objects * 4 * sizeof(vec2), nullptr, GL_DYNAMIC_DRAW);
+
+	glGenBuffers(1, &rEBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rEBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, max_objects * 6 * sizeof(GLubyte), nullptr, GL_DYNAMIC_DRAW);
+
+	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), 0);
+	glEnableVertexAttribArray(posAttrib);
 }
 
 //--- 출력 콜백 함수
@@ -211,6 +230,9 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glBindVertexArray(tVAO);
 	glDrawArrays(GL_TRIANGLES, 0, triangles.size() * 3);
 
+	glBindVertexArray(rVAO);
+	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(rect_indices.size()), GL_UNSIGNED_BYTE, 0);
+
 	glutSwapBuffers();													// 화면에 출력하기
 }
 //--- 다시그리기 콜백 함수
@@ -229,6 +251,8 @@ GLvoid Mouse(int button, int state, int x, int y) {
 			add_line(gl_x, gl_y);
 		else if (triangle_mode)
 			add_triangle(gl_x, gl_y);
+		else if (rect_mode)
+			add_rectangle(gl_x, gl_y);
 	}
 	glutPostRedisplay();
 }
@@ -248,6 +272,9 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		change_mode(key);
 		break;
 	case 't':
+		change_mode(key);
+		break;
+	case 'r':
 		change_mode(key);
 		break;
 	}
@@ -284,8 +311,33 @@ GLvoid add_triangle(GLfloat x, GLfloat y) {
 	glBufferSubData(GL_ARRAY_BUFFER, (triangles.size() - 1) * 3 * sizeof(vec2) + 2 * sizeof(vec2), sizeof(vec2), &third_point);
 }
 
+GLvoid add_rectangle(GLfloat x, GLfloat y) {
+	if (object_count >= max_objects) return;
+	size_t oldSize = rects.size();
+	rects.push_back(vec2(x - 0.1f, y + 0.1f));
+	vec2 second_point = vec2(x - 0.1f, y - 0.1f);
+	vec2 third_point = vec2(x + 0.1f, y - 0.1f);
+	vec2 fourth_point = vec2(x + 0.1f, y + 0.1f);
+	GLubyte base = static_cast<GLubyte>(oldSize);
+	rect_indices.push_back(base + 0);
+	rect_indices.push_back(base + 1);
+	rect_indices.push_back(base + 2);
+	rect_indices.push_back(base + 0);
+	rect_indices.push_back(base + 2);
+	rect_indices.push_back(base + 3);
+	object_count++;
+	glBindBuffer(GL_ARRAY_BUFFER, rVBO);
+	glBufferSubData(GL_ARRAY_BUFFER, base * sizeof(vec2), 4 * sizeof(vec2), &rects[base]);
+	size_t indexCount = rect_indices.size();
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rEBO);
+	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER,
+		(indexCount - 6) * sizeof(GLubyte),
+		6 * sizeof(GLubyte),
+		&rect_indices[indexCount - 6]);
+}
+
 GLvoid change_mode(unsigned char key) {
-	vertex_mode = false; line_mode = false; triangle_mode = false;
+	vertex_mode = false; line_mode = false; triangle_mode = false; rect_mode = false;
 	if (key == 'p') {
 		vertex_mode = true;
 	}
@@ -294,5 +346,8 @@ GLvoid change_mode(unsigned char key) {
 	}
 	else if (key == 't') {
 		triangle_mode = true;
+	}
+	else if (key == 'r') {
+		rect_mode = true;
 	}
 }
