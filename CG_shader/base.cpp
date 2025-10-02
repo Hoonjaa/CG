@@ -130,10 +130,7 @@ GLuint make_shaderProgram()
 //--- 출력 콜백 함수
 GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 {
-	GLfloat rColor, gColor, bColor;
-	rColor = gColor = 0.0;
-	bColor = 1.0;														//--- 배경색을 파랑색으로 설정
-	glClearColor(rColor, gColor, bColor, 1.0f);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
