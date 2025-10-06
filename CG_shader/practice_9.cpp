@@ -7,6 +7,10 @@ void make_fragmentShaders();
 GLuint make_shaderProgram();
 GLvoid drawScene();
 GLvoid Reshape(int w, int h);
+// 마우스 및 키보드	이벤트 처리 함수
+GLvoid Mouse(int button, int state, int x, int y);
+GLvoid Keyboard(unsigned char key, int x, int y);
+GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 
 //--- 필요한 변수 선언
 GLint width, height;
@@ -54,6 +58,8 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	gAxis = new Axis();
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
+	glutMouseFunc(Mouse);
+	glutKeyboardFunc(Keyboard);
 	glutMainLoop();
 }
 
@@ -139,4 +145,31 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 GLvoid Reshape(int w, int h)											//--- 콜백 함수: 다시 그리기 콜백 함수
 {
 	glViewport(0, 0, w, h);
+}
+
+GLvoid Mouse(int button, int state, int x, int y) {
+	GLfloat gl_x, gl_y;
+	Win_to_GL_mouse(x, y, gl_x, gl_y);
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		
+	}
+	else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+		
+	}
+	glutPostRedisplay();
+}
+
+GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
+	gl_x = (x / (float)WindowWidth) * 2.0f - 1.0f;
+	gl_y = 1.0f - (y / (float)WindowHeight) * 2.0f;
+}
+
+GLvoid Keyboard(unsigned char key, int x, int y)
+{
+	switch (key) {
+	case 'q':
+		glutLeaveMainLoop();
+		break;
+	}
+	glutPostRedisplay();
 }
