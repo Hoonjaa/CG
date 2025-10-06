@@ -36,6 +36,9 @@
     <ClCompile Include="Axis.cpp">
       <Filter>소스 파일\객체 클래스</Filter>
     </ClCompile>
+    <ClCompile Include="Triangle.cpp">
+      <Filter>소스 파일\객체 클래스</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="vertex.glsl">
@@ -65,6 +68,9 @@
       <Filter>소스 파일\객체 클래스</Filter>
     </ClInclude>
     <ClInclude Include="Axis.h">
+      <Filter>소스 파일\객체 클래스</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
       <Filter>소스 파일\객체 클래스</Filter>
     </ClInclude>
   </ItemGroup>
