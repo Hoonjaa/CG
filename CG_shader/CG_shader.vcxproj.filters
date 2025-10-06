@@ -16,6 +16,9 @@
     <Filter Include="소스 파일\shader file">
       <UniqueIdentifier>{4e747b40-94a3-411c-93c0-d93ba08aedfe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\객체 클래스">
+      <UniqueIdentifier>{420c18f8-0d7c-4d84-8492-6ac31a29eed0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="base.cpp">
@@ -28,7 +31,10 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\객체 클래스</Filter>
+    </ClCompile>
+    <ClCompile Include="Axis.cpp">
+      <Filter>소스 파일\객체 클래스</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -52,8 +58,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Object.h">
+    <ClInclude Include="pch.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>소스 파일\객체 클래스</Filter>
+    </ClInclude>
+    <ClInclude Include="Axis.h">
+      <Filter>소스 파일\객체 클래스</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
