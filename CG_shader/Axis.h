@@ -9,4 +9,3 @@ public:
 	virtual GLvoid draw() override;
 	virtual GLvoid update() override;
 };
-
