@@ -1,9 +1,10 @@
+#pragma once
 #include "pch.h"
 
 class Object {
 protected:
-	GLfloat pos_x = 0.0f, pos_y = 0.0f;
-	GLfloat r = 1.0f, g = 1.0f, b = 1.0f;
+	vec3 vPos = vec3(0.0f, 0.0f, 0.0f);
+	vec3 vColor = vec3(1.0f, 1.0f, 1.0f);
 	GLuint VAO = 0;
 	GLuint VBO = 0;
 	GLint vertexCount = 0;
@@ -20,6 +21,11 @@ protected:
 public:
 	Object();
 	virtual ~Object();
+
+	void setPos(vec3 _vPos) { vPos = _vPos; }
+	vec3 getPos() { return vPos; }
+	void setColor(vec3 _vColor) { vColor = _vColor; }
+	vec3 getColor() { return vColor; }
 
 	virtual GLvoid draw() = 0;				//그리기
 	virtual GLvoid update() = 0;			//위치 변경
