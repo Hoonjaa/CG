@@ -1,11 +1,5 @@
-#define _CRT_SECURE_NO_WARNINGS											//--- 프로그램 맨 앞에 선언할 것
-#include <stdlib.h>
-#include <stdio.h>
-#include <iostream>
-
-#include <gl/glew.h>
-#include <gl/freeglut.h>
-#include <gl/freeglut_ext.h>
+#include "pch.h"
+#include "Axis.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -19,6 +13,9 @@ GLint width, height;
 GLuint shaderProgramID;													//--- 세이더 프로그램 이름
 GLuint vertexShader;													//--- 버텍스 세이더 객체
 GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
+
+GLint WindowWidth = 800, WindowHeight = 800;
+Axis* gAxis = nullptr;
 
 char* filetobuf(const char* file)
 {
@@ -40,13 +37,11 @@ char* filetobuf(const char* file)
 //--- 메인 함수
 void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 {
-	width = 500;
-	height = 500;
 	//--- 윈도우 생성하기
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
-	glutInitWindowSize(width, height);
+	glutInitWindowSize(WindowWidth, WindowHeight);
 	glutCreateWindow("Example1");
 	//--- GLEW 초기화하기
 	glewExperimental = GL_TRUE;
@@ -56,6 +51,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	make_fragmentShaders();												//--- 프래그먼트 세이더 만들기
 	shaderProgramID = make_shaderProgram();
 	//--- 세이더 프로그램 만들기
+	gAxis = new Axis();
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
 	glutMainLoop();
@@ -134,7 +130,9 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
-	glDrawArrays(GL_TRIANGLES, 0, 3);									//--- 렌더링하기: 0번 인덱스에서 1개의 버텍스를 사용하여 점 그리기
+
+	if (gAxis) gAxis->draw();
+
 	glutSwapBuffers();													// 화면에 출력하기
 }
 //--- 다시그리기 콜백 함수
