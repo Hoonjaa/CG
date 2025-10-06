@@ -1,8 +1,11 @@
 #version 330 core
 
-in vec2 loc;
+layout(location = 0) in vec3 loc;
+layout(location = 1) in vec3 col;
+out vec3 frag_col;
 
 void main()
 {
-	gl_Position =  vec4(loc.x, loc.y, 0.0f, 1.0f);
+	gl_Position =  vec4(loc, 1.0f);
+	frag_col = col;
 }
