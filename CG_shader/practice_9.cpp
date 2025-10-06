@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Axis.h"
+#include "Triangle.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -20,6 +21,7 @@ GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
 GLint WindowWidth = 800, WindowHeight = 800;
 Axis* gAxis = nullptr;
+std::vector<Triangle*> triangles;
 
 char* filetobuf(const char* file)
 {
@@ -56,6 +58,10 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	shaderProgramID = make_shaderProgram();
 	//--- 세이더 프로그램 만들기
 	gAxis = new Axis();
+	triangles.emplace_back(new Triangle(0.5f, 0.5f));
+	triangles.emplace_back(new Triangle(-0.5f, 0.5f));
+	triangles.emplace_back(new Triangle(-0.5f, -0.5f));
+	triangles.emplace_back(new Triangle(0.5f, -0.5f));
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
 	glutMouseFunc(Mouse);
@@ -138,6 +144,9 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glPointSize(5.0);
 
 	if (gAxis) gAxis->draw();
+	for (auto tri : triangles) {
+		tri->draw();
+	}
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
