@@ -4,14 +4,17 @@
 std::random_device rd;
 std::uniform_real_distribution<float> random_color(0.0f, 1.0f);
 std::uniform_real_distribution<float> random_size(0.07f, 0.15f);
+std::uniform_real_distribution<float> random_dir(-0.01f, 0.01f);
+std::uniform_real_distribution<float> random_speed(0.005f, 0.02f);
 
 Triangle::Triangle(GLfloat x,  GLfloat y, GLint mode)
 {
-	vec3 vPos = vec3(x, y, 0.0f);
-	vec3 vColor = vec3(random_color(rd), random_color(rd), random_color(rd));
+	vPos = vec3(x, y, 0.0f);
+	vColor = vec3(random_color(rd), random_color(rd), random_color(rd));
 	DrawMode = mode;
-
-	GLfloat size = random_size(rd);
+	speed = random_speed(rd);
+	setDir(vec3(random_dir(rd), random_dir(rd), 0.0f));
+	size = random_size(rd);
 
 	GLfloat triangleVertices[] = {
 		// Triangle vertices
@@ -41,5 +44,17 @@ GLvoid Triangle::draw()
 
 GLvoid Triangle::update()
 {
-	
+	if (moveType == (GLint)MOVE_TYPE::BOUNCING) {
+		vPos.x += dir.x;
+		vPos.y += dir.y;
+		if (vPos.x > 1.0f - size || vPos.x < -1.0f + size) dir.x = -dir.x;
+		if (vPos.y > 1.0f - (3 * size) || vPos.y < -1.0f) dir.y = -dir.y;
+	}
+	GLfloat triangleVertices[] = {
+		// Triangle vertices
+		vPos.x - size, vPos.y, vPos.z,			vColor.x, vColor.y, vColor.z,
+		vPos.x + size, vPos.y, vPos.z,			vColor.x, vColor.y, vColor.z,
+		vPos.x, vPos.y + (3 * size), vPos.z,    vColor.x, vColor.y, vColor.z
+	};
+	upload(triangleVertices, sizeof(triangleVertices));
 }
