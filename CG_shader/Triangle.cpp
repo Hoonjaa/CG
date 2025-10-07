@@ -5,13 +5,11 @@ std::random_device rd;
 std::uniform_real_distribution<float> random_color(0.0f, 1.0f);
 std::uniform_real_distribution<float> random_size(0.07f, 0.15f);
 
-Triangle::Triangle(GLfloat x,  GLfloat y)
+Triangle::Triangle(GLfloat x,  GLfloat y, GLint mode)
 {
-	setPos(vec3(x, y, 0.0f));
-	vec3 vPos = getPos();
-
+	vec3 vPos = vec3(x, y, 0.0f);
 	vec3 vColor = vec3(random_color(rd), random_color(rd), random_color(rd));
-	setColor(vColor);
+	DrawMode = mode;
 
 	GLfloat size = random_size(rd);
 
@@ -38,7 +36,7 @@ Triangle::~Triangle()
 GLvoid Triangle::draw()
 {
 	glBindVertexArray(VAO);
-	glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+	glDrawArrays(DrawMode, 0, vertexCount);
 }
 
 GLvoid Triangle::update()

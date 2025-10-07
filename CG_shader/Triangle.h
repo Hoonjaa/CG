@@ -5,7 +5,7 @@
 class Triangle : public Object
 {
 	public:
-	Triangle(GLfloat x, GLfloat y);
+	Triangle(GLfloat x, GLfloat y, GLint mode);
 	~Triangle();
 
 	virtual GLvoid draw() override;
