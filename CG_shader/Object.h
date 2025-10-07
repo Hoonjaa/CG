@@ -8,6 +8,7 @@ protected:
 	GLuint VAO = 0;
 	GLuint VBO = 0;
 	GLint vertexCount = 0;
+	GLint DrawMode = (GLint)DRAWMODE::POINT;
 
 protected:
 	// 버퍼 생성 및 크기 할당 (데이터는 비움)
@@ -22,10 +23,7 @@ public:
 	Object();
 	virtual ~Object();
 
-	void setPos(vec3 _vPos) { vPos = _vPos; }
-	vec3 getPos() { return vPos; }
-	void setColor(vec3 _vColor) { vColor = _vColor; }
-	vec3 getColor() { return vColor; }
+	GLvoid setDrawMode(GLint mode) { DrawMode = mode; }
 
 	virtual GLvoid draw() = 0;				//그리기
 	virtual GLvoid update() = 0;			//위치 변경

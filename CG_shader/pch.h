@@ -15,3 +15,11 @@ struct vec3 {
 	GLfloat x, y, z;
 	vec3(GLfloat x = 0, GLfloat y = 0, GLfloat z = 0) : x(x), y(y), z(z) {}
 };
+
+enum class DRAWMODE {
+	POINT = GL_POINTS,
+	LINE = GL_LINES,
+	TRIANGLE = GL_TRIANGLES,
+	LINE_OBJECT = GL_LINE_LOOP,
+	END
+};
