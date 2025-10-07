@@ -15,6 +15,9 @@ GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 // 마우스 이벤트 함수
 GLvoid LButton(GLfloat x, GLfloat y);
 GLvoid RButton(GLfloat x, GLfloat y);
+// 타이머 함수
+GLvoid TimerFunction(int value);
+GLvoid start_Timer();
 
 //--- 필요한 변수 선언
 GLint width, height;
@@ -34,6 +37,7 @@ GLint WindowWidth = 800, WindowHeight = 800;
 Axis* gAxis = nullptr;
 std::vector<Triangle*> triangles[(UINT)SPACETYPE::END];
 GLint cDrawMode = (GLint)DRAWMODE::TRIANGLE;
+bool Timer = false;
 
 char* filetobuf(const char* file)
 {
@@ -201,6 +205,12 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		else if (cDrawMode == (GLint)DRAWMODE::LINE_OBJECT)
 			cDrawMode = (GLint)DRAWMODE::TRIANGLE;
 		break;
+	case '1':
+		start_Timer();
+		for (UINT i = 0; i < (UINT)SPACETYPE::END; ++i)
+			for (size_t j = 0; j < triangles[i].size(); ++j)
+				triangles[i][j]->setMoveType((GLint)MOVE_TYPE::BOUNCING);
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -236,5 +246,23 @@ GLvoid RButton(GLfloat x, GLfloat y) {
 	}
 	else if (x >= 0.0f && y < 0.0f && triangles[(UINT)SPACETYPE::SPACE_4].size() < 4) { // 4사분면
 		triangles[(UINT)SPACETYPE::SPACE_4].push_back(new Triangle(x, y, cDrawMode));
+	}
+}
+
+GLvoid TimerFunction(int value)
+{
+	for (UINT i = 0; i < (UINT)SPACETYPE::END; ++i)
+		for (size_t j = 0; j < triangles[i].size(); ++j)
+			triangles[i][j]->update();
+	glutPostRedisplay();
+	if (Timer) {
+		glutTimerFunc(16, TimerFunction, 1);
+	}
+}
+
+GLvoid start_Timer() {
+	if (!Timer) {
+		Timer = true;
+		glutTimerFunc(16, TimerFunction, 1);
 	}
 }
