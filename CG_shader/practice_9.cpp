@@ -190,6 +190,10 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'q':
 		glutLeaveMainLoop();
 		break;
+	case 'c':
+		for (UINT i = 0; i < (UINT)SPACETYPE::END; ++i)
+			triangles[i].clear();
+		break;
 	}
 	glutPostRedisplay();
 }
