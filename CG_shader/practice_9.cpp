@@ -12,6 +12,8 @@ GLvoid Reshape(int w, int h);
 GLvoid Mouse(int button, int state, int x, int y);
 GLvoid Keyboard(unsigned char key, int x, int y);
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
+// 마우스 이벤트 함수
+GLvoid LButton(GLfloat x, GLfloat y);
 
 //--- 필요한 변수 선언
 GLint width, height;
@@ -19,9 +21,17 @@ GLuint shaderProgramID;													//--- 세이더 프로그램 이름
 GLuint vertexShader;													//--- 버텍스 세이더 객체
 GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
+enum class SPACETYPE {
+	SPACE_1,
+	SPACE_2,
+	SPACE_3,
+	SPACE_4,
+	END
+};
+
 GLint WindowWidth = 800, WindowHeight = 800;
 Axis* gAxis = nullptr;
-std::vector<Triangle*> triangles;
+std::vector<Triangle*> triangles[(UINT)SPACETYPE::END];
 
 char* filetobuf(const char* file)
 {
@@ -58,10 +68,10 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	shaderProgramID = make_shaderProgram();
 	//--- 세이더 프로그램 만들기
 	gAxis = new Axis();
-	triangles.emplace_back(new Triangle(0.5f, 0.5f));
-	triangles.emplace_back(new Triangle(-0.5f, 0.5f));
-	triangles.emplace_back(new Triangle(-0.5f, -0.5f));
-	triangles.emplace_back(new Triangle(0.5f, -0.5f));
+	triangles[(UINT)SPACETYPE::SPACE_1].push_back(new Triangle(0.5f, 0.5f));
+	triangles[(UINT)SPACETYPE::SPACE_2].push_back(new Triangle(-0.5f, 0.5f));
+	triangles[(UINT)SPACETYPE::SPACE_3].push_back(new Triangle(-0.5f, -0.5f));
+	triangles[(UINT)SPACETYPE::SPACE_4].push_back(new Triangle(0.5f, -0.5f));
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
 	glutMouseFunc(Mouse);
@@ -144,9 +154,9 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glPointSize(5.0);
 
 	if (gAxis) gAxis->draw();
-	for (auto tri : triangles) {
-		tri->draw();
-	}
+	for(UINT i = 0; i < (UINT)SPACETYPE::END; ++i)
+		for(size_t j = 0; j < triangles[i].size(); ++j)
+			triangles[i][j]->draw();
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
@@ -160,7 +170,7 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	GLfloat gl_x, gl_y;
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		
+		LButton(gl_x, gl_y);
 	}
 	else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
 		
@@ -181,4 +191,23 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		break;
 	}
 	glutPostRedisplay();
+}
+
+GLvoid LButton(GLfloat x, GLfloat y) {
+	if (x >= 0.0f && y >= 0.0f) { // 1사분면
+		triangles[(UINT)SPACETYPE::SPACE_1].clear();
+		triangles[(UINT)SPACETYPE::SPACE_1].push_back(new Triangle(x, y));
+	}
+	else if (x < 0.0f && y >= 0.0f) { // 2사분면
+		triangles[(UINT)SPACETYPE::SPACE_2].clear();
+		triangles[(UINT)SPACETYPE::SPACE_2].push_back(new Triangle(x, y));
+	}
+	else if (x < 0.0f && y < 0.0f) { // 3사분면
+		triangles[(UINT)SPACETYPE::SPACE_3].clear();
+		triangles[(UINT)SPACETYPE::SPACE_3].push_back(new Triangle(x, y));
+	}
+	else if (x >= 0.0f && y < 0.0f) { // 4사분면
+		triangles[(UINT)SPACETYPE::SPACE_4].clear();
+		triangles[(UINT)SPACETYPE::SPACE_4].push_back(new Triangle(x, y));
+	}
 }
