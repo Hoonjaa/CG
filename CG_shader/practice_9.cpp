@@ -33,6 +33,7 @@ enum class SPACETYPE {
 GLint WindowWidth = 800, WindowHeight = 800;
 Axis* gAxis = nullptr;
 std::vector<Triangle*> triangles[(UINT)SPACETYPE::END];
+GLint cDrawMode = (GLint)DRAWMODE::TRIANGLE;
 
 char* filetobuf(const char* file)
 {
@@ -69,10 +70,10 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	shaderProgramID = make_shaderProgram();
 	//--- 세이더 프로그램 만들기
 	gAxis = new Axis();
-	triangles[(UINT)SPACETYPE::SPACE_1].push_back(new Triangle(0.5f, 0.5f));
-	triangles[(UINT)SPACETYPE::SPACE_2].push_back(new Triangle(-0.5f, 0.5f));
-	triangles[(UINT)SPACETYPE::SPACE_3].push_back(new Triangle(-0.5f, -0.5f));
-	triangles[(UINT)SPACETYPE::SPACE_4].push_back(new Triangle(0.5f, -0.5f));
+	triangles[(UINT)SPACETYPE::SPACE_1].push_back(new Triangle(0.5f, 0.5f, cDrawMode));
+	triangles[(UINT)SPACETYPE::SPACE_2].push_back(new Triangle(-0.5f, 0.5f, cDrawMode));
+	triangles[(UINT)SPACETYPE::SPACE_3].push_back(new Triangle(-0.5f, -0.5f, cDrawMode));
+	triangles[(UINT)SPACETYPE::SPACE_4].push_back(new Triangle(0.5f, -0.5f, cDrawMode));
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
 	glutMouseFunc(Mouse);
@@ -194,6 +195,12 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		for (UINT i = 0; i < (UINT)SPACETYPE::END; ++i)
 			triangles[i].clear();
 		break;
+	case 'a':
+		if (cDrawMode == (GLint)DRAWMODE::TRIANGLE)
+			cDrawMode = (GLint)DRAWMODE::LINE_OBJECT;
+		else if (cDrawMode == (GLint)DRAWMODE::LINE_OBJECT)
+			cDrawMode = (GLint)DRAWMODE::TRIANGLE;
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -201,33 +208,33 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 GLvoid LButton(GLfloat x, GLfloat y) {
 	if (x >= 0.0f && y >= 0.0f) { // 1사분면
 		triangles[(UINT)SPACETYPE::SPACE_1].clear();
-		triangles[(UINT)SPACETYPE::SPACE_1].push_back(new Triangle(x, y));
+		triangles[(UINT)SPACETYPE::SPACE_1].push_back(new Triangle(x, y, cDrawMode));
 	}
 	else if (x < 0.0f && y >= 0.0f) { // 2사분면
 		triangles[(UINT)SPACETYPE::SPACE_2].clear();
-		triangles[(UINT)SPACETYPE::SPACE_2].push_back(new Triangle(x, y));
+		triangles[(UINT)SPACETYPE::SPACE_2].push_back(new Triangle(x, y, cDrawMode));
 	}
 	else if (x < 0.0f && y < 0.0f) { // 3사분면
 		triangles[(UINT)SPACETYPE::SPACE_3].clear();
-		triangles[(UINT)SPACETYPE::SPACE_3].push_back(new Triangle(x, y));
+		triangles[(UINT)SPACETYPE::SPACE_3].push_back(new Triangle(x, y, cDrawMode));
 	}
 	else if (x >= 0.0f && y < 0.0f) { // 4사분면
 		triangles[(UINT)SPACETYPE::SPACE_4].clear();
-		triangles[(UINT)SPACETYPE::SPACE_4].push_back(new Triangle(x, y));
+		triangles[(UINT)SPACETYPE::SPACE_4].push_back(new Triangle(x, y, cDrawMode));
 	}
 }
 
 GLvoid RButton(GLfloat x, GLfloat y) {
 	if (x >= 0.0f && y >= 0.0f && triangles[(UINT)SPACETYPE::SPACE_1].size() < 4) { // 1사분면
-		triangles[(UINT)SPACETYPE::SPACE_1].push_back(new Triangle(x, y));
+		triangles[(UINT)SPACETYPE::SPACE_1].push_back(new Triangle(x, y, cDrawMode));
 	}
 	else if (x < 0.0f && y >= 0.0f && triangles[(UINT)SPACETYPE::SPACE_2].size() < 4) { // 2사분면
-		triangles[(UINT)SPACETYPE::SPACE_2].push_back(new Triangle(x, y));
+		triangles[(UINT)SPACETYPE::SPACE_2].push_back(new Triangle(x, y, cDrawMode));
 	}
 	else if (x < 0.0f && y < 0.0f && triangles[(UINT)SPACETYPE::SPACE_3].size() < 4) { // 3사분면
-		triangles[(UINT)SPACETYPE::SPACE_3].push_back(new Triangle(x, y));
+		triangles[(UINT)SPACETYPE::SPACE_3].push_back(new Triangle(x, y, cDrawMode));
 	}
 	else if (x >= 0.0f && y < 0.0f && triangles[(UINT)SPACETYPE::SPACE_4].size() < 4) { // 4사분면
-		triangles[(UINT)SPACETYPE::SPACE_4].push_back(new Triangle(x, y));
+		triangles[(UINT)SPACETYPE::SPACE_4].push_back(new Triangle(x, y, cDrawMode));
 	}
 }
