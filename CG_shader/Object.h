@@ -9,6 +9,7 @@ protected:
 	GLuint VBO = 0;
 	GLint vertexCount = 0;
 	GLint DrawMode = (GLint)DRAWMODE::POINT;
+	GLint moveType = (GLint)MOVE_TYPE::STOP;
 
 protected:
 	// 버퍼 생성 및 크기 할당 (데이터는 비움)
