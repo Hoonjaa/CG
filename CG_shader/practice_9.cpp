@@ -14,6 +14,7 @@ GLvoid Keyboard(unsigned char key, int x, int y);
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 // 마우스 이벤트 함수
 GLvoid LButton(GLfloat x, GLfloat y);
+GLvoid RButton(GLfloat x, GLfloat y);
 
 //--- 필요한 변수 선언
 GLint width, height;
@@ -173,7 +174,7 @@ GLvoid Mouse(int button, int state, int x, int y) {
 		LButton(gl_x, gl_y);
 	}
 	else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
-		
+		RButton(gl_x, gl_y);
 	}
 	glutPostRedisplay();
 }
@@ -208,6 +209,21 @@ GLvoid LButton(GLfloat x, GLfloat y) {
 	}
 	else if (x >= 0.0f && y < 0.0f) { // 4사분면
 		triangles[(UINT)SPACETYPE::SPACE_4].clear();
+		triangles[(UINT)SPACETYPE::SPACE_4].push_back(new Triangle(x, y));
+	}
+}
+
+GLvoid RButton(GLfloat x, GLfloat y) {
+	if (x >= 0.0f && y >= 0.0f && triangles[(UINT)SPACETYPE::SPACE_1].size() < 4) { // 1사분면
+		triangles[(UINT)SPACETYPE::SPACE_1].push_back(new Triangle(x, y));
+	}
+	else if (x < 0.0f && y >= 0.0f && triangles[(UINT)SPACETYPE::SPACE_2].size() < 4) { // 2사분면
+		triangles[(UINT)SPACETYPE::SPACE_2].push_back(new Triangle(x, y));
+	}
+	else if (x < 0.0f && y < 0.0f && triangles[(UINT)SPACETYPE::SPACE_3].size() < 4) { // 3사분면
+		triangles[(UINT)SPACETYPE::SPACE_3].push_back(new Triangle(x, y));
+	}
+	else if (x >= 0.0f && y < 0.0f && triangles[(UINT)SPACETYPE::SPACE_4].size() < 4) { // 4사분면
 		triangles[(UINT)SPACETYPE::SPACE_4].push_back(new Triangle(x, y));
 	}
 }
