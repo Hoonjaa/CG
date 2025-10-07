@@ -3,6 +3,7 @@
 
 std::random_device rd;
 std::uniform_real_distribution<float> random_color(0.0f, 1.0f);
+std::uniform_real_distribution<float> random_size(0.07f, 0.15f);
 
 Triangle::Triangle(GLfloat x,  GLfloat y)
 {
@@ -12,11 +13,13 @@ Triangle::Triangle(GLfloat x,  GLfloat y)
 	vec3 vColor = vec3(random_color(rd), random_color(rd), random_color(rd));
 	setColor(vColor);
 
+	GLfloat size = random_size(rd);
+
 	GLfloat triangleVertices[] = {
 		// Triangle vertices
-		vPos.x - 0.1f, vPos.y, vPos.z,    vColor.x, vColor.y, vColor.z,
-		vPos.x + 0.1f, vPos.y, vPos.z,    vColor.x, vColor.y, vColor.z,
-		vPos.x, vPos.y + 0.3f, vPos.z,    vColor.x, vColor.y, vColor.z
+		vPos.x - size, vPos.y, vPos.z,			vColor.x, vColor.y, vColor.z,
+		vPos.x + size, vPos.y, vPos.z,			vColor.x, vColor.y, vColor.z,
+		vPos.x, vPos.y + (3 * size), vPos.z,    vColor.x, vColor.y, vColor.z
 	};
 
 	allocate(sizeof(triangleVertices), GL_STATIC_DRAW);
