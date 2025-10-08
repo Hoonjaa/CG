@@ -8,6 +8,8 @@ private:
 	GLfloat size;
 	GLfloat speed;
 	vec3 dir;
+
+	vec3 prevPos;
 public:
 	Triangle(GLfloat x, GLfloat y, GLint mode);
 	~Triangle();

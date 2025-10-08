@@ -14,6 +14,7 @@ Triangle::Triangle(GLfloat x,  GLfloat y, GLint mode)
 	DrawMode = mode;
 	speed = random_speed(rd);
 	setDir(vec3(random_dir(rd), random_dir(rd), 0.0f));
+	prevPos = vPos;
 	size = random_size(rd);
 
 	GLfloat triangleVertices[] = {
@@ -49,6 +50,23 @@ GLvoid Triangle::update()
 		vPos.y += dir.y;
 		if (vPos.x > 1.0f - size || vPos.x < -1.0f + size) dir.x = -dir.x;
 		if (vPos.y > 1.0f - (3 * size) || vPos.y < -1.0f) dir.y = -dir.y;
+	}
+	if(moveType == (GLint)MOVE_TYPE::ZIGZAG_HORIZONTAL) {
+		if (vPos.x <= 1.0f - size && vPos.x >= -1.0f + size) {
+			vPos.x += dir.x;
+		}
+		else {
+			vPos.y += dir.y;
+			if (abs((prevPos.y + 1.0f) - (vPos.y + 1.0f)) >= 0.2f) {
+				dir.x = -dir.x;
+				vPos.x += dir.x;
+				prevPos.y = vPos.y;
+			}
+		}
+		if (vPos.y > 1.0f - (3 * size) || vPos.y < -1.0f) {
+			dir.y = -dir.y;
+			prevPos.y = vPos.y;
+		}
 	}
 	GLfloat triangleVertices[] = {
 		// Triangle vertices
