@@ -223,6 +223,12 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 			for (size_t j = 0; j < triangles[i].size(); ++j)
 				triangles[i][j]->setMoveType((GLint)MOVE_TYPE::SPIRAL_SQUARE);
 		break;
+	case '4':
+		start_Timer();
+		for (UINT i = 0; i < (UINT)SPACETYPE::END; ++i)
+			for (size_t j = 0; j < triangles[i].size(); ++j)
+				triangles[i][j]->setMoveType((GLint)MOVE_TYPE::SPIRAL_CIRCLE);
+		break;
 	}
 	glutPostRedisplay();
 }

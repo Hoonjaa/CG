@@ -7,6 +7,7 @@
 #include <random>
 #include <vector>
 #include <math.h>
+#include <cmath>
 
 #include <gl/glew.h>
 #include <gl/freeglut.h>

@@ -13,6 +13,9 @@ private:
 	//사각 스파이럴 용
 	GLfloat right = 0.8f, left = -0.8f, top = 0.6f, bottom = -1.0f;
 	GLfloat x_speed = 0.01f, y_speed = 0.01f;
+	//원 스파이럴 용
+	GLint angle = 0;
+	GLfloat radius = 0.0f;
 public:
 	Triangle(GLfloat x, GLfloat y, GLint mode);
 	~Triangle();

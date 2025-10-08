@@ -90,6 +90,15 @@ GLvoid Triangle::update()
 			dir = vec3(x_speed, 0.0f, 0.0f);
 		}
 	}
+	if(moveType == (GLint)MOVE_TYPE::SPIRAL_CIRCLE) {
+		dir.x = sin(angle * 3.141592f / 180.0f) * radius;
+		dir.y = cos(angle * 3.141592f / 180.0f) * radius;
+		vPos.x += dir.x;
+		vPos.y += dir.y;
+		angle += 10;
+		if (angle >= 360) angle = 0;
+		radius += 0.001f;
+	}
 	GLfloat triangleVertices[] = {
 		// Triangle vertices
 		vPos.x - size, vPos.y, vPos.z,			vColor.x, vColor.y, vColor.z,
