@@ -13,6 +13,13 @@
 #include <gl/freeglut.h>
 #include <gl/freeglut_ext.h>
 
+extern std::random_device rd;
+extern std::uniform_real_distribution<float> random_color;
+extern std::uniform_real_distribution<float> random_size;
+extern std::uniform_real_distribution<float> random_dir;
+extern std::uniform_real_distribution<float> random_speed;
+extern std::uniform_real_distribution<float> random_col;
+
 struct vec3 {
 	GLfloat x, y, z;
 public:
@@ -50,3 +57,4 @@ enum class MOVE_TYPE {
 	SPIRAL_CIRCLE,
 	END
 };
+
