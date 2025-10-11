@@ -20,6 +20,8 @@ GLuint shaderProgramID;													//--- 세이더 프로그램 이름
 GLuint vertexShader;													//--- 버텍스 세이더 객체
 GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
+GLint WindowWidth = 800, WindowHeight = 800;
+
 char* filetobuf(const char* file)
 {
 	FILE* fptr;
@@ -40,13 +42,11 @@ char* filetobuf(const char* file)
 //--- 메인 함수
 void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 {
-	width = 500;
-	height = 500;
 	//--- 윈도우 생성하기
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
-	glutInitWindowSize(width, height);
+	glutInitWindowSize(WindowWidth, WindowHeight);
 	glutCreateWindow("Example1");
 	//--- GLEW 초기화하기
 	glewExperimental = GL_TRUE;
@@ -134,7 +134,6 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
-	glDrawArrays(GL_TRIANGLES, 0, 3);									//--- 렌더링하기: 0번 인덱스에서 1개의 버텍스를 사용하여 점 그리기
 	glutSwapBuffers();													// 화면에 출력하기
 }
 //--- 다시그리기 콜백 함수
