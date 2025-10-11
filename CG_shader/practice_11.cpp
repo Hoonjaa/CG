@@ -170,6 +170,10 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'l':
 		cDrawMode = (GLint)DRAWMODE::LINE_STRIP;
 		break;
+	case 'c':
+		spirals.clear();
+		Timer = false;
+		break;
 	}
 	glutPostRedisplay();
 }
