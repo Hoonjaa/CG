@@ -201,8 +201,8 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		break;
 	case 'a':
 		if (cDrawMode == (GLint)DRAWMODE::TRIANGLE)
-			cDrawMode = (GLint)DRAWMODE::LINE_OBJECT;
-		else if (cDrawMode == (GLint)DRAWMODE::LINE_OBJECT)
+			cDrawMode = (GLint)DRAWMODE::LINE_LOOP;
+		else if (cDrawMode == (GLint)DRAWMODE::LINE_LOOP)
 			cDrawMode = (GLint)DRAWMODE::TRIANGLE;
 		break;
 	case '1':
