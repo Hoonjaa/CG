@@ -74,10 +74,10 @@
     <None Include="vertex_9.glsl">
       <Filter>소스 파일\shader file</Filter>
     </None>
-    <None Include="vertex_base.glsl">
+    <None Include="vertex_11.glsl">
       <Filter>소스 파일\shader file</Filter>
     </None>
-    <None Include="fragment_base.glsl">
+    <None Include="fragment_11.glsl">
       <Filter>소스 파일\shader file</Filter>
     </None>
   </ItemGroup>

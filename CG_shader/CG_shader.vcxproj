@@ -189,11 +189,11 @@
     <None Include="fragment.glsl" />
     <None Include="fragment_8.glsl" />
     <None Include="fragment_9.glsl" />
-    <None Include="fragment_base.glsl" />
+    <None Include="fragment_11.glsl" />
     <None Include="vertex.glsl" />
     <None Include="vertex_8.glsl" />
     <None Include="vertex_9.glsl" />
-    <None Include="vertex_base.glsl" />
+    <None Include="vertex_11.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Axis.h" />

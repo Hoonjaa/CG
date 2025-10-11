@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Axis.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -19,6 +20,7 @@ GLuint vertexShader;													//--- 버텍스 세이더 객체
 GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
 GLint WindowWidth = 800, WindowHeight = 800;
+Axis* gAxis = nullptr;
 bool LoopMode = true;
 bool Timer = false;
 
@@ -56,8 +58,10 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	make_fragmentShaders();												//--- 프래그먼트 세이더 만들기
 	shaderProgramID = make_shaderProgram();
 	//--- 세이더 프로그램 만들기
+	gAxis = new Axis();
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
+	glutKeyboardFunc(Keyboard);
 	glutMainLoop();
 }
 
@@ -134,6 +138,11 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
+
+	if (LoopMode) {
+		if (gAxis) gAxis->draw();
+	}
+
 	glutSwapBuffers();													// 화면에 출력하기
 }
 //--- 다시그리기 콜백 함수
