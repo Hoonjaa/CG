@@ -44,7 +44,7 @@ GLvoid Spiral::draw()
 {
 	glBindVertexArray(VAO);
 	// 점 그리기
-	glDrawArrays(GL_POINTS, 0, vertexCount);
+	glDrawArrays(DrawMode, 0, vertexCount);
 }
 
 GLvoid Spiral::update()

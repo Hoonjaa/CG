@@ -23,6 +23,7 @@ GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
 GLint WindowWidth = 800, WindowHeight = 800;
 std::vector<Spiral*> spirals;
+GLint cDrawMode = (GLint)DRAWMODE::POINT;
 bool Timer = false;
 
 char* filetobuf(const char* file)
@@ -163,6 +164,12 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'q':
 		glutLeaveMainLoop();
 		break;
+	case 'p':
+		cDrawMode = (GLint)DRAWMODE::POINT;
+		break;
+	case 'l':
+		cDrawMode = (GLint)DRAWMODE::LINE_STRIP;
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -172,7 +179,7 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		start_Timer();
-		spirals.push_back(new Spiral(gl_x, gl_y, (GLint)DRAWMODE::POINT));
+		spirals.push_back(new Spiral(gl_x, gl_y, cDrawMode));
 	}
 	else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
 		
