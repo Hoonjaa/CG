@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Spiral.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -21,6 +22,7 @@ GLuint vertexShader;													//--- 버텍스 세이더 객체
 GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
 GLint WindowWidth = 800, WindowHeight = 800;
+std::vector<Spiral*> spirals;
 bool Timer = false;
 
 char* filetobuf(const char* file)
@@ -136,9 +138,11 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(shaderProgramID);
-	glPointSize(5.0);
+	glPointSize(3.0);
 
-
+	for (size_t i = 0; i < spirals.size(); ++i) {
+		spirals[i]->draw();
+	}
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
@@ -167,7 +171,8 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	GLfloat gl_x, gl_y;
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		
+		start_Timer();
+		spirals.push_back(new Spiral(gl_x, gl_y, (GLint)DRAWMODE::POINT));
 	}
 	else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
 		
@@ -177,7 +182,9 @@ GLvoid Mouse(int button, int state, int x, int y) {
 
 GLvoid TimerFunction(int value)
 {
-	
+	for (size_t i = 0; i < spirals.size(); ++i) {
+		spirals[i]->update();
+	}
 	glutPostRedisplay();
 	if (Timer) {
 		glutTimerFunc(16, TimerFunction, 1);
