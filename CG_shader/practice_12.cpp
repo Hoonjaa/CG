@@ -1,11 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS											//--- 프로그램 맨 앞에 선언할 것
-#include <stdlib.h>
-#include <stdio.h>
-#include <iostream>
-
-#include <gl/glew.h>
-#include <gl/freeglut.h>
-#include <gl/freeglut_ext.h>
+#include "pch.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -13,6 +6,11 @@ void make_fragmentShaders();
 GLuint make_shaderProgram();
 GLvoid drawScene();
 GLvoid Reshape(int w, int h);
+// 키보드 이벤트 처리 함수
+GLvoid Keyboard(unsigned char key, int x, int y);
+// 타이머 함수
+GLvoid TimerFunction(int value);
+GLvoid start_Timer();
 
 //--- 필요한 변수 선언
 GLint width, height;
@@ -21,6 +19,8 @@ GLuint vertexShader;													//--- 버텍스 세이더 객체
 GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
 GLint WindowWidth = 800, WindowHeight = 800;
+bool LoopMode = true;
+bool Timer = false;
 
 char* filetobuf(const char* file)
 {
@@ -140,4 +140,30 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 GLvoid Reshape(int w, int h)											//--- 콜백 함수: 다시 그리기 콜백 함수
 {
 	glViewport(0, 0, w, h);
+}
+
+GLvoid Keyboard(unsigned char key, int x, int y)
+{
+	switch (key) {
+	case 'q':
+		glutLeaveMainLoop();
+		break;
+	}
+	glutPostRedisplay();
+}
+
+GLvoid TimerFunction(int value)
+{
+	
+	glutPostRedisplay();
+	if (Timer) {
+		glutTimerFunc(16, TimerFunction, 1);
+	}
+}
+
+GLvoid start_Timer() {
+	if (!Timer) {
+		Timer = true;
+		glutTimerFunc(16, TimerFunction, 1);
+	}
 }
