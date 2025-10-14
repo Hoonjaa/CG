@@ -28,6 +28,7 @@ GLint WindowWidth = 800, WindowHeight = 800;
 std::vector<TPentagon13*> objects;
 GLint cDrawMode = (GLint)DRAWMODE::TRIANGLE;
 bool Timer = true;
+GLint selected_object = -1;
 
 char* filetobuf(const char* file)
 {
@@ -204,15 +205,33 @@ GLvoid start_Timer() {
 GLvoid Motion(int x, int y) {
 	GLfloat gl_x, gl_y;
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
-	
+	if (selected_object == -1) return;
+	objects[selected_object]->setPos(vec3(gl_x, gl_y, 0.0f));
+	objects[selected_object]->setDragVertex(gl_x, gl_y);
 	glutPostRedisplay();
 }
 
 GLvoid Mouse(int button, int state, int x, int y) {
 	GLfloat gl_x, gl_y;
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
+	vec3 Opos;
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		
+		for (size_t i = 0; i < objects.size(); i++) {
+			Opos = objects[i]->getPos();
+			GLfloat dist = sqrt((gl_x - Opos.x) * (gl_x - Opos.x) + (gl_y - Opos.y) * (gl_y - Opos.y));
+			if (dist < 0.1f) {
+				selected_object = i;
+				objects[i]->dragging = true;
+				break;
+			}
+		}
+	}
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
+
+		if (selected_object != -1) {
+			objects[selected_object]->dragging = false;
+			selected_object = -1;
+		}
 	}
 	glutPostRedisplay();
 }
