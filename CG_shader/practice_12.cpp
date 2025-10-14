@@ -30,6 +30,7 @@ enum class SPACETYPE {
 
 GLint WindowWidth = 800, WindowHeight = 800;
 Axis* gAxis = nullptr;
+TPentagon* object = nullptr;
 std::vector<TPentagon*> objects[(UINT)SPACETYPE::END];
 GLint cDrawMode = (GLint)DRAWMODE::TRIANGLE;
 bool LoopMode = true;
@@ -71,10 +72,11 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	//--- 세이더 프로그램 만들기
 	glutTimerFunc(16, TimerFunction, 1);
 	gAxis = new Axis();
-	objects[(UINT)SPACETYPE::SPACE_1].push_back(new TPentagon(0.5f, 0.65f, cDrawMode));
-	objects[(UINT)SPACETYPE::SPACE_2].push_back(new TPentagon(-0.5f, 0.65f, cDrawMode));
-	objects[(UINT)SPACETYPE::SPACE_3].push_back(new TPentagon(-0.5f, -0.35f, cDrawMode));
-	objects[(UINT)SPACETYPE::SPACE_4].push_back(new TPentagon(0.5f, -0.35f, cDrawMode));
+	object = new TPentagon(0.0f, 0.65f, 4.0f, cDrawMode);
+	objects[(UINT)SPACETYPE::SPACE_1].push_back(new TPentagon(0.5f, 0.65f, 1.0f, cDrawMode));
+	objects[(UINT)SPACETYPE::SPACE_2].push_back(new TPentagon(-0.5f, 0.65f, 1.0f, cDrawMode));
+	objects[(UINT)SPACETYPE::SPACE_3].push_back(new TPentagon(-0.5f, -0.35f, 1.0f, cDrawMode));
+	objects[(UINT)SPACETYPE::SPACE_4].push_back(new TPentagon(0.5f, -0.35f, 1.0f, cDrawMode));
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
 	glutKeyboardFunc(Keyboard);
@@ -161,6 +163,9 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 			for (size_t j = 0; j < objects[i].size(); ++j)
 				objects[i][j]->draw();
 	}
+	else {
+		if (object) object->draw();
+	}
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
@@ -175,6 +180,9 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	switch (key) {
 	case 'q':
 		glutLeaveMainLoop();
+		break;
+	case 'a':
+		LoopMode = !LoopMode;
 		break;
 	}
 	glutPostRedisplay();

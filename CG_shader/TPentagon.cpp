@@ -1,14 +1,15 @@
 #include "pch.h"
 #include "TPentagon.h"
 
-TPentagon::TPentagon(GLfloat x, GLfloat y, GLint mode)
+TPentagon::TPentagon(GLfloat x, GLfloat y, GLfloat size, GLint mode)
 {
 	ShapeType = 0;
+	this->size = size;
 	vPos = vec3(x, y, 0.0f);
-	ExtraVertex[0] = vec3(vPos.x - 0.2f, vPos.y - 0.1f, 0.0f);
-	ExtraVertex[1] = vec3(vPos.x - 0.14f, vPos.y - 0.3f, 0.0f);
-	ExtraVertex[2] = vec3(vPos.x + 0.14f, vPos.y - 0.3f, 0.0f);
-	ExtraVertex[3] = vec3(vPos.x + 0.2f, vPos.y - 0.1f, 0.0f);
+	ExtraVertex[0] = vec3(vPos.x - size * 0.2f, vPos.y - size * 0.1f, 0.0f);
+	ExtraVertex[1] = vec3(vPos.x - size * 0.14f, vPos.y - size * 0.3f, 0.0f);
+	ExtraVertex[2] = vec3(vPos.x + size * 0.14f, vPos.y - size * 0.3f, 0.0f);
+	ExtraVertex[3] = vec3(vPos.x + size * 0.2f, vPos.y - size * 0.1f, 0.0f);
 	setVertex[0] = ExtraVertex[0];
 	setVertex[1] = ExtraVertex[1];
 	setVertex[2] = ExtraVertex[2];
@@ -209,19 +210,19 @@ GLvoid TPentagon::TransTriangle()
 		finish++;
 	}
 	//1 이동
-	if (ExtraVertex[1].x > setVertex[1].x - 0.06f) {
+	if (ExtraVertex[1].x > setVertex[1].x - size * 0.06f) {
 		ExtraVertex[1].x -= 0.01f;
 	}
 	else {
-		ExtraVertex[1].x = setVertex[1].x - 0.06f;
+		ExtraVertex[1].x = setVertex[1].x - size * 0.06f;
 		finish++;
 	}
 	//2 이동
-	if (ExtraVertex[2].x < setVertex[2].x + 0.06f) {
+	if (ExtraVertex[2].x < setVertex[2].x + size * 0.06f) {
 		ExtraVertex[2].x += 0.01f;
 	}
 	else {
-		ExtraVertex[2].x = setVertex[2].x + 0.06f;
+		ExtraVertex[2].x = setVertex[2].x + size * 0.06f;
 		finish++;
 	}
 	//3 이동
