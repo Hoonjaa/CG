@@ -9,6 +9,7 @@ private:
 
 	GLvoid TransPentagon();
 	GLvoid TransLine();
+	GLvoid TransTriangle();
 public:
 	TPentagon(GLfloat x, GLfloat y, GLint mode);
 	~TPentagon();
