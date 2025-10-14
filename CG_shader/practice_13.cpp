@@ -188,6 +188,10 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 			objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 5, cDrawMode));
 		}
 		break;
+	case 's':
+		if(Timer) Timer = false;
+		else start_Timer();
+		break;
 	}
 	glutPostRedisplay();
 }
