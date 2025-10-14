@@ -5,6 +5,8 @@ TPentagon13::TPentagon13(GLfloat x, GLfloat y, GLfloat size, GLint type, GLint m
 {
 	this->size = size;
 	DrawMode = mode;
+	speed = random_speed(rd);
+	setDir(vec3(random_dir(rd), random_dir(rd), 0.0f));
 	vPos = vec3(x, y, 0.0f);
 	ExtraVertex[0] = vec3(vPos.x - size * 0.2f, vPos.y - size * 0.1f, 0.0f);
 	ExtraVertex[1] = vec3(vPos.x - size * 0.14f, vPos.y - size * 0.3f, 0.0f);
@@ -157,5 +159,28 @@ GLvoid TPentagon13::draw()
 
 GLvoid TPentagon13::update()
 {
+	vPos.x += dir.x;
+	vPos.y += dir.y;
+	if (ShapeType == 1) {
+		if (vPos.x > 1.0f || vPos.x < -1.0f) dir.x = -dir.x;
+		if (vPos.y > 1.0f || vPos.y < -1.0f) dir.y = -dir.y;
+	}
+	if (ShapeType == 2) {
+		if (vPos.x > 1.0f || vPos.x < -1.0f + 0.34f) dir.x = -dir.x;
+		if (vPos.y > 1.0f || vPos.y < -1.0f + 0.2f) dir.y = -dir.y;
+	}
+	if (ShapeType == 3) {
+		if (vPos.x > 1.0f - 0.14f || vPos.x < -1.0f + 0.14f) dir.x = -dir.x;
+		if (vPos.y > 1.0f || vPos.y < -1.0f + 0.3f) dir.y = -dir.y;
+	}
+	if (ShapeType == 4) {
+		if (vPos.x > 1.0f - 0.4f || vPos.x < -1.0f) dir.x = -dir.x;
+		if (vPos.y > 1.0f || vPos.y < -1.0f + 0.2f) dir.y = -dir.y;
+	}
+	if (ShapeType == 5) {
+		if (vPos.x > 1.0f - 0.2f || vPos.x < -1.0f + 0.2f) dir.x = -dir.x;
+		if (vPos.y > 1.0f || vPos.y < -1.0f + 0.3f) dir.y = -dir.y;
+	}
 	
+	setDragVertex(vPos.x, vPos.y);
 }

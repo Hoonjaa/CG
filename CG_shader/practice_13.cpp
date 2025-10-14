@@ -73,7 +73,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 		objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 4, cDrawMode));
 		objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 5, cDrawMode));
 	}
-	glutTimerFunc(40, TimerFunction, 1);
+	glutTimerFunc(16, TimerFunction, 1);
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
 	glutKeyboardFunc(Keyboard);
@@ -194,10 +194,12 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 
 GLvoid TimerFunction(int value)
 {
-	
+	for (size_t i = 0; i < move_objects.size(); i++) {
+		move_objects[i]->update();
+	}
 	glutPostRedisplay();
 	if (Timer) {
-		glutTimerFunc(40, TimerFunction, 1);
+		glutTimerFunc(16, TimerFunction, 1);
 	}
 }
 
