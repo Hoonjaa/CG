@@ -35,6 +35,7 @@ std::vector<TPentagon*> objects[(UINT)SPACETYPE::END];
 GLint cDrawMode = (GLint)DRAWMODE::TRIANGLE;
 bool LoopMode = true;
 bool Timer = true;
+bool l = false, t = false, r = false, p = false;
 
 char* filetobuf(const char* file)
 {
@@ -184,6 +185,22 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'a':
 		LoopMode = !LoopMode;
 		break;
+	case 'l':
+		l = false; t = false; r = false; p = false;
+		l = true;
+		break;
+	case 't':
+		l = false; t = false; r = false; p = false;
+		t = true;
+		break;
+	case 'r':
+		l = false; t = false; r = false; p = false;
+		r = true;
+		break;
+	case 'p':
+		l = false; t = false; r = false; p = false;
+		p = true;
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -194,6 +211,24 @@ GLvoid TimerFunction(int value)
 		for (UINT i = 0; i < (UINT)SPACETYPE::END; ++i)
 			for (size_t j = 0; j < objects[i].size(); ++j)
 				objects[i][j]->update();
+	}
+	else {
+		if (l) {
+			if (object) object->DoTransLine();
+			if (object) object->DoUpload();
+		}
+		if (t) {
+			if (object) object->DoTransTriangle();
+			if (object) object->DoUpload();
+		}
+		if (r) {
+			if (object) object->DoTransRectangle();
+			if (object) object->DoUpload();
+		}
+		if (p) {
+			if (object) object->DoTransPentagon();
+			if (object) object->DoUpload();
+		}
 	}
 	glutPostRedisplay();
 	if (Timer) {

@@ -90,14 +90,14 @@ GLvoid TPentagon::TransPentagon()
 	GLint finish = 0;
 	//v->3
 	if (vPos.x < ExtraVertex[3].x) {
-		vPos.x += 0.01f;
+		vPos.x += size * 0.01f;
 	}
 	else {
 		vPos.x = ExtraVertex[3].x;
 		finish++;
 	}
 	if (vPos.y > ExtraVertex[3].y) {
-		vPos.y -= 0.01f;
+		vPos.y -= size * 0.01f;
 	}
 	else {
 		vPos.y = ExtraVertex[3].y;
@@ -105,14 +105,14 @@ GLvoid TPentagon::TransPentagon()
 	}
 	//0->1
 	if (ExtraVertex[0].x < ExtraVertex[1].x) {
-		ExtraVertex[0].x += 0.01f;
+		ExtraVertex[0].x += size * 0.01f;
 	}
 	else {
 		ExtraVertex[0].x = ExtraVertex[1].x;
 		finish++;
 	}
 	if (ExtraVertex[0].y > ExtraVertex[1].y) {
-		ExtraVertex[0].y -= 0.01f;
+		ExtraVertex[0].y -= size * 0.01f;
 	}
 	else {
 		ExtraVertex[0].y = ExtraVertex[1].y;
@@ -120,7 +120,7 @@ GLvoid TPentagon::TransPentagon()
 	}
 	//2->1
 	if (ExtraVertex[2].x > ExtraVertex[1].x) {
-		ExtraVertex[2].x -= 0.01f;
+		ExtraVertex[2].x -= size * 0.01f;
 	}
 	else {
 		ExtraVertex[2].x = ExtraVertex[1].x;
@@ -141,14 +141,14 @@ GLvoid TPentagon::TransLine()
 
 	//v 이동
 	if (vPos.x > setVertex[4].x) {
-		vPos.x -= 0.01f;
+		vPos.x -= size * 0.01f;
 	}
 	else {
 		vPos.x = setVertex[4].x;
 		finish++;
 	}
 	if (vPos.y < setVertex[4].y) {
-		vPos.y += 0.01f;
+		vPos.y += size * 0.01f;
 	}
 	else {
 		vPos.y = setVertex[4].y;
@@ -156,14 +156,14 @@ GLvoid TPentagon::TransLine()
 	}
 	//3 이동
 	if (ExtraVertex[3].x > setVertex[2].x) {
-		ExtraVertex[3].x -= 0.01f;
+		ExtraVertex[3].x -= size * 0.01f;
 	}
 	else {
 		ExtraVertex[3].x = setVertex[2].x;
 		finish++;
 	}
 	if (ExtraVertex[3].y > setVertex[2].y) {
-		ExtraVertex[3].y -= 0.01f;
+		ExtraVertex[3].y -= size * 0.01f;
 	}
 	else {
 		ExtraVertex[3].y = setVertex[2].y;
@@ -181,14 +181,14 @@ GLvoid TPentagon::TransTriangle()
 	
 	//v 이동
 	if (vPos.x > setVertex[0].x) {
-		vPos.x -= 0.01f;
+		vPos.x -= size * 0.01f;
 	}
 	else {
 		vPos.x = setVertex[0].x;
 		finish++;
 	}
 	if (vPos.y > setVertex[0].y) {
-		vPos.y -= 0.01f;
+		vPos.y -= size * 0.01f;
 	}
 	else {
 		vPos.y = setVertex[0].y;
@@ -196,14 +196,14 @@ GLvoid TPentagon::TransTriangle()
 	}
 	//0 이동
 	if (ExtraVertex[0].x > setVertex[0].x) {
-		ExtraVertex[0].x -= 0.01f;
+		ExtraVertex[0].x -= size * 0.01f;
 	}
 	else {
 		ExtraVertex[0].x = setVertex[0].x;
 		finish++;
 	}
 	if (ExtraVertex[0].y < setVertex[0].y) {
-		ExtraVertex[0].y += 0.01f;
+		ExtraVertex[0].y += size * 0.01f;
 	}
 	else {
 		ExtraVertex[0].y = setVertex[0].y;
@@ -211,7 +211,7 @@ GLvoid TPentagon::TransTriangle()
 	}
 	//1 이동
 	if (ExtraVertex[1].x > setVertex[1].x - size * 0.06f) {
-		ExtraVertex[1].x -= 0.01f;
+		ExtraVertex[1].x -= size * 0.01f;
 	}
 	else {
 		ExtraVertex[1].x = setVertex[1].x - size * 0.06f;
@@ -219,7 +219,7 @@ GLvoid TPentagon::TransTriangle()
 	}
 	//2 이동
 	if (ExtraVertex[2].x < setVertex[2].x + size * 0.06f) {
-		ExtraVertex[2].x += 0.01f;
+		ExtraVertex[2].x += size * 0.01f;
 	}
 	else {
 		ExtraVertex[2].x = setVertex[2].x + size * 0.06f;
@@ -227,14 +227,14 @@ GLvoid TPentagon::TransTriangle()
 	}
 	//3 이동
 	if (ExtraVertex[3].x < setVertex[3].x) {
-		ExtraVertex[3].x += 0.01f;
+		ExtraVertex[3].x += size * 0.01f;
 	}
 	else {
 		ExtraVertex[3].x = setVertex[3].x;
 		finish++;
 	}
 	if (ExtraVertex[3].y < setVertex[3].y) {
-		ExtraVertex[3].y += 0.01f;
+		ExtraVertex[3].y += size * 0.01f;
 	}
 	else {
 		ExtraVertex[3].y = setVertex[3].y;
@@ -251,14 +251,14 @@ GLvoid TPentagon::TransRectangle()
 	GLint finish = 0;
 	//v 이동
 	if (vPos.x < setVertex[4].x) {
-		vPos.x += 0.01f;
+		vPos.x += size * 0.01f;
 	}
 	else {
 		vPos.x = setVertex[4].x;
 		finish++;
 	}
 	if (vPos.y < setVertex[4].y) {
-		vPos.y += 0.01f;
+		vPos.y += size * 0.01f;
 	}
 	else {
 		vPos.y = setVertex[4].y;
@@ -266,7 +266,7 @@ GLvoid TPentagon::TransRectangle()
 	}
 	//1 이동
 	if (ExtraVertex[1].x < setVertex[1].x) {
-		ExtraVertex[1].x += 0.01f;
+		ExtraVertex[1].x += size * 0.01f;
 	}
 	else {
 		ExtraVertex[1].x = setVertex[1].x;
@@ -274,7 +274,7 @@ GLvoid TPentagon::TransRectangle()
 	}
 	//2 이동
 	if (ExtraVertex[2].x > setVertex[2].x) {
-		ExtraVertex[2].x -= 0.01f;
+		ExtraVertex[2].x -= size * 0.01f;
 	}
 	else {
 		ExtraVertex[2].x = setVertex[2].x;

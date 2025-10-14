@@ -16,6 +16,27 @@ public:
 	TPentagon(GLfloat x, GLfloat y, GLfloat size, GLint mode);
 	~TPentagon();
 
+	GLvoid DoTransPentagon() { TransPentagon(); }
+	GLvoid DoTransLine() { TransLine(); }
+	GLvoid DoTransTriangle() { TransTriangle(); }
+	GLvoid DoTransRectangle() { TransRectangle(); }
+	GLvoid DoUpload() {
+		GLfloat pentagonVertices[] = {
+		vPos.x, vPos.y, vPos.z,         vColor.x, vColor.y, vColor.z,
+		ExtraVertex[0].x, ExtraVertex[0].y, ExtraVertex[0].z,   vColor.x, vColor.y, vColor.z,
+		ExtraVertex[3].x, ExtraVertex[3].y, ExtraVertex[3].z,   vColor.x, vColor.y, vColor.z,
+
+		ExtraVertex[3].x, ExtraVertex[3].y, ExtraVertex[3].z,   vColor.x, vColor.y, vColor.z,
+		ExtraVertex[0].x, ExtraVertex[0].y, ExtraVertex[0].z,   vColor.x, vColor.y, vColor.z,
+		ExtraVertex[1].x, ExtraVertex[1].y, ExtraVertex[1].z,   vColor.x, vColor.y, vColor.z,
+
+		ExtraVertex[3].x, ExtraVertex[3].y, ExtraVertex[3].z,   vColor.x, vColor.y, vColor.z,
+		ExtraVertex[1].x, ExtraVertex[1].y, ExtraVertex[1].z,   vColor.x, vColor.y, vColor.z,
+		ExtraVertex[2].x, ExtraVertex[2].y, ExtraVertex[2].z,   vColor.x, vColor.y, vColor.z
+		};
+		upload(pentagonVertices, sizeof(pentagonVertices));
+	}
+
 	virtual GLvoid draw() override;
 	virtual GLvoid update() override;
 };
