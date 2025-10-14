@@ -26,9 +26,11 @@ GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
 GLint WindowWidth = 800, WindowHeight = 800;
 std::vector<TPentagon13*> objects;
+std::vector<TPentagon13*> move_objects;
 GLint cDrawMode = (GLint)DRAWMODE::TRIANGLE;
 bool Timer = true;
 GLint selected_object = -1;
+GLint new_object = -1;
 
 char* filetobuf(const char* file)
 {
@@ -65,11 +67,11 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	shaderProgramID = make_shaderProgram();
 	//--- 세이더 프로그램 만들기
 	for (int i = 0; i < 3; i++) {
-		objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 0, cDrawMode));
 		objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 1, cDrawMode));
 		objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 2, cDrawMode));
 		objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 3, cDrawMode));
 		objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 4, cDrawMode));
+		objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 5, cDrawMode));
 	}
 	glutTimerFunc(40, TimerFunction, 1);
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
@@ -157,6 +159,9 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	for (size_t i = 0; i < objects.size(); i++) {
 		objects[i]->draw();
 	}
+	for (size_t i = 0; i < move_objects.size(); i++) {
+		move_objects[i]->draw();
+	}
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
@@ -174,12 +179,13 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		break;
 	case 'c':
 		objects.clear();
+		move_objects.clear();
 		for (int i = 0; i < 3; i++) {
-			objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 0, cDrawMode));
 			objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 1, cDrawMode));
 			objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 2, cDrawMode));
 			objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 3, cDrawMode));
 			objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 4, cDrawMode));
+			objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 5, cDrawMode));
 		}
 		break;
 	}
@@ -221,15 +227,30 @@ GLvoid Mouse(int button, int state, int x, int y) {
 			GLfloat dist = sqrt((gl_x - Opos.x) * (gl_x - Opos.x) + (gl_y - Opos.y) * (gl_y - Opos.y));
 			if (dist < 0.1f) {
 				selected_object = i;
-				objects[i]->dragging = true;
 				break;
 			}
 		}
 	}
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
-
+		for (size_t i = 0; i < objects.size(); i++) {
+			Opos = objects[i]->getPos();
+			GLfloat dist = sqrt((gl_x - Opos.x) * (gl_x - Opos.x) + (gl_y - Opos.y) * (gl_y - Opos.y));
+			if (dist < 0.1f && selected_object != -1 && selected_object != i) {
+				GLint new_type = (objects[selected_object]->getShapeType() + objects[i]->getShapeType());
+				if (new_type > 5) new_type = 1;
+				if (selected_object > i) {
+					objects.erase(objects.begin() + selected_object);
+					objects.erase(objects.begin() + i);
+				}else{
+					objects.erase(objects.begin() + i);
+					objects.erase(objects.begin() + selected_object);
+				}
+				
+				move_objects.push_back(new TPentagon13(gl_x, gl_y, 1.0f, new_type, cDrawMode));
+				break;
+			}
+		}
 		if (selected_object != -1) {
-			objects[selected_object]->dragging = false;
 			selected_object = -1;
 		}
 	}

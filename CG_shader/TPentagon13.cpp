@@ -17,24 +17,36 @@ TPentagon13::TPentagon13(GLfloat x, GLfloat y, GLfloat size, GLint type, GLint m
 	setVertex[4] = vPos;
 
 	ShapeType = type;
-	if (ShapeType == 1) {
+	if (ShapeType == 2) {
 		DrawMode = (GLint)DRAWMODE::LINE;
 		vPos = setVertex[3];
 		ExtraVertex[0] = setVertex[1];
 		ExtraVertex[2] = setVertex[1];
+		vPos.x -= size * 0.2f;
+		vPos.y += size * 0.1f;
+		for (int i = 0; i < 4; i++) {
+			ExtraVertex[i].x -= size * 0.2f;
+			ExtraVertex[i].y += size * 0.1f;
+		}
 	}
-	if (ShapeType == 2) {
+	if (ShapeType == 3) {
 		vPos = setVertex[4];
 		ExtraVertex[0] = setVertex[1];
 		ExtraVertex[2] = setVertex[2];
 		ExtraVertex[3] = setVertex[2];
 	}
-	if (ShapeType == 3) {
+	if (ShapeType == 4) {
 		vPos = setVertex[0];
 		ExtraVertex[1] = vec3(setVertex[1].x - size * 0.06f, setVertex[1].y, 0.0f);
 		ExtraVertex[2] = vec3(setVertex[2].x + size * 0.06f, setVertex[2].y, 0.0f);
+		vPos.x += size * 0.2f;
+		vPos.y += size * 0.1f;
+		for (int i = 0; i < 4; i++) {
+			ExtraVertex[i].x += size * 0.2f;
+			ExtraVertex[i].y += size * 0.1f;
+		}
 	}
-	if (ShapeType == 4) {
+	if (ShapeType == 1) {
 		DrawMode = (GLint)DRAWMODE::POINT;
 		ExtraVertex[0] = setVertex[4];
 		ExtraVertex[1] = setVertex[4];
@@ -84,7 +96,7 @@ GLvoid TPentagon13::setDragVertex(GLfloat x, GLfloat y)
 	setVertex[3] = ExtraVertex[3];
 	setVertex[4] = vPos;
 
-	if (ShapeType == 1) {
+	if (ShapeType == 2) {
 		DrawMode = (GLint)DRAWMODE::LINE;
 		vPos = setVertex[3];
 		ExtraVertex[0] = setVertex[1];
@@ -96,13 +108,13 @@ GLvoid TPentagon13::setDragVertex(GLfloat x, GLfloat y)
 			ExtraVertex[i].y += size * 0.1f;
 		}
 	}
-	if (ShapeType == 2) {
+	if (ShapeType == 3) {
 		vPos = setVertex[4];
 		ExtraVertex[0] = setVertex[1];
 		ExtraVertex[2] = setVertex[2];
 		ExtraVertex[3] = setVertex[2];
 	}
-	if (ShapeType == 3) {
+	if (ShapeType == 4) {
 		vPos = setVertex[0];
 		ExtraVertex[1] = vec3(setVertex[1].x - size * 0.06f, setVertex[1].y, 0.0f);
 		ExtraVertex[2] = vec3(setVertex[2].x + size * 0.06f, setVertex[2].y, 0.0f);
@@ -113,7 +125,7 @@ GLvoid TPentagon13::setDragVertex(GLfloat x, GLfloat y)
 			ExtraVertex[i].y += size * 0.1f;
 		}
 	}
-	if (ShapeType == 4) {
+	if (ShapeType == 1) {
 		DrawMode = (GLint)DRAWMODE::POINT;
 		ExtraVertex[0] = setVertex[4];
 		ExtraVertex[1] = setVertex[4];
