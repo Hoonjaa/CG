@@ -10,6 +10,10 @@ GLvoid drawScene();
 GLvoid Reshape(int w, int h);
 // 키보드 이벤트 처리 함수
 GLvoid Keyboard(unsigned char key, int x, int y);
+// 마우스 이벤트 처리 함수
+GLvoid Mouse(int button, int state, int x, int y);
+GLvoid Motion(int x, int y);
+GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 // 타이머 함수
 GLvoid TimerFunction(int value);
 GLvoid start_Timer();
@@ -20,22 +24,10 @@ GLuint shaderProgramID;													//--- 세이더 프로그램 이름
 GLuint vertexShader;													//--- 버텍스 세이더 객체
 GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
-enum class SPACETYPE {
-	SPACE_1,
-	SPACE_2,
-	SPACE_3,
-	SPACE_4,
-	END
-};
-
 GLint WindowWidth = 800, WindowHeight = 800;
-Axis* gAxis = nullptr;
-TPentagon* object = nullptr;
-std::vector<TPentagon*> objects[(UINT)SPACETYPE::END];
+std::vector<TPentagon*> objects;
 GLint cDrawMode = (GLint)DRAWMODE::TRIANGLE;
-bool LoopMode = true;
 bool Timer = true;
-bool l = false, t = false, r = false, p = false;
 
 char* filetobuf(const char* file)
 {
@@ -72,15 +64,11 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	shaderProgramID = make_shaderProgram();
 	//--- 세이더 프로그램 만들기
 	glutTimerFunc(40, TimerFunction, 1);
-	gAxis = new Axis();
-	object = new TPentagon(0.0f, 0.65f, 4.0f, 0, cDrawMode);
-	objects[(UINT)SPACETYPE::SPACE_1].push_back(new TPentagon(0.5f, 0.65f, 1.0f, 0, cDrawMode));
-	objects[(UINT)SPACETYPE::SPACE_2].push_back(new TPentagon(-0.5f, 0.65f, 1.0f, 1, cDrawMode));
-	objects[(UINT)SPACETYPE::SPACE_3].push_back(new TPentagon(-0.5f, -0.35f, 1.0f, 2, cDrawMode));
-	objects[(UINT)SPACETYPE::SPACE_4].push_back(new TPentagon(0.5f, -0.35f, 1.0f, 3, cDrawMode));
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
 	glutKeyboardFunc(Keyboard);
+	glutMouseFunc(Mouse);
+	glutMotionFunc(Motion);
 	glutMainLoop();
 }
 
@@ -158,16 +146,6 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
 
-	if (LoopMode) {
-		if (gAxis) gAxis->draw();
-		for (UINT i = 0; i < (UINT)SPACETYPE::END; ++i)
-			for (size_t j = 0; j < objects[i].size(); ++j)
-				objects[i][j]->draw();
-	}
-	else {
-		if (object) object->draw();
-	}
-
 	glutSwapBuffers();													// 화면에 출력하기
 }
 //--- 다시그리기 콜백 함수
@@ -182,66 +160,13 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'q':
 		glutLeaveMainLoop();
 		break;
-	case 'a':
-		LoopMode = true;
-		break;
-	case 'l':
-		delete object; object = nullptr;
-		object = new TPentagon(0.0f, 0.65f, 4.0f, 1, cDrawMode);
-		LoopMode = false;
-		l = false; t = false; r = false; p = false;
-		l = true;
-		break;
-	case 't':
-		delete object; object = nullptr;
-		object = new TPentagon(0.0f, 0.65f, 4.0f, 2, cDrawMode);
-		LoopMode = false;
-		l = false; t = false; r = false; p = false;
-		t = true;
-		break;
-	case 'r':
-		delete object; object = nullptr;
-		object = new TPentagon(0.0f, 0.65f, 4.0f, 3, cDrawMode);
-		LoopMode = false;
-		l = false; t = false; r = false; p = false;
-		r = true;
-		break;
-	case 'p':
-		delete object; object = nullptr;
-		object = new TPentagon(0.0f, 0.65f, 4.0f, 0, cDrawMode);
-		LoopMode = false;
-		l = false; t = false; r = false; p = false;
-		p = true;
-		break;
 	}
 	glutPostRedisplay();
 }
 
 GLvoid TimerFunction(int value)
 {
-	if (LoopMode) {
-		for (UINT i = 0; i < (UINT)SPACETYPE::END; ++i)
-			for (size_t j = 0; j < objects[i].size(); ++j)
-				objects[i][j]->update();
-	}
-	else {
-		if (l) {
-			if (object) object->DoTransLine();
-			if (object) object->DoUpload();
-		}
-		if (t) {
-			if (object) object->DoTransTriangle();
-			if (object) object->DoUpload();
-		}
-		if (r) {
-			if (object) object->DoTransRectangle();
-			if (object) object->DoUpload();
-		}
-		if (p) {
-			if (object) object->DoTransPentagon();
-			if (object) object->DoUpload();
-		}
-	}
+	
 	glutPostRedisplay();
 	if (Timer) {
 		glutTimerFunc(40, TimerFunction, 1);
@@ -253,4 +178,25 @@ GLvoid start_Timer() {
 		Timer = true;
 		glutTimerFunc(16, TimerFunction, 1);
 	}
+}
+
+GLvoid Motion(int x, int y) {
+	GLfloat gl_x, gl_y;
+	Win_to_GL_mouse(x, y, gl_x, gl_y);
+	
+	glutPostRedisplay();
+}
+
+GLvoid Mouse(int button, int state, int x, int y) {
+	GLfloat gl_x, gl_y;
+	Win_to_GL_mouse(x, y, gl_x, gl_y);
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		
+	}
+	glutPostRedisplay();
+}
+
+GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
+	gl_x = (x / (float)WindowWidth) * 2.0f - 1.0f;
+	gl_y = 1.0f - (y / (float)WindowHeight) * 2.0f;
 }
