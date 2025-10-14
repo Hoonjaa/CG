@@ -64,6 +64,10 @@ GLvoid TPentagon::update()
 		TransTriangle();
 	}
 
+	if (ShapeType == 3) {
+		TransRectangle();
+	}
+
 	GLfloat pentagonVertices[] = {
 		vPos.x, vPos.y, vPos.z,         vColor.x, vColor.y, vColor.z,
 		ExtraVertex[0].x, ExtraVertex[0].y, ExtraVertex[0].z,   vColor.x, vColor.y, vColor.z,
@@ -238,5 +242,45 @@ GLvoid TPentagon::TransTriangle()
 
 	if(finish == 8) {
 		ShapeType = 3;
+	}
+}
+
+GLvoid TPentagon::TransRectangle()
+{
+	GLint finish = 0;
+	//v 이동
+	if (vPos.x < setVertex[4].x) {
+		vPos.x += 0.01f;
+	}
+	else {
+		vPos.x = setVertex[4].x;
+		finish++;
+	}
+	if (vPos.y < setVertex[4].y) {
+		vPos.y += 0.01f;
+	}
+	else {
+		vPos.y = setVertex[4].y;
+		finish++;
+	}
+	//1 이동
+	if (ExtraVertex[1].x < setVertex[1].x) {
+		ExtraVertex[1].x += 0.01f;
+	}
+	else {
+		ExtraVertex[1].x = setVertex[1].x;
+		finish++;
+	}
+	//2 이동
+	if (ExtraVertex[2].x > setVertex[2].x) {
+		ExtraVertex[2].x -= 0.01f;
+	}
+	else {
+		ExtraVertex[2].x = setVertex[2].x;
+		finish++;
+	}
+
+	if (finish == 4) {
+		ShapeType = 0;
 	}
 }
