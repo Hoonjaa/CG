@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Axis.h"
-#include "TPentagon.h"
+#include "TPentagon13.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -25,7 +25,7 @@ GLuint vertexShader;													//--- 버텍스 세이더 객체
 GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
 GLint WindowWidth = 800, WindowHeight = 800;
-std::vector<TPentagon*> objects;
+std::vector<TPentagon13*> objects;
 GLint cDrawMode = (GLint)DRAWMODE::TRIANGLE;
 bool Timer = true;
 
@@ -63,6 +63,13 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	make_fragmentShaders();												//--- 프래그먼트 세이더 만들기
 	shaderProgramID = make_shaderProgram();
 	//--- 세이더 프로그램 만들기
+	for (int i = 0; i < 3; i++) {
+		objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 0, cDrawMode));
+		objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 1, cDrawMode));
+		objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 2, cDrawMode));
+		objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 3, cDrawMode));
+		objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 4, cDrawMode));
+	}
 	glutTimerFunc(40, TimerFunction, 1);
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
@@ -145,6 +152,10 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
+
+	for (size_t i = 0; i < objects.size(); i++) {
+		objects[i]->draw();
+	}
 
 	glutSwapBuffers();													// 화면에 출력하기
 }

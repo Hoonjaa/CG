@@ -190,6 +190,7 @@
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Spiral.cpp" />
     <ClCompile Include="TPentagon.cpp" />
+    <ClCompile Include="TPentagon13.cpp" />
     <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +209,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Spiral.h" />
     <ClInclude Include="TPentagon.h" />
+    <ClInclude Include="TPentagon13.h" />
     <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -19,6 +19,7 @@ extern std::uniform_real_distribution<float> random_size;
 extern std::uniform_real_distribution<float> random_dir;
 extern std::uniform_real_distribution<float> random_speed;
 extern std::uniform_real_distribution<float> random_col;
+extern std::uniform_real_distribution<float> random_col13;
 
 struct vec3 {
 	GLfloat x, y, z;
