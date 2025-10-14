@@ -1,9 +1,8 @@
 #include "pch.h"
 #include "TPentagon.h"
 
-TPentagon::TPentagon(GLfloat x, GLfloat y, GLfloat size, GLint mode)
+TPentagon::TPentagon(GLfloat x, GLfloat y, GLfloat size, GLint type, GLint mode)
 {
-	ShapeType = 0;
 	this->size = size;
 	vPos = vec3(x, y, 0.0f);
 	ExtraVertex[0] = vec3(vPos.x - size * 0.2f, vPos.y - size * 0.1f, 0.0f);
@@ -15,6 +14,25 @@ TPentagon::TPentagon(GLfloat x, GLfloat y, GLfloat size, GLint mode)
 	setVertex[2] = ExtraVertex[2];
 	setVertex[3] = ExtraVertex[3];
 	setVertex[4] = vPos;
+
+	ShapeType = type;
+	if (ShapeType == 1) {
+		vPos = setVertex[3];
+		ExtraVertex[0] = setVertex[1];
+		ExtraVertex[2] = setVertex[1];
+	}
+	if (ShapeType == 2) {
+		vPos = setVertex[4];
+		ExtraVertex[0] = setVertex[1];
+		ExtraVertex[2] = setVertex[2];
+		ExtraVertex[3] = setVertex[2];
+	}
+	if (ShapeType == 3) {
+		vPos = setVertex[0];
+		ExtraVertex[1] = vec3(setVertex[1].x - size * 0.06f, setVertex[1].y, 0.0f);
+		ExtraVertex[2] = vec3(setVertex[2].x + size * 0.06f, setVertex[2].y, 0.0f);
+	}
+
 	vColor = vec3(random_color(rd), random_color(rd), random_color(rd));
 	DrawMode = mode;
 

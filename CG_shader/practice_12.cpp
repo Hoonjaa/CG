@@ -71,13 +71,13 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	make_fragmentShaders();												//--- 프래그먼트 세이더 만들기
 	shaderProgramID = make_shaderProgram();
 	//--- 세이더 프로그램 만들기
-	glutTimerFunc(16, TimerFunction, 1);
+	glutTimerFunc(40, TimerFunction, 1);
 	gAxis = new Axis();
-	object = new TPentagon(0.0f, 0.65f, 4.0f, cDrawMode);
-	objects[(UINT)SPACETYPE::SPACE_1].push_back(new TPentagon(0.5f, 0.65f, 1.0f, cDrawMode));
-	objects[(UINT)SPACETYPE::SPACE_2].push_back(new TPentagon(-0.5f, 0.65f, 1.0f, cDrawMode));
-	objects[(UINT)SPACETYPE::SPACE_3].push_back(new TPentagon(-0.5f, -0.35f, 1.0f, cDrawMode));
-	objects[(UINT)SPACETYPE::SPACE_4].push_back(new TPentagon(0.5f, -0.35f, 1.0f, cDrawMode));
+	object = new TPentagon(0.0f, 0.65f, 4.0f, 0, cDrawMode);
+	objects[(UINT)SPACETYPE::SPACE_1].push_back(new TPentagon(0.5f, 0.65f, 1.0f, 0, cDrawMode));
+	objects[(UINT)SPACETYPE::SPACE_2].push_back(new TPentagon(-0.5f, 0.65f, 1.0f, 1,  cDrawMode));
+	objects[(UINT)SPACETYPE::SPACE_3].push_back(new TPentagon(-0.5f, -0.35f, 1.0f, 2, cDrawMode));
+	objects[(UINT)SPACETYPE::SPACE_4].push_back(new TPentagon(0.5f, -0.35f, 1.0f, 3, cDrawMode));
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
 	glutKeyboardFunc(Keyboard);
@@ -183,21 +183,33 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		glutLeaveMainLoop();
 		break;
 	case 'a':
-		LoopMode = !LoopMode;
+		LoopMode = true;
 		break;
 	case 'l':
+		delete object; object = nullptr;
+		object = new TPentagon(0.0f, 0.65f, 4.0f, 1, cDrawMode);
+		LoopMode = false;
 		l = false; t = false; r = false; p = false;
 		l = true;
 		break;
 	case 't':
+		delete object; object = nullptr;
+		object = new TPentagon(0.0f, 0.65f, 4.0f, 2, cDrawMode);
+		LoopMode = false;
 		l = false; t = false; r = false; p = false;
 		t = true;
 		break;
 	case 'r':
+		delete object; object = nullptr;
+		object = new TPentagon(0.0f, 0.65f, 4.0f, 3, cDrawMode);
+		LoopMode = false;
 		l = false; t = false; r = false; p = false;
 		r = true;
 		break;
 	case 'p':
+		delete object; object = nullptr;
+		object = new TPentagon(0.0f, 0.65f, 4.0f, 0, cDrawMode);
+		LoopMode = false;
 		l = false; t = false; r = false; p = false;
 		p = true;
 		break;
@@ -232,7 +244,7 @@ GLvoid TimerFunction(int value)
 	}
 	glutPostRedisplay();
 	if (Timer) {
-		glutTimerFunc(16, TimerFunction, 1);
+		glutTimerFunc(40, TimerFunction, 1);
 	}
 }
 
