@@ -171,6 +171,16 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'q':
 		glutLeaveMainLoop();
 		break;
+	case 'c':
+		objects.clear();
+		for (int i = 0; i < 3; i++) {
+			objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 0, cDrawMode));
+			objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 1, cDrawMode));
+			objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 2, cDrawMode));
+			objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 3, cDrawMode));
+			objects.push_back(new TPentagon13(random_col(rd), random_col13(rd), 1.0f, 4, cDrawMode));
+		}
+		break;
 	}
 	glutPostRedisplay();
 }
