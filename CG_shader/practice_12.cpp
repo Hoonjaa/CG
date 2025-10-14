@@ -33,7 +33,7 @@ Axis* gAxis = nullptr;
 std::vector<TPentagon*> objects[(UINT)SPACETYPE::END];
 GLint cDrawMode = (GLint)DRAWMODE::TRIANGLE;
 bool LoopMode = true;
-bool Timer = false;
+bool Timer = true;
 
 char* filetobuf(const char* file)
 {
@@ -69,6 +69,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	make_fragmentShaders();												//--- 프래그먼트 세이더 만들기
 	shaderProgramID = make_shaderProgram();
 	//--- 세이더 프로그램 만들기
+	glutTimerFunc(16, TimerFunction, 1);
 	gAxis = new Axis();
 	objects[(UINT)SPACETYPE::SPACE_1].push_back(new TPentagon(0.5f, 0.65f, cDrawMode));
 	objects[(UINT)SPACETYPE::SPACE_2].push_back(new TPentagon(-0.5f, 0.65f, cDrawMode));
@@ -181,7 +182,11 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 
 GLvoid TimerFunction(int value)
 {
-	
+	if (LoopMode) {
+		for (UINT i = 0; i < (UINT)SPACETYPE::END; ++i)
+			for (size_t j = 0; j < objects[i].size(); ++j)
+				objects[i][j]->update();
+	}
 	glutPostRedisplay();
 	if (Timer) {
 		glutTimerFunc(16, TimerFunction, 1);
