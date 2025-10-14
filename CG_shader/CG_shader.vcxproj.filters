@@ -54,6 +54,9 @@
     <ClCompile Include="practice_12.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="TPentagon.cpp">
+      <Filter>소스 파일\객체 클래스</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="vertex.glsl">
@@ -95,6 +98,9 @@
       <Filter>소스 파일\객체 클래스</Filter>
     </ClInclude>
     <ClInclude Include="Spiral.h">
+      <Filter>소스 파일\객체 클래스</Filter>
+    </ClInclude>
+    <ClInclude Include="TPentagon.h">
       <Filter>소스 파일\객체 클래스</Filter>
     </ClInclude>
   </ItemGroup>

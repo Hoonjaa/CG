@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Axis.h"
+#include "TPentagon.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -19,8 +20,18 @@ GLuint shaderProgramID;													//--- 세이더 프로그램 이름
 GLuint vertexShader;													//--- 버텍스 세이더 객체
 GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
+enum class SPACETYPE {
+	SPACE_1,
+	SPACE_2,
+	SPACE_3,
+	SPACE_4,
+	END
+};
+
 GLint WindowWidth = 800, WindowHeight = 800;
 Axis* gAxis = nullptr;
+std::vector<TPentagon*> objects[(UINT)SPACETYPE::END];
+GLint cDrawMode = (GLint)DRAWMODE::TRIANGLE;
 bool LoopMode = true;
 bool Timer = false;
 
@@ -47,7 +58,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	//--- 윈도우 생성하기
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowPosition(100, 100);
+	glutInitWindowPosition(0, 0);
 	glutInitWindowSize(WindowWidth, WindowHeight);
 	glutCreateWindow("Example1");
 	//--- GLEW 초기화하기
@@ -59,6 +70,10 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	shaderProgramID = make_shaderProgram();
 	//--- 세이더 프로그램 만들기
 	gAxis = new Axis();
+	objects[(UINT)SPACETYPE::SPACE_1].push_back(new TPentagon(0.5f, 0.65f, cDrawMode));
+	objects[(UINT)SPACETYPE::SPACE_2].push_back(new TPentagon(-0.5f, 0.65f, cDrawMode));
+	objects[(UINT)SPACETYPE::SPACE_3].push_back(new TPentagon(-0.5f, -0.35f, cDrawMode));
+	objects[(UINT)SPACETYPE::SPACE_4].push_back(new TPentagon(0.5f, -0.35f, cDrawMode));
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
 	glutKeyboardFunc(Keyboard);
@@ -141,6 +156,9 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 
 	if (LoopMode) {
 		if (gAxis) gAxis->draw();
+		for (UINT i = 0; i < (UINT)SPACETYPE::END; ++i)
+			for (size_t j = 0; j < objects[i].size(); ++j)
+				objects[i][j]->draw();
 	}
 
 	glutSwapBuffers();													// 화면에 출력하기
