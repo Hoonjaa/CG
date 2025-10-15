@@ -66,6 +66,9 @@
     <ClCompile Include="practice_14.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="shape14.cpp">
+      <Filter>소스 파일\객체 클래스</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="vertex.glsl">
@@ -113,6 +116,9 @@
       <Filter>소스 파일\객체 클래스</Filter>
     </ClInclude>
     <ClInclude Include="TPentagon13.h">
+      <Filter>소스 파일\객체 클래스</Filter>
+    </ClInclude>
+    <ClInclude Include="shape14.h">
       <Filter>소스 파일\객체 클래스</Filter>
     </ClInclude>
   </ItemGroup>

@@ -191,6 +191,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="shape14.cpp" />
     <ClCompile Include="Spiral.cpp" />
     <ClCompile Include="TPentagon.cpp" />
     <ClCompile Include="TPentagon13.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="Axis.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="shape14.h" />
     <ClInclude Include="Spiral.h" />
     <ClInclude Include="TPentagon.h" />
     <ClInclude Include="TPentagon13.h" />
