@@ -13,6 +13,10 @@
 #include <gl/freeglut.h>
 #include <gl/freeglut_ext.h>
 
+#include <gl/glm/glm.hpp>
+#include <gl/glm/ext.hpp>
+#include <gl/glm/gtc/matrix_transform.hpp>
+
 extern std::random_device rd;
 extern std::uniform_real_distribution<float> random_color;
 extern std::uniform_real_distribution<float> random_size;
