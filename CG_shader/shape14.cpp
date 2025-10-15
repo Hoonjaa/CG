@@ -10,9 +10,15 @@ shape14::shape14(GLfloat x, GLfloat y, GLint mode, GLint type)
 	shapeType = type;
 	if (shapeType == 1) {
 		for (GLint i = 0; i < 12; i++) {
-			//  r = k * theta (아르키메데스 나선)
-			Vertices[i].x = vPos.x + radius_1[i%3] * cos(thetaArray[i]);
-			Vertices[i].y = vPos.y + radius_1[i % 3] * sin(thetaArray[i]);
+			Vertices[i].x = vPos.x + radius_1[i % 3] * cos(thetaArray_1[i]);
+			Vertices[i].y = vPos.y + radius_1[i % 3] * sin(thetaArray_1[i]);
+			Vertices[i].z = 0.0f;
+		}
+	}
+	if (shapeType == 2) {
+		for (GLint i = 0; i < 12; i++) {
+			Vertices[i].x = vPos.x + radius_2[i % 3] * cos(thetaArray_2[i]);
+			Vertices[i].y = vPos.y + radius_2[i % 3] * sin(thetaArray_2[i]);
 			Vertices[i].z = 0.0f;
 		}
 	}

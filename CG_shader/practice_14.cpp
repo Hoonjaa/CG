@@ -21,6 +21,7 @@ GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
 GLint WindowWidth = 800, WindowHeight = 800;
 shape14* object1 = nullptr;
+shape14* object2 = nullptr;
 GLint cDrawMode = (GLint)DRAWMODE::TRIANGLE;
 bool Timer = true;
 
@@ -58,7 +59,8 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	make_fragmentShaders();												//--- 프래그먼트 세이더 만들기
 	shaderProgramID = make_shaderProgram();
 	//--- 세이더 프로그램 만들기
-	object1 = new shape14(0.0f, 0.0f, cDrawMode, 1);
+	object1 = new shape14(-0.5f, -0.5f, cDrawMode, 1);
+	object2 = new shape14(0.5f, 0.5f, cDrawMode, 2);
 	glutTimerFunc(16, TimerFunction, 1);
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
@@ -140,9 +142,8 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
 
-	if (object1) {
-		object1->draw();
-	}
+	if (object1) object1->draw();
+	if (object2) object2->draw();
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
