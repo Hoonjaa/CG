@@ -27,11 +27,15 @@ private:
 		0.2f, 0.2f, 0.02f
 	};
 
-	GLfloat dTheta = 0.15f;     // 각도 증가량
+	GLfloat dTheta = 0.05f;     // 각도 증가량
 
 public:
 	shape14(GLfloat x, GLfloat y, GLint mode, GLint type);
 	~shape14();
+
+	GLvoid setDir_t() { dTheta = 0.05f; }
+	GLvoid setDir_c() { dTheta = -0.05f; }
+
 	virtual GLvoid draw() override;
 	virtual GLvoid update() override;
 };

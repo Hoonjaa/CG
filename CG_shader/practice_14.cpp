@@ -23,7 +23,7 @@ GLint WindowWidth = 800, WindowHeight = 800;
 shape14* object1 = nullptr;
 shape14* object2 = nullptr;
 GLint cDrawMode = (GLint)DRAWMODE::TRIANGLE;
-bool Timer = true;
+bool Timer = false;
 
 char* filetobuf(const char* file)
 {
@@ -159,13 +159,24 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'q':
 		glutLeaveMainLoop();
 		break;
+	case 't':
+		if (object1) object1->setDir_t();
+		if (object2) object2->setDir_t();
+		start_Timer();
+		break;
+	case 'c':
+		if (object1) object1->setDir_c();
+		if (object2) object2->setDir_c();
+		start_Timer();
+		break;
 	}
 	glutPostRedisplay();
 }
 
 GLvoid TimerFunction(int value)
 {
-
+	if (object1) object1->update();
+	if (object2) object2->update();
 	glutPostRedisplay();
 	if (Timer) {
 		glutTimerFunc(16, TimerFunction, 1);
