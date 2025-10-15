@@ -15,6 +15,7 @@
 
 #include <gl/glm/glm.hpp>
 #include <gl/glm/ext.hpp>
+#include <gl/glm/gtc/type_ptr.hpp>
 #include <gl/glm/gtc/matrix_transform.hpp>
 
 extern std::random_device rd;
@@ -24,3 +25,12 @@ extern std::uniform_real_distribution<float> random_dir;
 extern std::uniform_real_distribution<float> random_speed;
 extern std::uniform_real_distribution<float> random_col;
 extern std::uniform_real_distribution<float> random_col13;
+
+enum class DRAWMODE {
+	POINT = GL_POINTS,
+	LINE = GL_LINES,
+	LINE_STRIP = GL_LINE_STRIP,
+	TRIANGLE = GL_TRIANGLES,
+	LINE_LOOP = GL_LINE_LOOP,
+	END
+};
