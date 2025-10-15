@@ -1,0 +1,22 @@
+#pragma once
+
+#define _CRT_SECURE_NO_WARNINGS											//--- 프로그램 맨 앞에 선언할 것
+#include <stdlib.h>
+#include <stdio.h>
+#include <iostream>
+#include <random>
+#include <vector>
+#include <math.h>
+#include <cmath>
+
+#include <gl/glew.h>
+#include <gl/freeglut.h>
+#include <gl/freeglut_ext.h>
+
+extern std::random_device rd;
+extern std::uniform_real_distribution<float> random_color;
+extern std::uniform_real_distribution<float> random_size;
+extern std::uniform_real_distribution<float> random_dir;
+extern std::uniform_real_distribution<float> random_speed;
+extern std::uniform_real_distribution<float> random_col;
+extern std::uniform_real_distribution<float> random_col13;
