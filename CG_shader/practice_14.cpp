@@ -162,12 +162,16 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 't':
 		if (object1) object1->setDir_t();
 		if (object2) object2->setDir_t();
-		start_Timer();
+		if (!Timer) start_Timer();
 		break;
 	case 'c':
 		if (object1) object1->setDir_c();
 		if (object2) object2->setDir_c();
-		start_Timer();
+		if (!Timer) start_Timer();
+		break;
+	case 's':
+		if (Timer) Timer = false;
+		else start_Timer();
 		break;
 	}
 	glutPostRedisplay();
