@@ -63,6 +63,9 @@
     <ClCompile Include="TPentagon13.cpp">
       <Filter>소스 파일\객체 클래스</Filter>
     </ClCompile>
+    <ClCompile Include="practice_14.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="vertex.glsl">
