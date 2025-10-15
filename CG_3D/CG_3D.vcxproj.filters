@@ -16,6 +16,9 @@
     <Filter Include="소스 파일\Shader">
       <UniqueIdentifier>{4bad16b0-5aa3-4c69-aa89-572008e47521}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\object class">
+      <UniqueIdentifier>{61d5e564-20f0-482c-a10e-ae62b76c426c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="base.cpp">
@@ -23,6 +26,15 @@
     </ClCompile>
     <ClCompile Include="Random.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="practice_15.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>소스 파일\object class</Filter>
+    </ClCompile>
+    <ClCompile Include="Coordinate_system.cpp">
+      <Filter>소스 파일\object class</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -36,6 +48,12 @@
   <ItemGroup>
     <ClInclude Include="pch.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>소스 파일\object class</Filter>
+    </ClInclude>
+    <ClInclude Include="Coordinate_system.h">
+      <Filter>소스 파일\object class</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
