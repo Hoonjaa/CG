@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Coordinate_system.h"
+#include "Hexahedron.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -25,6 +26,7 @@ GLint WindowWidth = 800, WindowHeight = 800;
 bool Timer = false;
 
 Coordinate_system* coordinate_system = nullptr;
+Hexahedron* hexahedron = nullptr;
 
 char* filetobuf(const char* file)
 {
@@ -48,7 +50,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 {
 	//--- 윈도우 생성하기
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	glutInitWindowPosition(0, 0);
 	glutInitWindowSize(WindowWidth, WindowHeight);
 	glutCreateWindow("Example1");
@@ -58,9 +60,11 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	//--- 세이더 읽어와서 세이더 프로그램 만들기: 사용자 정의함수 호출
 	make_vertexShaders();												//--- 버텍스 세이더 만들기
 	make_fragmentShaders();												//--- 프래그먼트 세이더 만들기
-	shaderProgramID = make_shaderProgram();
-	//--- 세이더 프로그램 만들기
+	shaderProgramID = make_shaderProgram();								//--- 세이더 프로그램 만들기
+	//--- 기타 초기화
+	glEnable(GL_DEPTH_TEST);
 	coordinate_system = new Coordinate_system();
+	hexahedron = new Hexahedron();
 	glutTimerFunc(16, TimerFunction, 1);
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
@@ -140,7 +144,7 @@ GLuint make_shaderProgram()
 GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
 
@@ -150,7 +154,9 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
 
+	if (hexahedron) hexahedron->draw();
 	if (coordinate_system) coordinate_system->draw();
+	
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
