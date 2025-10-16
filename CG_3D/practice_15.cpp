@@ -18,6 +18,7 @@ GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 GLvoid TimerFunction(int value);
 // 6면체 면 선택 함수
 GLvoid focus_hexahedron(int face);
+GLvoid random_focus_hexahedron();
 
 //--- 필요한 변수 선언
 GLuint shaderProgramID;													//--- 세이더 프로그램 이름
@@ -219,6 +220,9 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case '0':
 		focus_hexahedron(6);
 		break;
+	case 'c':
+		random_focus_hexahedron();
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -243,4 +247,17 @@ GLvoid focus_hexahedron(int face) {
 		if (i == face) hexahedron->focus[i] = i;
 		else hexahedron->focus[i] = -1;
 	}
+}
+
+GLvoid random_focus_hexahedron() {
+	for (int i = 0; i < 6; i++) {
+		hexahedron->focus[i] = -1;
+	}
+	GLint face1 = random_face(rd);
+	GLint face2 = random_face(rd);
+	while (face1 == face2) {
+		face2 = random_face(rd);
+	}
+	hexahedron->focus[face1] = face1;
+	hexahedron->focus[face2] = face2;
 }

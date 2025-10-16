@@ -23,6 +23,7 @@ extern std::uniform_real_distribution<float> random_color;
 extern std::uniform_real_distribution<float> random_size;
 extern std::uniform_real_distribution<float> random_dir;
 extern std::uniform_real_distribution<float> random_speed;
+extern std::uniform_int_distribution<int> random_face;
 
 enum class DRAWMODE {
 	POINT = GL_POINTS,
