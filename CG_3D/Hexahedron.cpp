@@ -3,9 +3,6 @@
 
 Hexahedron::Hexahedron()
 {
-	vColor = glm::vec3(0.5f, 0.5f, 0.0f);
-	update_vertex();
-
     // VBO: 정점 데이터
     allocate(sizeof(vertices), GL_STATIC_DRAW);
     upload(vertices, sizeof(vertices));
@@ -18,7 +15,7 @@ Hexahedron::Hexahedron()
     allocateIndex(sizeof(indexes), GL_STATIC_DRAW);
     uploadIndex(indexes, sizeof(indexes));
 
-    vertexCount = 6;
+    vertexCount = 12;
     setDrawMode(GL_TRIANGLES);
 }
 
@@ -29,7 +26,17 @@ Hexahedron::~Hexahedron()
 GLvoid Hexahedron::draw()
 {
     glBindVertexArray(VAO);
-    glDrawElements(DrawMode, vertexCount, GL_UNSIGNED_INT, nullptr);
+    for (GLint i = 0; i < 6; i++) {
+        if(i == 0) vColor = glm::vec3(1.0f, 1.0f, 0.0f); // 앞면 노랑
+		else  if(i == 1) vColor = glm::vec3(0.0f, 1.0f, 0.0f); // 왼쪽면 초록
+		else  if (i == 2) vColor = glm::vec3(1.0f, 0.0f, 1.0f); // 뒷면 보라
+		else  if (i == 3) vColor = glm::vec3(1.0f, 0.5f, 0.0f); // 오른쪽면 주황
+		else  if (i == 4) vColor = glm::vec3(0.0f, 0.5f, 1.0f); // 아래면 하늘
+		else  if (i == 5) vColor = glm::vec3(1.0f, 0.0f, 0.0f); // 윗면 빨강
+        update_vertex();
+        const GLsizeiptr byteOffset = static_cast<GLsizeiptr>(i) * 6 * sizeof(GLuint);
+        glDrawElements(DrawMode, 6, GL_UNSIGNED_INT, reinterpret_cast<void*>(byteOffset));
+    }
 }
 
 GLvoid Hexahedron::update()
@@ -39,11 +46,15 @@ GLvoid Hexahedron::update()
 
 GLvoid Hexahedron::update_vertex()
 {
-    const GLfloat tmp[24] = {
+    const GLfloat tmp[48] = {
         vPos.x + 0.5f, vPos.y + 0.5f, vPos.z + 0.5f,  vColor.r, vColor.g, vColor.b,
         vPos.x - 0.5f, vPos.y + 0.5f, vPos.z + 0.5f,  vColor.r, vColor.g, vColor.b,
         vPos.x - 0.5f, vPos.y - 0.5f, vPos.z + 0.5f,  vColor.r, vColor.g, vColor.b,
         vPos.x + 0.5f, vPos.y - 0.5f, vPos.z + 0.5f,  vColor.r, vColor.g, vColor.b,
+        vPos.x - 0.5f, vPos.y + 0.5f, vPos.z - 0.5f,  vColor.r, vColor.g, vColor.b,
+        vPos.x - 0.5f, vPos.y - 0.5f, vPos.z - 0.5f,  vColor.r, vColor.g, vColor.b,
+        vPos.x + 0.5f, vPos.y + 0.5f, vPos.z - 0.5f,  vColor.r, vColor.g, vColor.b,
+        vPos.x + 0.5f, vPos.y - 0.5f, vPos.z - 0.5f,  vColor.r, vColor.g, vColor.b,
     };
 
     // CPU 측 배열 갱신
