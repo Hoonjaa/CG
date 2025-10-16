@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Coordinate_system.h"
 #include "Hexahedron.h"
+#include "Square_horn.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -19,6 +20,9 @@ GLvoid TimerFunction(int value);
 // 6면체 면 선택 함수
 GLvoid focus_hexahedron(int face);
 GLvoid random_focus_hexahedron();
+// 4면체 면 선택 함수
+GLvoid focus_square_horn(int face);
+GLvoid random_focus_square_horn();
 
 //--- 필요한 변수 선언
 GLuint shaderProgramID;													//--- 세이더 프로그램 이름
@@ -27,9 +31,11 @@ GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
 GLint WindowWidth = 800, WindowHeight = 800;
 bool Timer = false;
+bool Hexahedron_mode = true;
 
 Coordinate_system* coordinate_system = nullptr;
 Hexahedron* hexahedron = nullptr;
+Square_horn* square_horn = nullptr;
 
 char* filetobuf(const char* file)
 {
@@ -68,6 +74,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glEnable(GL_DEPTH_TEST);
 	coordinate_system = new Coordinate_system();
 	hexahedron = new Hexahedron();
+	square_horn = new Square_horn();
 	glutTimerFunc(16, TimerFunction, 1);
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
@@ -157,9 +164,9 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
 
-	if (hexahedron) hexahedron->draw();
+	if (hexahedron && Hexahedron_mode) hexahedron->draw();
 	if (coordinate_system) coordinate_system->draw();
-	
+	if (square_horn && !Hexahedron_mode) square_horn->draw();
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
@@ -217,11 +224,29 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case '6':
 		focus_hexahedron(5);
 		break;
+	case '7':
+		focus_square_horn(0);
+		break;
+	case '8':
+		focus_square_horn(1);
+		break;
+	case '9':
+		focus_square_horn(2);
+		break;
 	case '0':
+		focus_square_horn(3);
+		break;
+	case 'a':
 		focus_hexahedron(6);
+		break;
+	case 's':
+		focus_square_horn(4);
 		break;
 	case 'c':
 		random_focus_hexahedron();
+		break;
+	case 't':
+		random_focus_square_horn();
 		break;
 	}
 	glutPostRedisplay();
@@ -237,6 +262,7 @@ GLvoid TimerFunction(int value)
 }
 
 GLvoid focus_hexahedron(int face) {
+	Hexahedron_mode = true;
 	if (face == 6) {
 		for (int i = 0; i < 6; i++) {
 			hexahedron->focus[i] = i;
@@ -250,6 +276,7 @@ GLvoid focus_hexahedron(int face) {
 }
 
 GLvoid random_focus_hexahedron() {
+	Hexahedron_mode = true;
 	for (int i = 0; i < 6; i++) {
 		hexahedron->focus[i] = -1;
 	}
@@ -260,4 +287,27 @@ GLvoid random_focus_hexahedron() {
 	}
 	hexahedron->focus[face1] = face1;
 	hexahedron->focus[face2] = face2;
+}
+
+GLvoid focus_square_horn(int face) {
+	Hexahedron_mode = false;
+	if (face == 4) {
+		for(int i = 0; i < 4; i++) {
+			square_horn->focus_face[i] = i;
+		}
+		return;
+	}
+	for (int i = 0; i < 4; i++) {
+		if (i == face) square_horn->focus_face[i] = i;
+		else square_horn->focus_face[i] = -1;
+	}
+}
+
+GLvoid random_focus_square_horn() {
+	Hexahedron_mode = false;
+	for (int i = 0; i < 4; i++) {
+		square_horn->focus_face[i] = -1;
+	}
+	GLint face = random_face(rd) % 4;
+	square_horn->focus_face[face] = face;
 }

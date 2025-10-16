@@ -146,6 +146,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="practice_15.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="Square_horn.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment.glsl" />
@@ -156,6 +157,7 @@
     <ClInclude Include="Hexahedron.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Square_horn.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
