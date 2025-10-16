@@ -19,6 +19,9 @@ protected:
 	// 속성 설정
 	void setVertexAttrib(GLuint index, GLint size, GLenum type,
 		GLsizei stride, const void* pointer, GLboolean normalized = GL_FALSE);
+	// EBO 성정
+	void allocateIndex(GLsizeiptr size, GLenum usage = GL_STATIC_DRAW);
+	void uploadIndex(const void* data, GLsizeiptr size, GLintptr offset = 0);
 
 public:
 	Object();

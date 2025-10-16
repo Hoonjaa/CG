@@ -36,6 +36,9 @@
     <ClCompile Include="Coordinate_system.cpp">
       <Filter>소스 파일\object class</Filter>
     </ClCompile>
+    <ClCompile Include="Hexahedron.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment.glsl">
@@ -54,6 +57,9 @@
     </ClInclude>
     <ClInclude Include="Coordinate_system.h">
       <Filter>소스 파일\object class</Filter>
+    </ClInclude>
+    <ClInclude Include="Hexahedron.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
