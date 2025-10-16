@@ -27,12 +27,15 @@ GLvoid Hexahedron::draw()
 {
     glBindVertexArray(VAO);
     for (GLint i = 0; i < 6; i++) {
-        if(i == 0) vColor = glm::vec3(1.0f, 1.0f, 0.0f); // ¾Õ¸é ³ë¶û
+        if (focus[i] != i) continue;
+
+        if(i == 0) vColor = glm::vec3(1.0f, 1.0f, 0.0f); // µÞ¸é ³ë¶û
 		else  if(i == 1) vColor = glm::vec3(0.0f, 1.0f, 0.0f); // ¿ÞÂÊ¸é ÃÊ·Ï
-		else  if (i == 2) vColor = glm::vec3(1.0f, 0.0f, 1.0f); // µÞ¸é º¸¶ó
+		else  if (i == 2) vColor = glm::vec3(1.0f, 0.0f, 1.0f); // ¾Õ¸é º¸¶ó
 		else  if (i == 3) vColor = glm::vec3(1.0f, 0.5f, 0.0f); // ¿À¸¥ÂÊ¸é ÁÖÈ²
 		else  if (i == 4) vColor = glm::vec3(0.0f, 0.5f, 1.0f); // ¾Æ·¡¸é ÇÏ´Ã
 		else  if (i == 5) vColor = glm::vec3(1.0f, 0.0f, 0.0f); // À­¸é »¡°­
+
         update_vertex();
         const GLsizeiptr byteOffset = static_cast<GLsizeiptr>(i) * 6 * sizeof(GLuint);
         glDrawElements(DrawMode, 6, GL_UNSIGNED_INT, reinterpret_cast<void*>(byteOffset));
