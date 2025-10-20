@@ -25,6 +25,7 @@ GLint WindowWidth = 800, WindowHeight = 800;
 std::vector<Spiral*> spirals;
 GLint cDrawMode = (GLint)DRAWMODE::POINT;
 GLint drawCount = 1;
+GLfloat c1 = 0.0f, c2 = 0.0f, c3 = 0.0f;
 bool Timer = false;
 
 char* filetobuf(const char* file)
@@ -137,7 +138,7 @@ GLuint make_shaderProgram()
 //--- 출력 콜백 함수
 GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(c1, c2, c3, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(shaderProgramID);
 	glPointSize(3.0);
@@ -198,6 +199,9 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	GLfloat gl_x, gl_y;
 	Win_to_GL_mouse(x, y, gl_x, gl_y);
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		c1 = random_color(rd);
+		c2 = random_color(rd);
+		c3 = random_color(rd);
 		start_Timer();
 		for (GLint i = 0; i < drawCount; ++i) {
 			if(i == 0)
