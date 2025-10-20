@@ -89,6 +89,19 @@ GLvoid shape14::update()
 		Vertices[11].x, Vertices[11].y, Vertices[11].z,   vColor.x, vColor.y, vColor.z
 	};
 
+	static bool grow = true;
+	if (grow) {
+		size += 0.01f;
+		if (size >= 1.5f) grow = false;
+	}
+	else {
+		size -= 0.01f;
+		if (size <= 0.5f) grow = true;
+	}
+
+	radius_1[0] = 0.2f * size; radius_1[1] = 0.28f * size; radius_1[2] = 0.2f * size;
+	radius_2[0] = 0.2f * size; radius_2[1] = 0.2f * size; radius_2[2] = 0.02f * size;
+
 	for (GLint i = 0; i < 12; i++) {
 		if (shapeType == 1) {
 			thetaArray_1[i] += dTheta;

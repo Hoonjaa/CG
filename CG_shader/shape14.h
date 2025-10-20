@@ -5,6 +5,7 @@ class shape14 : public Object
 private:
 	GLint shapeType = 1;
 	GLfloat pi = 3.14159265358979323846f;
+	GLfloat size = 1.0f;
 
 	vec3 Vertices[12];
 	GLfloat thetaArray_1[12] = {
@@ -21,10 +22,10 @@ private:
 	};
 
 	GLfloat radius_1[3] = {
-		0.2f, 0.28f, 0.2f
+		0.2f * size, 0.28f * size, 0.2f * size
 	};
 	GLfloat radius_2[3] = {
-		0.2f, 0.2f, 0.02f
+		0.2f * size, 0.2f * size, 0.02f * size
 	};
 
 	GLfloat dTheta = 0.05f;     // 각도 증가량
@@ -35,6 +36,9 @@ public:
 
 	GLvoid setDir_t() { dTheta = 0.05f; }
 	GLvoid setDir_c() { dTheta = -0.05f; }
+
+	vec3 getPos() { return vPos; }
+	GLvoid setPos(vec3 pos) { vPos = pos; }
 
 	virtual GLvoid draw() override;
 	virtual GLvoid update() override;

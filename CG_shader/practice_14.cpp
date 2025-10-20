@@ -9,6 +9,8 @@ GLvoid drawScene();
 GLvoid Reshape(int w, int h);
 // 키보드 이벤트 처리 함수
 GLvoid Keyboard(unsigned char key, int x, int y);
+GLvoid Mouse(int button, int state, int x, int y);
+GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 // 타이머 함수
 GLvoid TimerFunction(int value);
 GLvoid start_Timer();
@@ -65,6 +67,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
 	glutKeyboardFunc(Keyboard);
+	glutMouseFunc(Mouse);
 	glutMainLoop();
 }
 
@@ -192,4 +195,28 @@ GLvoid start_Timer() {
 		Timer = true;
 		glutTimerFunc(16, TimerFunction, 1);
 	}
+}
+
+GLvoid Mouse(int button, int state, int x, int y) {
+	GLfloat gl_x, gl_y;
+	Win_to_GL_mouse(x, y, gl_x, gl_y);
+	vec3 Opos;
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		Opos = vec3(gl_x, gl_y, 0.0f);
+		if (object1) {
+			object1->setPos(Opos);
+		}
+	}
+	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+		Opos = vec3(gl_x, gl_y, 0.0f);
+		if (object2) {
+			object2->setPos(Opos);
+		}
+	}
+	glutPostRedisplay();
+}
+
+GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y) {
+	gl_x = (x / (float)WindowWidth) * 2.0f - 1.0f;
+	gl_y = 1.0f - (y / (float)WindowHeight) * 2.0f;
 }
