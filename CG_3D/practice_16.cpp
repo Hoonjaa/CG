@@ -26,7 +26,7 @@ GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 GLint WindowWidth = 800, WindowHeight = 800;
 bool Timer = false;
 bool Hexahedron_mode = true;
-bool X_animation = false, Y_animation = false;
+GLint animation_mode = 0;
 
 GLfloat X_angle = 0.0f, Y_angle = 0.0f;
 
@@ -165,6 +165,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	if (square_horn && !Hexahedron_mode) square_horn->draw();
 
 	model = glm::mat4(1.0f);
+	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
 	model = glm::rotate(model, glm::radians(-30.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	model = glm::rotate(model, glm::radians(-30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
@@ -228,9 +229,24 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		}
 		break;
 	case 'x':
-		if (!Timer) Timer = true;
-		glutTimerFunc(16, TimerFunction, 1);
-		X_animation = !X_animation;
+		if (!Timer) {
+			Timer = true;
+			glutTimerFunc(16, TimerFunction, 1);
+		}
+		if(animation_mode == 0 || animation_mode == 2)
+			animation_mode = 1;
+		else
+			animation_mode = 2;
+		break;
+	case 'y':
+		if (!Timer) {
+			Timer = true;
+			glutTimerFunc(16, TimerFunction, 1);
+		}
+		if(animation_mode == 0 || animation_mode == 4)
+			animation_mode = 3;
+		else
+			animation_mode = 4;
 		break;
 	}
 	glutPostRedisplay();
@@ -238,11 +254,17 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 
 GLvoid TimerFunction(int value)
 {
-	if (X_animation) {
+	if (animation_mode == 1) {
 		X_angle += 1.0f;
 	}
-	else {
+	else if(animation_mode == 2){
 		X_angle -= 1.0f;
+	}
+	else if(animation_mode == 3){
+		Y_angle += 1.0f;
+	}
+	else if (animation_mode == 4) {
+		Y_angle -= 1.0f;
 	}
 	glutPostRedisplay();
 	if (Timer) {
