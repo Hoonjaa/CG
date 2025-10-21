@@ -155,9 +155,11 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glPointSize(5.0);
 
 	glm::mat4 model = glm::mat4(1.0f);
-
 	model = glm::rotate(model, glm::radians(X_angle), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::rotate(model, glm::radians(-X_angle), glm::vec3(1.0f, 0.0f, 0.0f));
 	model = glm::rotate(model, glm::radians(Y_angle), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::rotate(model, glm::radians(X_angle), glm::vec3(1.0f, 0.0f, 0.0f));
+	
 	unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "RTransform");
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -166,6 +168,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 
 	model = glm::mat4(1.0f);
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+
 	model = glm::rotate(model, glm::radians(-30.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	model = glm::rotate(model, glm::radians(-30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
