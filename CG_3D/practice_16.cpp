@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Coordinate_system.h"
+#include "Hexahedron.h"
+#include "Square_horn.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -23,8 +25,11 @@ GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
 GLint WindowWidth = 800, WindowHeight = 800;
 bool Timer = false;
+bool Hexahedron_mode = true;
 
 Coordinate_system* coordinate_system = nullptr;
+Hexahedron* hexahedron = nullptr;
+Square_horn* square_horn = nullptr;
 
 char* filetobuf(const char* file)
 {
@@ -62,6 +67,8 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	//--- 세이더 프로그램 만들기
 	glEnable(GL_DEPTH_TEST);
 	coordinate_system = new Coordinate_system();
+	hexahedron = new Hexahedron();
+	square_horn = new Square_horn();
 	glutTimerFunc(16, TimerFunction, 1);
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
@@ -152,6 +159,8 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
 
 	if (coordinate_system) coordinate_system->draw();
+	if (hexahedron && Hexahedron_mode) hexahedron->draw();
+	if (square_horn && !Hexahedron_mode) square_horn->draw();
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
