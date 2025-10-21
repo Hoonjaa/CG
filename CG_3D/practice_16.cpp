@@ -257,6 +257,12 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		Y_angle = 0.0f;
 		animation_mode = 0;
 		break;
+	case 'c':
+		Hexahedron_mode = true;
+		break;
+	case 'p':
+		Hexahedron_mode = false;
+		break;
 	}
 	glutPostRedisplay();
 }
