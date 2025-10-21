@@ -11,6 +11,7 @@ GLvoid drawScene();
 GLvoid Reshape(int w, int h);
 // 키보드 이벤트 처리 함수
 GLvoid Keyboard(unsigned char key, int x, int y);
+GLvoid SpecialKeyboard(int key, int x, int y);
 // 마우스 이벤트 처리 함수
 GLvoid Mouse(int button, int state, int x, int y);
 GLvoid Motion(int x, int y);
@@ -29,6 +30,7 @@ bool Hexahedron_mode = true;
 GLint animation_mode = 0;
 
 GLfloat X_angle = 0.0f, Y_angle = 0.0f;
+GLfloat X_move = 0.0f, Y_move = 0.0f;
 
 Coordinate_system* coordinate_system = nullptr;
 Hexahedron* hexahedron = nullptr;
@@ -75,6 +77,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
 	glutKeyboardFunc(Keyboard);
+	glutSpecialFunc(SpecialKeyboard);
 	glutMouseFunc(Mouse);
 	glutMotionFunc(Motion);
 	glutMainLoop();
@@ -155,8 +158,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glPointSize(5.0);
 
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::rotate(model, glm::radians(X_angle), glm::vec3(1.0f, 0.0f, 0.0f));
-	model = glm::rotate(model, glm::radians(-X_angle), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(X_move, Y_move, 0.0f));
 	model = glm::rotate(model, glm::radians(Y_angle), glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::rotate(model, glm::radians(X_angle), glm::vec3(1.0f, 0.0f, 0.0f));
 	
@@ -216,7 +218,7 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		glutLeaveMainLoop();
 		break;
 	case 'h':
-		if(glIsEnabled(GL_DEPTH_TEST))
+		if (glIsEnabled(GL_DEPTH_TEST))
 			glDisable(GL_DEPTH_TEST);
 		else
 			glEnable(GL_DEPTH_TEST);
@@ -236,7 +238,7 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 			Timer = true;
 			glutTimerFunc(16, TimerFunction, 1);
 		}
-		if(animation_mode == 0 || animation_mode == 2)
+		if (animation_mode == 0 || animation_mode == 2)
 			animation_mode = 1;
 		else
 			animation_mode = 2;
@@ -246,7 +248,7 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 			Timer = true;
 			glutTimerFunc(16, TimerFunction, 1);
 		}
-		if(animation_mode == 0 || animation_mode == 4)
+		if (animation_mode == 0 || animation_mode == 4)
 			animation_mode = 3;
 		else
 			animation_mode = 4;
@@ -255,6 +257,8 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		Timer = false;
 		X_angle = 0.0f;
 		Y_angle = 0.0f;
+		X_move = 0.0f;
+		Y_move = 0.0f;
 		animation_mode = 0;
 		break;
 	case 'c':
@@ -262,6 +266,25 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		break;
 	case 'p':
 		Hexahedron_mode = false;
+		break;
+	}
+	glutPostRedisplay();
+}
+
+GLvoid SpecialKeyboard(int key, int x, int y)
+{
+	switch (key) {
+	case GLUT_KEY_UP:
+		Y_move += 0.1f;
+		break;
+	case GLUT_KEY_DOWN:
+		Y_move -= 0.1f;
+		break;
+	case GLUT_KEY_LEFT:
+		X_move -= 0.1f;
+		break;
+	case GLUT_KEY_RIGHT:
+		X_move += 0.1f;
 		break;
 	}
 	glutPostRedisplay();
