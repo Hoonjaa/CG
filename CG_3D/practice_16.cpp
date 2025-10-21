@@ -248,6 +248,10 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		else
 			animation_mode = 4;
 		break;
+	case 's':
+		Timer = false;
+		animation_mode = 0;
+		break;
 	}
 	glutPostRedisplay();
 }
