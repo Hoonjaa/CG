@@ -250,6 +250,8 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		break;
 	case 's':
 		Timer = false;
+		X_angle = 0.0f;
+		Y_angle = 0.0f;
 		animation_mode = 0;
 		break;
 	}
