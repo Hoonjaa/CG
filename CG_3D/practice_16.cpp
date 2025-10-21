@@ -48,7 +48,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 {
 	//--- 윈도우 생성하기
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	glutInitWindowPosition(0, 0);
 	glutInitWindowSize(WindowWidth, WindowHeight);
 	glutCreateWindow("Example1");
@@ -60,6 +60,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	make_fragmentShaders();												//--- 프래그먼트 세이더 만들기
 	shaderProgramID = make_shaderProgram();
 	//--- 세이더 프로그램 만들기
+	glEnable(GL_DEPTH_TEST);
 	coordinate_system = new Coordinate_system();
 	glutTimerFunc(16, TimerFunction, 1);
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
@@ -140,7 +141,7 @@ GLuint make_shaderProgram()
 GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
 
