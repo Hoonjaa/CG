@@ -5,9 +5,10 @@ layout(location = 1) in vec3 col;
 out vec3 frag_col;
 
 uniform mat4 modelTransform;
+uniform mat4 RTransform;
 
 void main()
 {
-	gl_Position = modelTransform * vec4(loc, 1.0f);
+	gl_Position = modelTransform * RTransform * vec4(loc, 1.0f);
 	frag_col = col;
 }

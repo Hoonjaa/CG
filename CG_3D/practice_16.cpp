@@ -26,6 +26,9 @@ GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 GLint WindowWidth = 800, WindowHeight = 800;
 bool Timer = false;
 bool Hexahedron_mode = true;
+bool X_animation = false, Y_animation = false;
+
+GLfloat X_angle = 0.0f, Y_angle = 0.0f;
 
 Coordinate_system* coordinate_system = nullptr;
 Hexahedron* hexahedron = nullptr;
@@ -69,7 +72,6 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	coordinate_system = new Coordinate_system();
 	hexahedron = new Hexahedron();
 	square_horn = new Square_horn();
-	glutTimerFunc(16, TimerFunction, 1);
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
 	glutKeyboardFunc(Keyboard);
@@ -153,14 +155,23 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glPointSize(5.0);
 
 	glm::mat4 model = glm::mat4(1.0f);
+
+	model = glm::rotate(model, glm::radians(X_angle), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::rotate(model, glm::radians(Y_angle), glm::vec3(0.0f, 1.0f, 0.0f));
+	unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "RTransform");
+	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+
+	if (hexahedron && Hexahedron_mode) hexahedron->draw();
+	if (square_horn && !Hexahedron_mode) square_horn->draw();
+
+	model = glm::mat4(1.0f);
 	model = glm::rotate(model, glm::radians(-30.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	model = glm::rotate(model, glm::radians(-30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+	modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
 
 	if (coordinate_system) coordinate_system->draw();
-	if (hexahedron && Hexahedron_mode) hexahedron->draw();
-	if (square_horn && !Hexahedron_mode) square_horn->draw();
+	
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
@@ -216,13 +227,23 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 			square_horn->setDrawMode((GLint)DRAWMODE::LINE_LOOP);
 		}
 		break;
+	case 'x':
+		if (!Timer) Timer = true;
+		glutTimerFunc(16, TimerFunction, 1);
+		X_animation = !X_animation;
+		break;
 	}
 	glutPostRedisplay();
 }
 
 GLvoid TimerFunction(int value)
 {
-
+	if (X_animation) {
+		X_angle += 1.0f;
+	}
+	else {
+		X_angle -= 1.0f;
+	}
 	glutPostRedisplay();
 	if (Timer) {
 		glutTimerFunc(16, TimerFunction, 1);
