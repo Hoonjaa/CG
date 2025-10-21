@@ -42,6 +42,9 @@
     <ClCompile Include="Square_horn.cpp">
       <Filter>소스 파일\object class</Filter>
     </ClCompile>
+    <ClCompile Include="practice_16.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment.glsl">
