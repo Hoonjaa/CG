@@ -200,6 +200,12 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'q':
 		glutLeaveMainLoop();
 		break;
+	case 'h':
+		if(glIsEnabled(GL_DEPTH_TEST))
+			glDisable(GL_DEPTH_TEST);
+		else
+			glEnable(GL_DEPTH_TEST);
+		break;
 	}
 	glutPostRedisplay();
 }
