@@ -206,6 +206,16 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		else
 			glEnable(GL_DEPTH_TEST);
 		break;
+	case 'w':
+		if (hexahedron->getDrawMode() == (GLint)DRAWMODE::LINE_LOOP) {
+			hexahedron->setDrawMode((GLint)DRAWMODE::TRIANGLE);
+			square_horn->setDrawMode((GLint)DRAWMODE::TRIANGLE);
+		}
+		else {
+			hexahedron->setDrawMode((GLint)DRAWMODE::LINE_LOOP);
+			square_horn->setDrawMode((GLint)DRAWMODE::LINE_LOOP);
+		}
+		break;
 	}
 	glutPostRedisplay();
 }

@@ -28,6 +28,7 @@ public:
 	virtual ~Object();
 
 	GLvoid setDrawMode(GLint mode) { DrawMode = mode; }
+	GLint getDrawMode() const { return DrawMode; }
 
 	virtual GLvoid draw() = 0;
 	virtual GLvoid update() = 0;
