@@ -71,6 +71,8 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	shaderProgramID = make_shaderProgram();
 	//--- 세이더 프로그램 만들기
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glFrontFace(GL_CCW);
 	coordinate_system = new Coordinate_system();
 	hexahedron = new Hexahedron();
 	square_horn = new Square_horn();
@@ -222,6 +224,12 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 			glDisable(GL_DEPTH_TEST);
 		else
 			glEnable(GL_DEPTH_TEST);
+		break;
+	case 'u':
+		if(glIsEnabled(GL_CULL_FACE))
+			glDisable(GL_CULL_FACE);
+		else
+			glEnable(GL_CULL_FACE);
 		break;
 	case 'w':
 		if (hexahedron->getDrawMode() == (GLint)DRAWMODE::LINE_LOOP) {
