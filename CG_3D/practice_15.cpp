@@ -164,6 +164,10 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
 
+	model = glm::mat4(1.0f);
+	modelLocation = glGetUniformLocation(shaderProgramID, "RTransform");
+	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+
 	if (hexahedron && Hexahedron_mode) hexahedron->draw();
 	if (coordinate_system) coordinate_system->draw();
 	if (square_horn && !Hexahedron_mode) square_horn->draw();
