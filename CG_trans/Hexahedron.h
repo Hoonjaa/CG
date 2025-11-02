@@ -25,6 +25,7 @@ public:
 	GLint focus[6] = { 0,1,2,3,4,5 };
 	GLfloat upper_angle = 0.0f;
 	GLfloat y_rotate_angle = 0.0f;
+	GLfloat front_angle = 0.0f;
 public:
 	Hexahedron();
 	virtual ~Hexahedron();

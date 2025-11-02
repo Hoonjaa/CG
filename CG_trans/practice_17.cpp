@@ -21,6 +21,8 @@ GLvoid TimerFunction(int value);
 GLvoid setViewPerspectiveMatrix();
 // 변환 행렬 업데이트
 GLvoid updateTransformMatrix();
+// 초기화
+GLvoid reset();
 
 //--- 필요한 변수 선언
 GLuint shaderProgramID;													//--- 세이더 프로그램 이름
@@ -36,6 +38,7 @@ Hexahedron* hexahedron = nullptr;
 
 bool upper_rotate = false;
 bool y_rotate = false;
+bool front_rotate = false;
 
 char* filetobuf(const char* file)
 {
@@ -220,12 +223,22 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		}
 		upper_rotate = !upper_rotate;
 		break;
+	case 'f':
+		if (!Timer) {
+			glutTimerFunc(16, TimerFunction, 1);
+			Timer = TRUE;
+		}
+		front_rotate = !front_rotate;
+		break;
 	case 'y':
 		if (!Timer) {
 			glutTimerFunc(16, TimerFunction, 1);
 			Timer = TRUE;
 		}
 		y_rotate = !y_rotate;
+		break;
+	case 'c':
+		reset();
 		break;
 	}
 	glutPostRedisplay();
@@ -243,6 +256,7 @@ GLvoid TimerFunction(int value)
 {
 	if(upper_rotate) hexahedron->upper_angle += 1.0f;
 	if (y_rotate) hexahedron->y_rotate_angle += 1.0f;
+	if (front_rotate) hexahedron->front_angle += 1.0f;
 	glutPostRedisplay();
 	if (Timer) {
 		glutTimerFunc(16, TimerFunction, 1);
@@ -262,4 +276,12 @@ GLvoid setViewPerspectiveMatrix() {
 GLvoid updateTransformMatrix() {
 	unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "Transform");
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Transform_matrix));
+}
+
+GLvoid reset() {
+	upper_rotate = false;
+	y_rotate = false;
+	hexahedron->upper_angle = 0.0f;
+	hexahedron->y_rotate_angle = 0.0f;
+	updateTransformMatrix();
 }
