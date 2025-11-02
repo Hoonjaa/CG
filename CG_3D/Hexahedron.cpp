@@ -25,6 +25,7 @@ Hexahedron::~Hexahedron()
 
 GLvoid Hexahedron::draw()
 {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glBindVertexArray(VAO);
     for (GLint i = 0; i < 6; i++) {
         if (focus[i] != i) continue;
@@ -40,6 +41,7 @@ GLvoid Hexahedron::draw()
         const GLsizeiptr byteOffset = static_cast<GLsizeiptr>(i) * 6 * sizeof(GLuint);
         glDrawElements(DrawMode, 6, GL_UNSIGNED_INT, reinterpret_cast<void*>(byteOffset));
     }
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 GLvoid Hexahedron::update()

@@ -8,6 +8,7 @@ GLvoid drawScene();
 GLvoid Reshape(int w, int h);
 // 키보드 이벤트 처리 함수
 GLvoid Keyboard(unsigned char key, int x, int y);
+GLvoid SpecialKeyboard(int key, int x, int y);
 // 마우스 이벤트 처리 함수
 GLvoid Mouse(int button, int state, int x, int y);
 GLvoid Motion(int x, int y);
@@ -61,6 +62,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
 	glutKeyboardFunc(Keyboard);
+	glutSpecialFunc(SpecialKeyboard);
 	glutMouseFunc(Mouse);
 	glutMotionFunc(Motion);
 	glutMainLoop();

@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Coordinate_system.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -14,6 +15,10 @@ GLvoid Motion(int x, int y);
 GLvoid Win_to_GL_mouse(int x, int y, GLfloat& gl_x, GLfloat& gl_y);
 // 타이머 함수
 GLvoid TimerFunction(int value);
+// 뷰 및 투영 변환 행렬
+GLvoid setViewPerspectiveMatrix();
+// 변환 행렬 업데이트
+GLvoid updateTransformMatrix();
 
 //--- 필요한 변수 선언
 GLuint shaderProgramID;													//--- 세이더 프로그램 이름
@@ -22,6 +27,9 @@ GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
 GLint WindowWidth = 800, WindowHeight = 800;
 bool Timer = false;
+glm::mat4 Transform_matrix{ 1.0f };
+
+Coordinate_system* coordinate_system = nullptr;
 
 char* filetobuf(const char* file)
 {
@@ -57,6 +65,8 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	make_fragmentShaders();												//--- 프래그먼트 세이더 만들기
 	shaderProgramID = make_shaderProgram();
 	//--- 세이더 프로그램 만들기
+	setViewPerspectiveMatrix();
+	coordinate_system = new Coordinate_system();
 	glutTimerFunc(16, TimerFunction, 1);
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
@@ -72,7 +82,7 @@ void make_vertexShaders()
 	GLchar* vertexSource;
 	//--- 버텍스 세이더 읽어 저장하고 컴파일 하기
 	//--- filetobuf: 사용자정의 함수로 텍스트를 읽어서 문자열에 저장하는 함수
-	vertexSource = filetobuf("vertex.glsl");
+	vertexSource = filetobuf("vertex_base.glsl");
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexSource, NULL);
 	glCompileShader(vertexShader);
@@ -92,7 +102,7 @@ void make_fragmentShaders()
 {
 	GLchar* fragmentSource;
 	//--- 프래그먼트 세이더 읽어 저장하고 컴파일하기
-	fragmentSource = filetobuf("fragment.glsl");						// 프래그세이더 읽어오기
+	fragmentSource = filetobuf("fragment_base.glsl");						// 프래그세이더 읽어오기
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
 	glCompileShader(fragmentShader);
@@ -139,6 +149,9 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
+
+	if (coordinate_system) coordinate_system->draw();
+
 	glutSwapBuffers();													// 화면에 출력하기
 }
 //--- 다시그리기 콜백 함수
@@ -188,4 +201,19 @@ GLvoid TimerFunction(int value)
 	if (Timer) {
 		glutTimerFunc(16, TimerFunction, 1);
 	}
+}
+
+GLvoid setViewPerspectiveMatrix() {
+	glm::mat4 view = glm::lookAt(glm::vec3(-2.0f, 2.0f, 2.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+
+	Transform_matrix = projection * view;
+	updateTransformMatrix();
+}
+
+GLvoid updateTransformMatrix() {
+	unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "Transform");
+	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Transform_matrix));
 }

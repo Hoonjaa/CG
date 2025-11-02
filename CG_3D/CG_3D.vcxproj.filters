@@ -56,6 +56,12 @@
     <None Include="vertex.glsl">
       <Filter>소스 파일\Shader</Filter>
     </None>
+    <None Include="fragment_base.glsl">
+      <Filter>소스 파일\Shader</Filter>
+    </None>
+    <None Include="vertex_base.glsl">
+      <Filter>소스 파일\Shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
