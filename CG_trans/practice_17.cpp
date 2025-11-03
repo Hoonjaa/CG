@@ -39,6 +39,8 @@ Hexahedron* hexahedron = nullptr;
 bool upper_rotate = false;
 bool y_rotate = false;
 bool front_rotate = false;
+bool side_rotate = false;
+bool back_scale = false;
 
 char* filetobuf(const char* file)
 {
@@ -230,6 +232,20 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		}
 		front_rotate = !front_rotate;
 		break;
+	case 's':
+		if (!Timer) {
+			glutTimerFunc(16, TimerFunction, 1);
+			Timer = TRUE;
+		}
+		side_rotate = !side_rotate;
+		break;
+	case 'b':
+		if (!Timer) {
+			glutTimerFunc(16, TimerFunction, 1);
+			Timer = TRUE;
+		}
+		back_scale = !back_scale;
+		break;
 	case 'y':
 		if (!Timer) {
 			glutTimerFunc(16, TimerFunction, 1);
@@ -257,6 +273,12 @@ GLvoid TimerFunction(int value)
 	if(upper_rotate) hexahedron->upper_angle += 1.0f;
 	if (y_rotate) hexahedron->y_rotate_angle += 1.0f;
 	if (front_rotate) hexahedron->front_angle += 1.0f;
+	if (side_rotate) hexahedron->side_angle += 1.0f;
+	if (back_scale) {
+		static GLfloat size_dist = 0.05f;
+		hexahedron->back_size += size_dist;
+		if (hexahedron->back_size >= 1.5f || hexahedron->back_size <= 0.25f) size_dist = -size_dist;
+	}
 	glutPostRedisplay();
 	if (Timer) {
 		glutTimerFunc(16, TimerFunction, 1);

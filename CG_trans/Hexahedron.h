@@ -26,6 +26,8 @@ public:
 	GLfloat upper_angle = 0.0f;
 	GLfloat y_rotate_angle = 0.0f;
 	GLfloat front_angle = 0.0f;
+	GLfloat side_angle = 0.0f;
+	GLfloat back_size = 1.0f;
 public:
 	Hexahedron();
 	virtual ~Hexahedron();

@@ -38,9 +38,18 @@ GLvoid Hexahedron::draw(const GLuint& ShaderID, const glm::mat4& main_matirx)
             modelMatrix = glm::rotate(modelMatrix, glm::radians(front_angle), glm::vec3(-1.0f, 0.0f, 0.0f));
 			modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, -0.5f, -0.5f));
         }
-        else  if (i == 1) vColor = glm::vec3(0.0f, 1.0f, 0.0f); // 왼쪽면 초록
-        else  if (i == 2) vColor = glm::vec3(1.0f, 0.0f, 1.0f); // 뒷면 보라
-        else  if (i == 3) vColor = glm::vec3(1.0f, 0.5f, 0.0f); // 오른쪽면 주황
+        else  if (i == 1) {
+            vColor = glm::vec3(0.0f, 1.0f, 0.0f); // 왼쪽면 초록
+            modelMatrix = glm::rotate(modelMatrix, glm::radians(side_angle), glm::vec3(1.0f, 0.0f, 0.0f));
+        }
+        else  if (i == 2) {
+            vColor = glm::vec3(1.0f, 0.0f, 1.0f); // 뒷면 보라
+			modelMatrix = glm::scale(modelMatrix, glm::vec3(back_size, back_size, 1.0f));
+        }
+        else  if (i == 3) {
+            vColor = glm::vec3(1.0f, 0.5f, 0.0f); // 오른쪽면 주황
+            modelMatrix = glm::rotate(modelMatrix, glm::radians(side_angle), glm::vec3(1.0f, 0.0f, 0.0f));
+        }
         else  if (i == 4) {
             vColor = glm::vec3(0.0f, 0.5f, 1.0f); // 윗면 하늘
             modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 0.5f, 0.0f));
