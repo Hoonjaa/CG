@@ -39,13 +39,19 @@ GLvoid Square_horn::update_vertex()
     upload(vertices, sizeof(vertices), 0);
 }
 
-GLvoid Square_horn::draw()
+GLvoid Square_horn::draw(const GLuint& ShaderID, const glm::mat4& main_matirx)
 {
     glBindVertexArray(VAO);
     vColor = glm::vec3(1.0f, 0.5f, 0.5f);
 	update_vertex();
+
+    modelMatrix = glm::rotate(modelMatrix, glm::radians(y_rotate_angle), glm::vec3(0.0f, 1.0f, 0.0f));
+	update_matrix(ShaderID, main_matirx);
     glDrawElements(DrawMode, 6, GL_UNSIGNED_INT, nullptr);
+
     for (GLint i = 2; i < 6; i++) {
+        modelMatrix = glm::mat4(1.0f);
+        modelMatrix = glm::rotate(modelMatrix, glm::radians(y_rotate_angle), glm::vec3(0.0f, 1.0f, 0.0f));
 		if (focus_face[i - 2] + 2 != i) continue;
 
         if (i == 2) vColor = glm::vec3(1.0f, 0.0f, 1.0f);
@@ -54,9 +60,17 @@ GLvoid Square_horn::draw()
         else  if (i == 5) vColor = glm::vec3(1.0f, 0.0f, 0.0f);
 
         update_vertex();
+        update_matrix(ShaderID, main_matirx);
         const GLsizeiptr byteOffset = static_cast<GLsizeiptr>(i) * 3 * sizeof(GLuint);
         glDrawElements(DrawMode, 3, GL_UNSIGNED_INT, reinterpret_cast<void*>(byteOffset));
     }
+    modelMatrix = glm::mat4(1.0f);
+    update_matrix(ShaderID, main_matirx);
+}
+
+GLvoid Square_horn::draw()
+{
+    return GLvoid();
 }
 
 GLvoid Square_horn::update()

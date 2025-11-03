@@ -172,7 +172,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 
 	if (coordinate_system) coordinate_system->draw();
 	if (hexahedron && hexamode) hexahedron->draw(shaderProgramID, Transform_matrix);
-	if (square_horn && !hexamode) square_horn->draw();
+	if (square_horn && !hexamode) square_horn->draw(shaderProgramID, Transform_matrix);
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
@@ -280,7 +280,7 @@ GLvoid SpecialKeyboard(int key, int x, int y)
 GLvoid TimerFunction(int value)
 {
 	if(upper_rotate) hexahedron->upper_angle += 1.0f;
-	if (y_rotate) hexahedron->y_rotate_angle += 1.0f;
+	if (y_rotate) hexahedron->y_rotate_angle += 1.0f; square_horn->y_rotate_angle += 1.0f;
 	if (front_rotate) hexahedron->front_angle += 1.0f;
 	if (side_rotate) hexahedron->side_angle += 1.0f;
 	if (back_scale) {
