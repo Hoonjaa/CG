@@ -45,6 +45,8 @@ bool upper_rotate = false;
 bool front_rotate = false;
 bool side_rotate = false;
 bool back_scale = false;
+// 사각뿔에 대한 회전 및 변환 상태 변수
+bool all_spread = false;
 
 char* filetobuf(const char* file)
 {
@@ -259,6 +261,13 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		}
 		y_rotate = !y_rotate;
 		break;
+	case 'o':
+		if (!Timer) {
+			glutTimerFunc(16, TimerFunction, 1);
+			Timer = TRUE;
+		}
+		all_spread = !all_spread;
+		break;
 	case 'c':
 		reset();
 		break;
@@ -280,13 +289,21 @@ GLvoid SpecialKeyboard(int key, int x, int y)
 GLvoid TimerFunction(int value)
 {
 	if(upper_rotate) hexahedron->upper_angle += 1.0f;
-	if (y_rotate) hexahedron->y_rotate_angle += 1.0f; square_horn->y_rotate_angle += 1.0f;
+	if (y_rotate) { hexahedron->y_rotate_angle += 1.0f; square_horn->y_rotate_angle += 1.0f; }
 	if (front_rotate) hexahedron->front_angle += 1.0f;
 	if (side_rotate) hexahedron->side_angle += 1.0f;
 	if (back_scale) {
 		static GLfloat size_dist = 0.05f;
 		hexahedron->back_size += size_dist;
 		if (hexahedron->back_size >= 1.5f || hexahedron->back_size <= 0.25f) size_dist = -size_dist;
+	}
+	if (all_spread) {
+		for (int i = 0; i < 4; i++) {
+			square_horn->spread_angle[i] += 1.0f;
+		}
+		if (square_horn->spread_angle[0] >= 233.0f) {
+			all_spread = false;
+		}
 	}
 	glutPostRedisplay();
 	if (Timer) {

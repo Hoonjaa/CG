@@ -54,10 +54,30 @@ GLvoid Square_horn::draw(const GLuint& ShaderID, const glm::mat4& main_matirx)
         modelMatrix = glm::rotate(modelMatrix, glm::radians(y_rotate_angle), glm::vec3(0.0f, 1.0f, 0.0f));
 		if (focus_face[i - 2] + 2 != i) continue;
 
-        if (i == 2) vColor = glm::vec3(1.0f, 0.0f, 1.0f);
-        else  if (i == 3) vColor = glm::vec3(1.0f, 0.5f, 0.0f);
-        else  if (i == 4) vColor = glm::vec3(0.0f, 0.5f, 1.0f);
-        else  if (i == 5) vColor = glm::vec3(1.0f, 0.0f, 0.0f);
+        if (i == 2) {
+            vColor = glm::vec3(1.0f, 0.0f, 1.0f);
+			modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, -0.5f, 0.5f));
+			modelMatrix = glm::rotate(modelMatrix, glm::radians(spread_angle[0]), glm::vec3(1.0f, 0.0f, 0.0f));
+			modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 0.5f, -0.5f));
+        }
+        else  if (i == 3) {
+            vColor = glm::vec3(1.0f, 0.5f, 0.0f);
+            modelMatrix = glm::translate(modelMatrix, glm::vec3(-0.5f, -0.5f, 0.0f));
+            modelMatrix = glm::rotate(modelMatrix, glm::radians(spread_angle[0]), glm::vec3(0.0f, 0.0f, 1.0f));
+            modelMatrix = glm::translate(modelMatrix, glm::vec3(0.5f, 0.5f, 0.0f));
+        }
+        else  if (i == 4) {
+            vColor = glm::vec3(0.0f, 0.5f, 1.0f);
+            modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, -0.5f, -0.5f));
+            modelMatrix = glm::rotate(modelMatrix, glm::radians(spread_angle[0]), glm::vec3(-1.0f, 0.0f, 0.0f));
+            modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 0.5f, 0.5f));
+        }
+        else  if (i == 5) {
+            vColor = glm::vec3(1.0f, 0.0f, 0.0f);
+            modelMatrix = glm::translate(modelMatrix, glm::vec3(0.5f, -0.5f, 0.0f));
+            modelMatrix = glm::rotate(modelMatrix, glm::radians(spread_angle[0]), glm::vec3(0.0f, 0.0f, -1.0f));
+            modelMatrix = glm::translate(modelMatrix, glm::vec3(-0.5f, 0.5f, 0.0f));
+        }
 
         update_vertex();
         update_matrix(ShaderID, main_matirx);

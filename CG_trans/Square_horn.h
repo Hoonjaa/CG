@@ -20,6 +20,7 @@ private:
 public:
 	GLint focus_face[4] = {0,1,2,3};
 	GLfloat y_rotate_angle = 0.0f;
+	GLfloat spread_angle[4] = { 0.0f };
 public:
 	Square_horn();
 	virtual ~Square_horn();
