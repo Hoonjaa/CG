@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Coordinate_system.h"
 #include "Hexahedron.h"
+#include "Square_horn.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -35,9 +36,12 @@ glm::mat4 Transform_matrix{ 1.0f };
 
 Coordinate_system* coordinate_system = nullptr;
 Hexahedron* hexahedron = nullptr;
+Square_horn* square_horn = nullptr;
 
-bool upper_rotate = false;
+bool hexamode = true;
 bool y_rotate = false;
+// 정육면체에 대한 회전 및 변환 상태 변수
+bool upper_rotate = false;
 bool front_rotate = false;
 bool side_rotate = false;
 bool back_scale = false;
@@ -81,6 +85,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glFrontFace(GL_CCW);
 	coordinate_system = new Coordinate_system();
 	hexahedron = new Hexahedron();
+	square_horn = new Square_horn();
 	setViewPerspectiveMatrix();
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
@@ -166,7 +171,8 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glPointSize(5.0);
 
 	if (coordinate_system) coordinate_system->draw();
-	if (hexahedron) hexahedron->draw(shaderProgramID, Transform_matrix);
+	if (hexahedron && hexamode) hexahedron->draw(shaderProgramID, Transform_matrix);
+	if (square_horn && !hexamode) square_horn->draw();
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
@@ -256,6 +262,9 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'c':
 		reset();
 		break;
+	case 'p':
+		hexamode = !hexamode;
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -301,9 +310,16 @@ GLvoid updateTransformMatrix() {
 }
 
 GLvoid reset() {
+	hexamode = true;
 	upper_rotate = false;
 	y_rotate = false;
+	front_rotate = false;
+	side_rotate = false;
+	back_scale = false;
 	hexahedron->upper_angle = 0.0f;
 	hexahedron->y_rotate_angle = 0.0f;
+	hexahedron->front_angle = 0.0f;
+	hexahedron->side_angle = 0.0f;
+	hexahedron->back_size = 1.0f;
 	updateTransformMatrix();
 }
