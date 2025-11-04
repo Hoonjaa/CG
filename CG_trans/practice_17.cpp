@@ -47,6 +47,7 @@ bool side_rotate = false;
 bool back_scale = false;
 // 사각뿔에 대한 회전 및 변환 상태 변수
 bool all_spread = false;
+bool sequential_spread = false;
 
 char* filetobuf(const char* file)
 {
@@ -268,6 +269,13 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		}
 		all_spread = !all_spread;
 		break;
+	case 'r':
+		if (!Timer) {
+			glutTimerFunc(16, TimerFunction, 1);
+			Timer = TRUE;
+		}
+		sequential_spread = !sequential_spread;
+		break;
 	case 'c':
 		reset();
 		break;
@@ -305,6 +313,32 @@ GLvoid TimerFunction(int value)
 			all_spread = false;
 		}
 	}
+	if (sequential_spread) {
+		static GLfloat angle_dist = 1.0f;
+		static bool increasing = true;
+		static GLint face = 0;
+		if (increasing) {
+			square_horn->spread_angle[face] += angle_dist;
+			if(square_horn->spread_angle[face] >= 90.0f) {
+				face++;
+				if (face >= 4) {
+					increasing = false;
+					face = 3;
+				}
+			}
+		}
+		else {
+			square_horn->spread_angle[face] -= angle_dist;
+			if (square_horn->spread_angle[face] <= 0.0f) {
+				face--;
+				if (face < 0) {
+					sequential_spread = false;
+					face = 0;
+					increasing = true;
+				}
+			}
+		}
+	}
 	glutPostRedisplay();
 	if (Timer) {
 		glutTimerFunc(16, TimerFunction, 1);
@@ -333,10 +367,16 @@ GLvoid reset() {
 	front_rotate = false;
 	side_rotate = false;
 	back_scale = false;
+	all_spread = false;
+	sequential_spread = false;
 	hexahedron->upper_angle = 0.0f;
 	hexahedron->y_rotate_angle = 0.0f;
 	hexahedron->front_angle = 0.0f;
 	hexahedron->side_angle = 0.0f;
 	hexahedron->back_size = 1.0f;
+	square_horn->y_rotate_angle = 0.0f;
+	for (int i = 0; i < 4; i++) {
+		square_horn->spread_angle[i] = 0.0f;
+	}
 	updateTransformMatrix();
 }
