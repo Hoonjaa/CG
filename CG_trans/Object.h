@@ -1,4 +1,16 @@
 #pragma once
+
+struct VertexInfo
+{
+	glm::vec3 vPos;
+	glm::vec3 vColor;
+};
+
+struct IndexInfo
+{
+	GLuint index[3];
+};
+
 class Object
 {
 protected:

@@ -1,16 +1,7 @@
 #pragma once
 #include "Object.h"
 
-struct VertexInfo
-{
-	glm::vec3 vPos;
-	glm::vec3 vColor;
-};
 
-struct IndexInfo
-{
-	GLuint index[3];
-};
 
 class Planet : public Object
 {

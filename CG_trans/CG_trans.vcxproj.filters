@@ -45,6 +45,9 @@
     <ClCompile Include="Planet.cpp">
       <Filter>소스 파일\객체</Filter>
     </ClCompile>
+    <ClCompile Include="Orbit.cpp">
+      <Filter>소스 파일\객체</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -63,6 +66,9 @@
       <Filter>소스 파일\객체</Filter>
     </ClInclude>
     <ClInclude Include="Planet.h">
+      <Filter>소스 파일\객체</Filter>
+    </ClInclude>
+    <ClInclude Include="Orbit.h">
       <Filter>소스 파일\객체</Filter>
     </ClInclude>
   </ItemGroup>
