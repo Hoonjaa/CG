@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Coordinate_system.h"
+#include "Planet.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -31,6 +32,7 @@ bool Timer = false;
 glm::mat4 Transform_matrix{ 1.0f };
 
 Coordinate_system* coordinate_system = nullptr;
+Planet* central_planet = nullptr;
 
 char* filetobuf(const char* file)
 {
@@ -70,6 +72,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 	coordinate_system = new Coordinate_system();
+	central_planet = new Planet(0.5f, 36, 18, {1.0f, 0.0f, 0.0f});
 	setViewPerspectiveMatrix();
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
@@ -155,6 +158,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glPointSize(5.0);
 
 	if (coordinate_system) coordinate_system->draw(shaderProgramID, Transform_matrix);
+	if (central_planet) central_planet->draw(shaderProgramID, Transform_matrix);
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
