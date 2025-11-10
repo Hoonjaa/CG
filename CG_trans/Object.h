@@ -30,6 +30,6 @@ public:
 	GLvoid setDrawMode(GLint mode) { DrawMode = mode; }
 	GLint getDrawMode() const { return DrawMode; }
 
-	virtual GLvoid draw() = 0;
+	virtual GLvoid draw(const GLuint& ShaderID, const glm::mat4& main_matirx) = 0;
 	virtual GLvoid update() = 0;
 };

@@ -144,7 +144,11 @@
     <ClCompile Include="Coordinate_system.cpp" />
     <ClCompile Include="Hexahedron.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="practice_17.cpp" />
+    <ClCompile Include="Planet.cpp" />
+    <ClCompile Include="practice_17.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="practice_19.cpp" />
     <ClCompile Include="Square_horn.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +156,7 @@
     <ClInclude Include="Hexahedron.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Planet.h" />
     <ClInclude Include="Square_horn.h" />
   </ItemGroup>
   <ItemGroup>

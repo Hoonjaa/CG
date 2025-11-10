@@ -32,9 +32,7 @@ public:
 		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(final_matrix));
 	}
 
-	GLvoid draw(const GLuint& ShaderID, const glm::mat4& main_matirx);
-
-	GLvoid draw() override;
+	GLvoid draw(const GLuint& ShaderID, const glm::mat4& main_matirx) override;
 	GLvoid update() override;
 };
 

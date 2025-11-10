@@ -88,10 +88,6 @@ GLvoid Square_horn::draw(const GLuint& ShaderID, const glm::mat4& main_matirx)
     update_matrix(ShaderID, main_matirx);
 }
 
-GLvoid Square_horn::draw()
-{
-    return GLvoid();
-}
 
 GLvoid Square_horn::update()
 {

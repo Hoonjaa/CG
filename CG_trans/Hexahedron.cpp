@@ -68,11 +68,6 @@ GLvoid Hexahedron::draw(const GLuint& ShaderID, const glm::mat4& main_matirx)
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-GLvoid Hexahedron::draw()
-{
-    return GLvoid();
-}
-
 GLvoid Hexahedron::update()
 {
     return GLvoid();

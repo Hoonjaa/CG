@@ -173,7 +173,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
 
-	if (coordinate_system) coordinate_system->draw();
+	if (coordinate_system) coordinate_system->draw(shaderProgramID, Transform_matrix);
 	if (hexahedron && hexamode) hexahedron->draw(shaderProgramID, Transform_matrix);
 	if (square_horn && !hexamode) square_horn->draw(shaderProgramID, Transform_matrix);
 

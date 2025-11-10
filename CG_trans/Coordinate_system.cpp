@@ -25,7 +25,7 @@ Coordinate_system::~Coordinate_system()
 {
 }
 
-GLvoid Coordinate_system::draw()
+GLvoid Coordinate_system::draw(const GLuint& ShaderID, const glm::mat4& main_matirx)
 {
 	glBindVertexArray(VAO);
 	glDrawArrays(DrawMode, 0, 6);
