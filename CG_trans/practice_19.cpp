@@ -30,7 +30,7 @@ GLuint vertexShader;													//--- 버텍스 세이더 객체
 GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
 GLint WindowWidth = 800, WindowHeight = 800;
-bool Timer = false;
+bool Timer = true;
 glm::mat4 Transform_matrix{ 1.0f };
 
 Coordinate_system* coordinate_system = nullptr;
@@ -54,9 +54,13 @@ struct OrbitTransform {
 	glm::vec3 axis;
 };
 std::vector <OrbitTransform> orbits;
+std::vector <OrbitTransform> second_orbits;
 Orbit* central_orbit_1 = nullptr;
 Orbit* central_orbit_2 = nullptr;
 Orbit* central_orbit_3 = nullptr;
+Orbit* second_orbit_1 = nullptr;
+Orbit* second_orbit_2 = nullptr;
+Orbit* second_orbit_3 = nullptr;
 
 GLfloat central_orbit_radius = 1.5f;
 
@@ -97,6 +101,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
+	glutTimerFunc(16, TimerFunction, 1);
 	coordinate_system = new Coordinate_system();
 	//--- 행성 만들기
 	central_planet = new Planet(0.5f, 36, 18, {1.0f, 0.0f, 0.0f});
@@ -113,6 +118,11 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	orbits.push_back({ central_orbit_1, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
 	orbits.push_back({ central_orbit_2, 45.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
 	orbits.push_back({ central_orbit_3, -45.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
+	second_orbit_1 = new Orbit(central_orbit_radius / 4.0f);
+	second_orbit_2 = new Orbit(central_orbit_radius / 4.0f);
+	second_orbit_3 = new Orbit(central_orbit_radius / 4.0f);
+	second_orbits.push_back({ second_orbit_1, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
+
 
 	setViewPerspectiveMatrix();
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
@@ -200,16 +210,6 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 
 	//if (coordinate_system) coordinate_system->draw(shaderProgramID, Transform_matrix);
 	if (central_planet) central_planet->draw(shaderProgramID, Transform_matrix);
-	for (const auto& planetData : planets) {
-		if (!planetData.planet) continue;
-
-		glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(planetData.angle), planetData.axis);
-		Transform_matrix = getViewPerspectiveMatrix() * model;
-		updateTransformMatrix();
-		planetData.planet->draw(shaderProgramID, Transform_matrix);
-		Transform_matrix = getViewPerspectiveMatrix();
-		updateTransformMatrix();
-	}
 
 	for (const auto& orbitData : orbits) {
 		if (!orbitData.orbit) continue;
@@ -218,6 +218,19 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 		Transform_matrix = getViewPerspectiveMatrix() * model;
 		updateTransformMatrix();
 		orbitData.orbit->draw(shaderProgramID, Transform_matrix);
+		Transform_matrix = getViewPerspectiveMatrix();
+		updateTransformMatrix();
+	}
+
+	for (const auto& planetData : planets) {
+		if (!planetData.planet) continue;
+
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::rotate(model, glm::radians(planetData.angle), planetData.axis);
+		model = glm::rotate(model, glm::radians(planetData.planet->revolve_angle), glm::vec3(0.0f, 1.0f, 0.0f));
+		Transform_matrix = getViewPerspectiveMatrix() * model;
+		updateTransformMatrix();
+		planetData.planet->draw(shaderProgramID, Transform_matrix);
 		Transform_matrix = getViewPerspectiveMatrix();
 		updateTransformMatrix();
 	}
@@ -286,7 +299,11 @@ GLvoid SpecialKeyboard(int key, int x, int y)
 
 GLvoid TimerFunction(int value)
 {
-
+	for (auto& planetData : planets) {
+		planetData.planet->revolve_angle += planetData.planet->revolve_speed;
+		if (planetData.planet->revolve_angle >= 360.0f || planetData.planet->revolve_angle <= -360.0f)
+			planetData.planet->revolve_angle = 0.0f;
+	}
 	glutPostRedisplay();
 	if (Timer) {
 		glutTimerFunc(16, TimerFunction, 1);

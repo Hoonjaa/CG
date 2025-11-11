@@ -19,5 +19,4 @@
 #include <gl/glm/gtc/matrix_transform.hpp>
 
 extern std::random_device rd;
-extern std::uniform_real_distribution<float> random_color;
-extern std::uniform_real_distribution<float> random_coordinate;
+extern std::uniform_real_distribution<float> random_revolve_speed;

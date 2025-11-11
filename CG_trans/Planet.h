@@ -11,6 +11,10 @@ private:
 	GLfloat radius;
 
 public:
+	GLfloat revolve_angle = 0.0f;
+	GLfloat revolve_speed = random_revolve_speed(rd);
+
+public:
 	Planet(GLfloat r = 1.0f, GLuint sectors = 36, GLuint stacks = 18, glm::vec3 color = { 0.0f, 0.0f, 0.0f }, glm::vec3 Pos = { 0.0f, 0.0f, 0.0f });
 	virtual ~Planet();
 
