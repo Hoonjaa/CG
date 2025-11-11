@@ -34,19 +34,31 @@ bool Timer = false;
 glm::mat4 Transform_matrix{ 1.0f };
 
 Coordinate_system* coordinate_system = nullptr;
+//행성에 관한 변수들
 Planet* central_planet = nullptr;
 
+struct planetTransform {
+	Planet* planet;
+	GLfloat angle;
+	glm::vec3 axis;
+};
+std::vector <planetTransform> planets;
+Planet* middle_planet_1 = nullptr;
+Planet* middle_planet_2 = nullptr;
+Planet* middle_planet_3 = nullptr;
+
+//궤도에 관한 변수들
 struct OrbitTransform {
 	Orbit* orbit;
 	GLfloat angle;
 	glm::vec3 axis;
 };
-
 std::vector <OrbitTransform> orbits;
-
 Orbit* central_orbit_1 = nullptr;
 Orbit* central_orbit_2 = nullptr;
 Orbit* central_orbit_3 = nullptr;
+
+GLfloat central_orbit_radius = 1.5f;
 
 char* filetobuf(const char* file)
 {
@@ -86,10 +98,18 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 	coordinate_system = new Coordinate_system();
+	//--- 행성 만들기
 	central_planet = new Planet(0.5f, 36, 18, {1.0f, 0.0f, 0.0f});
-	central_orbit_1 = new Orbit(1.5f);
-	central_orbit_2 = new Orbit(1.5f);
-	central_orbit_3 = new Orbit(1.5f);
+	middle_planet_1 = new Planet(0.25f, 36, 18, { 0.0f, 1.0f, 0.0f }, { central_orbit_radius, 0.0f, 0.0f });
+	middle_planet_2 = new Planet(0.25f, 36, 18, { 0.0f, 1.0f, 0.0f }, { central_orbit_radius, 0.0f, 0.0f });
+	middle_planet_3 = new Planet(0.25f, 36, 18, { 0.0f, 1.0f, 0.0f }, { -central_orbit_radius, 0.0f, 0.0f });
+	planets.push_back({ middle_planet_1, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
+	planets.push_back({ middle_planet_2, 45.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
+	planets.push_back({ middle_planet_3, -45.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
+	//--- 궤도 만들기
+	central_orbit_1 = new Orbit(central_orbit_radius);
+	central_orbit_2 = new Orbit(central_orbit_radius);
+	central_orbit_3 = new Orbit(central_orbit_radius);
 	orbits.push_back({ central_orbit_1, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
 	orbits.push_back({ central_orbit_2, 45.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
 	orbits.push_back({ central_orbit_3, -45.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
@@ -180,6 +200,16 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 
 	//if (coordinate_system) coordinate_system->draw(shaderProgramID, Transform_matrix);
 	if (central_planet) central_planet->draw(shaderProgramID, Transform_matrix);
+	for (const auto& planetData : planets) {
+		if (!planetData.planet) continue;
+
+		glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(planetData.angle), planetData.axis);
+		Transform_matrix = getViewPerspectiveMatrix() * model;
+		updateTransformMatrix();
+		planetData.planet->draw(shaderProgramID, Transform_matrix);
+		Transform_matrix = getViewPerspectiveMatrix();
+		updateTransformMatrix();
+	}
 
 	for (const auto& orbitData : orbits) {
 		if (!orbitData.orbit) continue;
