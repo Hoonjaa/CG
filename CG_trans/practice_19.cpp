@@ -165,7 +165,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
 
-	if (coordinate_system) coordinate_system->draw(shaderProgramID, Transform_matrix);
+	//if (coordinate_system) coordinate_system->draw(shaderProgramID, Transform_matrix);
 	if (central_planet) central_planet->draw(shaderProgramID, Transform_matrix);
 	if (central_orbit_1) central_orbit_1->draw(shaderProgramID, Transform_matrix);
 
@@ -180,7 +180,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	updateTransformMatrix();
 	
 
-	model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	Transform_matrix = getViewPerspectiveMatrix() * model;
 	updateTransformMatrix();
 	if (central_orbit_3) central_orbit_3->draw(shaderProgramID, Transform_matrix);
@@ -260,7 +260,7 @@ GLvoid TimerFunction(int value)
 }
 
 GLvoid setViewPerspectiveMatrix() {
-	glm::mat4 view = glm::lookAt(glm::vec3(-2.0f, 2.0f, 5.0f),
+	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 2.0f, 5.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
@@ -270,7 +270,7 @@ GLvoid setViewPerspectiveMatrix() {
 }
 
 glm::mat4 getViewPerspectiveMatrix() {
-	glm::mat4 view = glm::lookAt(glm::vec3(-2.0f, 2.0f, 5.0f),
+	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 2.0f, 5.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
