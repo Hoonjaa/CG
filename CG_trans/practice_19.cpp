@@ -345,6 +345,14 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		small_planet_2->solid_mode = !small_planet_2->solid_mode;
 		small_planet_3->solid_mode = !small_planet_3->solid_mode;
 		break;
+	case 'y':
+		central_orbit_1->radius += 0.1f; central_orbit_1->update();
+		central_orbit_2->radius += 0.1f; central_orbit_2->update();
+		central_orbit_3->radius += 0.1f; central_orbit_3->update();
+		second_orbit_1->radius += 0.05f; second_orbit_1->update();
+		second_orbit_2->radius += 0.05f; second_orbit_2->update();
+		second_orbit_3->radius += 0.05f; second_orbit_3->update();
+		break;
 	}
 	glutPostRedisplay();
 }

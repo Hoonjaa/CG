@@ -24,7 +24,17 @@ GLvoid Orbit::draw(const GLuint& ShaderID, const glm::mat4& main_matirx) {
 }
 
 GLvoid Orbit::update() {
-
+	setOrbitVertex();
+	
+	// VAO 바인딩
+	glBindVertexArray(VAO);
+	// VBO 바인딩 및 데이터 업로드
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(VertexInfo) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+	
+	// 정점 속성 재설정
+	setVertexAttrib(0, 3, GL_FLOAT, sizeof(VertexInfo), (void*)0);
+	setVertexAttrib(1, 3, GL_FLOAT, sizeof(VertexInfo), (void*)(3 * sizeof(GLfloat)));
 }
 
 GLvoid Orbit::setOrbitVertex() {

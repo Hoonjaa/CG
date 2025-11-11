@@ -5,6 +5,8 @@ class Orbit : public Object
 {
 private:
 	std::vector <VertexInfo> vertices;
+
+public:
 	GLfloat radius;
 
 public:
