@@ -41,6 +41,7 @@ public:
 
 	GLvoid setDrawMode(GLint mode) { DrawMode = mode; }
 	GLint getDrawMode() const { return DrawMode; }
+	glm::vec3 getPosition() const { return vPos; }
 
 	virtual GLvoid draw(const GLuint& ShaderID, const glm::mat4& main_matirx) = 0;
 	virtual GLvoid update() = 0;

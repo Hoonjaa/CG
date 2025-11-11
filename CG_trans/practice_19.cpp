@@ -47,6 +47,12 @@ Planet* middle_planet_1 = nullptr;
 Planet* middle_planet_2 = nullptr;
 Planet* middle_planet_3 = nullptr;
 
+// 3단계 행성들
+std::vector <planetTransform> third_planets;
+Planet* small_planet_1 = nullptr;
+Planet* small_planet_2 = nullptr;
+Planet* small_planet_3 = nullptr;
+
 //궤도에 관한 변수들
 struct OrbitTransform {
 	Orbit* orbit;
@@ -62,7 +68,8 @@ Orbit* second_orbit_1 = nullptr;
 Orbit* second_orbit_2 = nullptr;
 Orbit* second_orbit_3 = nullptr;
 
-GLfloat central_orbit_radius = 1.5f;
+GLfloat central_orbit_radius = 2.0f;
+GLfloat second_orbit_radius = central_orbit_radius / 2.0f;
 
 char* filetobuf(const char* file)
 {
@@ -104,13 +111,22 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glutTimerFunc(16, TimerFunction, 1);
 	coordinate_system = new Coordinate_system();
 	//--- 행성 만들기
-	central_planet = new Planet(0.5f, 36, 18, {1.0f, 0.0f, 0.0f});
+	central_planet = new Planet(0.5f, 36, 18, {0.0f, 0.0f, 1.0f});
 	middle_planet_1 = new Planet(0.25f, 36, 18, { 0.0f, 1.0f, 0.0f }, { central_orbit_radius, 0.0f, 0.0f });
 	middle_planet_2 = new Planet(0.25f, 36, 18, { 0.0f, 1.0f, 0.0f }, { central_orbit_radius, 0.0f, 0.0f });
-	middle_planet_3 = new Planet(0.25f, 36, 18, { 0.0f, 1.0f, 0.0f }, { -central_orbit_radius, 0.0f, 0.0f });
+	middle_planet_3 = new Planet(0.25f, 36, 18, { 0.0f, 1.0f, 0.0f }, { central_orbit_radius, 0.0f, 0.0f });
 	planets.push_back({ middle_planet_1, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
 	planets.push_back({ middle_planet_2, 45.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
 	planets.push_back({ middle_planet_3, -45.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
+	
+	// 3단계 행성 만들기 (반지름 0.1, 원점에서 생성)
+	small_planet_1 = new Planet(0.1f, 36, 18, { 1.0f, 0.0f, 0.0f }, { second_orbit_radius, 0.0f, 0.0f });
+	small_planet_2 = new Planet(0.1f, 36, 18, { 1.0f, 0.0f, 0.0f }, { second_orbit_radius, 0.0f, 0.0f });
+	small_planet_3 = new Planet(0.1f, 36, 18, { 1.0f, 0.0f, 0.0f }, { second_orbit_radius, 0.0f, 0.0f });
+	third_planets.push_back({ small_planet_1, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
+	third_planets.push_back({ small_planet_2, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
+	third_planets.push_back({ small_planet_3, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
+	
 	//--- 궤도 만들기
 	central_orbit_1 = new Orbit(central_orbit_radius);
 	central_orbit_2 = new Orbit(central_orbit_radius);
@@ -118,10 +134,12 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	orbits.push_back({ central_orbit_1, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
 	orbits.push_back({ central_orbit_2, 45.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
 	orbits.push_back({ central_orbit_3, -45.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
-	second_orbit_1 = new Orbit(central_orbit_radius / 4.0f);
-	second_orbit_2 = new Orbit(central_orbit_radius / 4.0f);
-	second_orbit_3 = new Orbit(central_orbit_radius / 4.0f);
+	second_orbit_1 = new Orbit(second_orbit_radius);
+	second_orbit_2 = new Orbit(second_orbit_radius);
+	second_orbit_3 = new Orbit(second_orbit_radius);
 	second_orbits.push_back({ second_orbit_1, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
+	second_orbits.push_back({ second_orbit_2, 45.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
+	second_orbits.push_back({ second_orbit_3, -45.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
 
 
 	setViewPerspectiveMatrix();
@@ -200,7 +218,7 @@ GLuint make_shaderProgram()
 	return shaderID;
 }
 
-//--- 출력 콜백 함수
+//--- 출력 콸백 함수
 GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -209,8 +227,11 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glPointSize(5.0);
 
 	//if (coordinate_system) coordinate_system->draw(shaderProgramID, Transform_matrix);
+	
+	// 중심 행성 그리기
 	if (central_planet) central_planet->draw(shaderProgramID, Transform_matrix);
 
+	// 1단계 궤도 그리기
 	for (const auto& orbitData : orbits) {
 		if (!orbitData.orbit) continue;
 
@@ -218,25 +239,55 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 		Transform_matrix = getViewPerspectiveMatrix() * model;
 		updateTransformMatrix();
 		orbitData.orbit->draw(shaderProgramID, Transform_matrix);
-		Transform_matrix = getViewPerspectiveMatrix();
-		updateTransformMatrix();
 	}
 
-	for (const auto& planetData : planets) {
+	// 각 1단계 궤도 시스템 (2단계 행성 + 2단계 궤도 + 3단계 행성)
+	for (size_t i = 0; i < planets.size(); ++i) {
+		const auto& planetData = planets[i];
 		if (!planetData.planet) continue;
 
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::rotate(model, glm::radians(planetData.angle), planetData.axis);
-		model = glm::rotate(model, glm::radians(planetData.planet->revolve_angle), glm::vec3(0.0f, 1.0f, 0.0f));
-		Transform_matrix = getViewPerspectiveMatrix() * model;
+		// 1단계 궤도 회전 (기울기)
+		glm::mat4 orbit_rotation = glm::rotate(glm::mat4(1.0f), glm::radians(planetData.angle), planetData.axis);
+		
+		// 2단계 행성의 공전
+		glm::mat4 planet_revolution = glm::rotate(glm::mat4(1.0f), glm::radians(planetData.planet->revolve_angle), glm::vec3(0.0f, 1.0f, 0.0f));
+		
+		// 2단계 행성의 최종 변환 = 궤도 기울기 * 공전
+		glm::mat4 planet_model = orbit_rotation * planet_revolution;
+		Transform_matrix = getViewPerspectiveMatrix() * planet_model;
 		updateTransformMatrix();
 		planetData.planet->draw(shaderProgramID, Transform_matrix);
-		Transform_matrix = getViewPerspectiveMatrix();
-		updateTransformMatrix();
+		
+		// 2단계 궤도 그리기 (2단계 행성 위치에서)
+		if (i < second_orbits.size() && second_orbits[i].orbit) {
+			glm::mat4 third_revolution = glm::mat4(1.0f);
+			third_revolution = glm::translate(third_revolution, planetData.planet->getPosition()); // 2단계 행성 위치로 이동
+			Transform_matrix = getViewPerspectiveMatrix() * planet_model * third_revolution;
+			updateTransformMatrix();
+			second_orbits[i].orbit->draw(shaderProgramID, Transform_matrix);
+		}
+		
+		// 3단계 행성 그리기 (2단계 행성 주위를 공전)
+		if (i < third_planets.size() && third_planets[i].planet) {
+			// 3단계 행성의 공전
+			glm::mat4 third_revolution = glm::mat4(1.0f);
+			third_revolution = glm::translate(third_revolution, planetData.planet->getPosition()); // 2단계 행성 위치로 이동
+			third_revolution = glm::rotate(third_revolution, glm::radians(third_planets[i].planet->revolve_angle), glm::vec3(0.0f, 1.0f, 0.0f));
+			
+			// 3단계 행성의 최종 변환 = 궤도 기울기 * 2단계 공전 * 3단계 공전
+			glm::mat4 third_model = planet_model * third_revolution;
+			Transform_matrix = getViewPerspectiveMatrix() * third_model;
+			updateTransformMatrix();
+			third_planets[i].planet->draw(shaderProgramID, Transform_matrix);
+		}
 	}
+
+	Transform_matrix = getViewPerspectiveMatrix();
+	updateTransformMatrix();
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
+
 //--- 다시그리기 콜백 함수
 GLvoid Reshape(int w, int h)											//--- 콜백 함수: 다시 그리기 콜백 함수
 {
@@ -304,6 +355,14 @@ GLvoid TimerFunction(int value)
 		if (planetData.planet->revolve_angle >= 360.0f || planetData.planet->revolve_angle <= -360.0f)
 			planetData.planet->revolve_angle = 0.0f;
 	}
+	
+	// 3단계 행성 공전 업데이트
+	for (auto& planetData : third_planets) {
+		planetData.planet->revolve_angle += planetData.planet->revolve_speed;
+		if (planetData.planet->revolve_angle >= 360.0f || planetData.planet->revolve_angle <= -360.0f)
+			planetData.planet->revolve_angle = 0.0f;
+	}
+	
 	glutPostRedisplay();
 	if (Timer) {
 		glutTimerFunc(16, TimerFunction, 1);
@@ -311,7 +370,7 @@ GLvoid TimerFunction(int value)
 }
 
 GLvoid setViewPerspectiveMatrix() {
-	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 2.0f, 5.0f),
+	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 2.0f, 8.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
@@ -321,7 +380,7 @@ GLvoid setViewPerspectiveMatrix() {
 }
 
 glm::mat4 getViewPerspectiveMatrix() {
-	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 2.0f, 5.0f),
+	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 2.0f, 8.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
