@@ -25,7 +25,7 @@ Planet::~Planet()
 
 GLvoid Planet::draw(const GLuint& ShaderID, const glm::mat4& main_matirx)
 {
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	if(!solid_mode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glBindVertexArray(VAO);
 	glDrawElements(DrawMode, static_cast<GLsizei>(indexes.size() * 3), GL_UNSIGNED_INT, 0);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

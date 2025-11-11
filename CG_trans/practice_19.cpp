@@ -336,6 +336,15 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		else
 			glEnable(GL_CULL_FACE);
 		break;
+	case 'm':
+		central_planet->solid_mode = !central_planet->solid_mode;
+		middle_planet_1->solid_mode = !middle_planet_1->solid_mode;
+		middle_planet_2->solid_mode = !middle_planet_2->solid_mode;
+		middle_planet_3->solid_mode = !middle_planet_3->solid_mode;
+		small_planet_1->solid_mode = !small_planet_1->solid_mode;
+		small_planet_2->solid_mode = !small_planet_2->solid_mode;
+		small_planet_3->solid_mode = !small_planet_3->solid_mode;
+		break;
 	}
 	glutPostRedisplay();
 }
