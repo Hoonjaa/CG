@@ -35,6 +35,15 @@ glm::mat4 Transform_matrix{ 1.0f };
 
 Coordinate_system* coordinate_system = nullptr;
 Planet* central_planet = nullptr;
+
+struct OrbitTransform {
+	Orbit* orbit;
+	GLfloat angle;
+	glm::vec3 axis;
+};
+
+std::vector <OrbitTransform> orbits;
+
 Orbit* central_orbit_1 = nullptr;
 Orbit* central_orbit_2 = nullptr;
 Orbit* central_orbit_3 = nullptr;
@@ -81,6 +90,10 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	central_orbit_1 = new Orbit(1.5f);
 	central_orbit_2 = new Orbit(1.5f);
 	central_orbit_3 = new Orbit(1.5f);
+	orbits.push_back({ central_orbit_1, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
+	orbits.push_back({ central_orbit_2, 45.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
+	orbits.push_back({ central_orbit_3, -45.0f, glm::vec3(0.0f, 0.0f, 1.0f) });
+
 	setViewPerspectiveMatrix();
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
@@ -167,26 +180,17 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 
 	//if (coordinate_system) coordinate_system->draw(shaderProgramID, Transform_matrix);
 	if (central_planet) central_planet->draw(shaderProgramID, Transform_matrix);
-	if (central_orbit_1) central_orbit_1->draw(shaderProgramID, Transform_matrix);
 
-	glm::mat4 model = glm::mat4(1.0f);
+	for (const auto& orbitData : orbits) {
+		if (!orbitData.orbit) continue;
 
-	model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	Transform_matrix = getViewPerspectiveMatrix() * model;
-	updateTransformMatrix();
-	if (central_orbit_2) central_orbit_2->draw(shaderProgramID, Transform_matrix);
-	model = glm::mat4(1.0f);
-	Transform_matrix = getViewPerspectiveMatrix();
-	updateTransformMatrix();
-	
-
-	model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	Transform_matrix = getViewPerspectiveMatrix() * model;
-	updateTransformMatrix();
-	if (central_orbit_3) central_orbit_3->draw(shaderProgramID, Transform_matrix);
-	model = glm::mat4(1.0f);
-	Transform_matrix = getViewPerspectiveMatrix();
-	updateTransformMatrix();
+		glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(orbitData.angle), orbitData.axis);
+		Transform_matrix = getViewPerspectiveMatrix() * model;
+		updateTransformMatrix();
+		orbitData.orbit->draw(shaderProgramID, Transform_matrix);
+		Transform_matrix = getViewPerspectiveMatrix();
+		updateTransformMatrix();
+	}
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
