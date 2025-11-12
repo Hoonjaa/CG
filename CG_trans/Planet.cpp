@@ -5,6 +5,7 @@ Planet::Planet(GLfloat r, GLuint sectors, GLuint stacks, glm::vec3 color, glm::v
 {
 	vPos = Pos;
 	vColor = color;
+	orbit_radius = glm::length(Pos);  // 초기 위치로부터 궤도 반지름 계산
 	setPlanetVertex(r, sectors, stacks, vColor, vPos);
 
 	allocate(sizeof(VertexInfo) * vertices.size(), GL_STATIC_DRAW);
@@ -110,10 +111,35 @@ GLvoid Planet::first_planet_update()
 
 GLvoid Planet::second_planet_update()
 {
-	return GLvoid();
+	setPlanetVertex(radius, 36, 18, vColor, vPos);
+
+	// VAO 바인딩
+	glBindVertexArray(VAO);
+	// VBO 바인딩 및 데이터 업로드
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(VertexInfo) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(IndexInfo) * indexes.size(), indexes.data(), GL_STATIC_DRAW);
+
+	// 정점 속성 재설정
+	setVertexAttrib(0, 3, GL_FLOAT, sizeof(VertexInfo), (void*)0);
+	setVertexAttrib(1, 3, GL_FLOAT, sizeof(VertexInfo), (void*)(3 * sizeof(GLfloat)));
 }
 
 GLvoid Planet::third_planet_update()
 {
 	return GLvoid();
+}
+
+GLvoid Planet::setOrbitRadius(GLfloat orbit_r)
+{
+	orbit_radius = orbit_r;
+}
+
+GLvoid Planet::updatePositionByOrbit()
+{
+	// X축 방향으로 궤도 반지름만큼 위치 업데이트
+	vPos = glm::vec3(orbit_radius, 0.0f, 0.0f);
+	second_planet_update();
 }

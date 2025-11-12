@@ -33,6 +33,16 @@ GLint WindowWidth = 800, WindowHeight = 800;
 bool Timer = true;
 glm::mat4 Transform_matrix{ 1.0f };
 
+// 전체 객체 이동을 위한 변수
+GLfloat global_translateX = 0.0f;
+GLfloat global_translateY = 0.0f;
+GLfloat global_translateZ = 0.0f;
+
+GLfloat global_rotateZ = 0.0f;
+
+// 투영 방식 선택 변수 (true: 원근 투영, false: 직각 투영)
+bool isPerspective = true;
+
 Coordinate_system* coordinate_system = nullptr;
 //행성에 관한 변수들
 Planet* central_planet = nullptr;
@@ -228,15 +238,24 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 
 	//if (coordinate_system) coordinate_system->draw(shaderProgramID, Transform_matrix);
 	
+	// 전체 객체 이동을 위한 translate 적용
+	glm::mat4 global_translate = glm::translate(glm::mat4(1.0f), glm::vec3(global_translateX, global_translateY, global_translateZ));
+	
 	// 중심 행성 그리기
-	if (central_planet) central_planet->draw(shaderProgramID, Transform_matrix);
+	if (central_planet) {
+		Transform_matrix = getViewPerspectiveMatrix() * global_translate;
+		updateTransformMatrix();
+		central_planet->draw(shaderProgramID, Transform_matrix);
+	}
+
+	glm::mat4 global_rotate = rotate(glm::mat4 (1.0f), glm::radians(global_rotateZ), glm::vec3(0.0f, 0.0f, 1.0f));
 
 	// 1단계 궤도 그리기
 	for (const auto& orbitData : orbits) {
 		if (!orbitData.orbit) continue;
 
 		glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(orbitData.angle), orbitData.axis);
-		Transform_matrix = getViewPerspectiveMatrix() * model;
+		Transform_matrix = getViewPerspectiveMatrix() * global_translate * global_rotate * model;
 		updateTransformMatrix();
 		orbitData.orbit->draw(shaderProgramID, Transform_matrix);
 	}
@@ -254,7 +273,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 		
 		// 2단계 행성의 최종 변환 = 궤도 기울기 * 공전
 		glm::mat4 planet_model = orbit_rotation * planet_revolution;
-		Transform_matrix = getViewPerspectiveMatrix() * planet_model;
+		Transform_matrix = getViewPerspectiveMatrix() * global_translate * global_rotate * planet_model;
 		updateTransformMatrix();
 		planetData.planet->draw(shaderProgramID, Transform_matrix);
 		
@@ -262,7 +281,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 		if (i < second_orbits.size() && second_orbits[i].orbit) {
 			glm::mat4 third_revolution = glm::mat4(1.0f);
 			third_revolution = glm::translate(third_revolution, planetData.planet->getPosition()); // 2단계 행성 위치로 이동
-			Transform_matrix = getViewPerspectiveMatrix() * planet_model * third_revolution;
+			Transform_matrix = getViewPerspectiveMatrix() * global_translate * global_rotate * planet_model * third_revolution;
 			updateTransformMatrix();
 			second_orbits[i].orbit->draw(shaderProgramID, Transform_matrix);
 		}
@@ -276,7 +295,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 			
 			// 3단계 행성의 최종 변환 = 궤도 기울기 * 2단계 공전 * 3단계 공전
 			glm::mat4 third_model = planet_model * third_revolution;
-			Transform_matrix = getViewPerspectiveMatrix() * third_model;
+			Transform_matrix = getViewPerspectiveMatrix() * global_translate * global_rotate * third_model;
 			updateTransformMatrix();
 			third_planets[i].planet->draw(shaderProgramID, Transform_matrix);
 		}
@@ -324,6 +343,33 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'q':
 		glutLeaveMainLoop();
 		break;
+	case 'w':
+		global_translateY += 0.1f;
+		break;
+	case 's':
+		global_translateY -= 0.1f;
+		break;
+	case 'a':
+		global_translateX -= 0.1f;
+		break;
+	case 'd':
+		global_translateX += 0.1f;
+		break;
+	case '+':
+		global_translateZ += 0.1f;
+		break;
+	case '-':
+		global_translateZ -= 0.1f;
+		break;
+	case 'z':
+		global_rotateZ += 5.0f;
+		break;
+	case 'Z':
+		global_rotateZ -= 5.0f;
+		break;
+	case 'p':
+		isPerspective = !isPerspective;
+		break;
 	case 'h':
 		if (glIsEnabled(GL_DEPTH_TEST))
 			glDisable(GL_DEPTH_TEST);
@@ -346,12 +392,62 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		small_planet_3->solid_mode = !small_planet_3->solid_mode;
 		break;
 	case 'y':
+		// 1단계 궤도 업데이트
+		central_orbit_radius += 0.1f;
 		central_orbit_1->radius += 0.1f; central_orbit_1->update();
 		central_orbit_2->radius += 0.1f; central_orbit_2->update();
 		central_orbit_3->radius += 0.1f; central_orbit_3->update();
+		
+		// 2단계 행성 위치 업데이트
+		middle_planet_1->setOrbitRadius(central_orbit_radius);
+		middle_planet_1->updatePositionByOrbit();
+		middle_planet_2->setOrbitRadius(central_orbit_radius);
+		middle_planet_2->updatePositionByOrbit();
+		middle_planet_3->setOrbitRadius(central_orbit_radius);
+		middle_planet_3->updatePositionByOrbit();
+		
+		// 2단계 궤도 업데이트
+		second_orbit_radius = central_orbit_radius / 2.0f;
 		second_orbit_1->radius += 0.05f; second_orbit_1->update();
 		second_orbit_2->radius += 0.05f; second_orbit_2->update();
 		second_orbit_3->radius += 0.05f; second_orbit_3->update();
+		
+		// 3단계 행성 위치 업데이트
+		small_planet_1->setOrbitRadius(second_orbit_radius);
+		small_planet_1->updatePositionByOrbit();
+		small_planet_2->setOrbitRadius(second_orbit_radius);
+		small_planet_2->updatePositionByOrbit();
+		small_planet_3->setOrbitRadius(second_orbit_radius);
+		small_planet_3->updatePositionByOrbit();
+		break;
+	case 'Y':
+		// 1단계 궤도 업데이트
+		central_orbit_radius -= 0.1f;
+		central_orbit_1->radius -= 0.1f; central_orbit_1->update();
+		central_orbit_2->radius -= 0.1f; central_orbit_2->update();
+		central_orbit_3->radius -= 0.1f; central_orbit_3->update();
+
+		// 2단계 행성 위치 업데이트
+		middle_planet_1->setOrbitRadius(central_orbit_radius);
+		middle_planet_1->updatePositionByOrbit();
+		middle_planet_2->setOrbitRadius(central_orbit_radius);
+		middle_planet_2->updatePositionByOrbit();
+		middle_planet_3->setOrbitRadius(central_orbit_radius);
+		middle_planet_3->updatePositionByOrbit();
+
+		// 2단계 궤도 업데이트
+		second_orbit_radius = central_orbit_radius / 2.0f;
+		second_orbit_1->radius -= 0.05f; second_orbit_1->update();
+		second_orbit_2->radius -= 0.05f; second_orbit_2->update();
+		second_orbit_3->radius -= 0.05f; second_orbit_3->update();
+
+		// 3단계 행성 위치 업데이트
+		small_planet_1->setOrbitRadius(second_orbit_radius);
+		small_planet_1->updatePositionByOrbit();
+		small_planet_2->setOrbitRadius(second_orbit_radius);
+		small_planet_2->updatePositionByOrbit();
+		small_planet_3->setOrbitRadius(second_orbit_radius);
+		small_planet_3->updatePositionByOrbit();
 		break;
 	}
 	glutPostRedisplay();
@@ -360,7 +456,18 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 GLvoid SpecialKeyboard(int key, int x, int y)
 {
 	switch (key) {
-
+	case GLUT_KEY_LEFT:	// 왼쪽 방향키
+		global_translateX -= 0.1f;
+		break;
+	case GLUT_KEY_RIGHT:	// 오른쪽 방향키
+		global_translateX += 0.1f;
+		break;
+	case GLUT_KEY_UP:	// 위쪽 방향키
+		global_translateY += 0.1f;
+		break;
+	case GLUT_KEY_DOWN:	// 아래쪽 방향키
+		global_translateY -= 0.1f;
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -390,7 +497,19 @@ GLvoid setViewPerspectiveMatrix() {
 	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 2.0f, 8.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+	
+	glm::mat4 projection;
+	if (isPerspective) {
+		// 원근 투영
+		projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+	}
+	else {
+		// 직각 투영
+		view = glm::lookAt(glm::vec3(0.0f, 0.0f, 8.0f),
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec3(0.0f, 1.0f, 0.0f));
+		projection = glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, 0.1f, 100.0f);
+	}
 
 	Transform_matrix = projection * view;
 	updateTransformMatrix();
@@ -400,12 +519,26 @@ glm::mat4 getViewPerspectiveMatrix() {
 	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 2.0f, 8.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+	
+	glm::mat4 projection;
+	if (isPerspective) {
+		// 원근 투영
+		projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+	}
+	else {
+		// 직각 투영
+		view = glm::lookAt(glm::vec3(0.0f, 0.0f, 8.0f),
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec3(0.0f, 1.0f, 0.0f));
+		projection = glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, 0.1f, 100.0f);
+	}
 
 	return projection * view;
 }
 
 GLvoid updateTransformMatrix() {
 	unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "Transform");
-	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Transform_matrix));
+	glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(global_translateX, global_translateY, 0.0f));
+	glm::mat4 mvp = translation * Transform_matrix;
+	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 }

@@ -9,6 +9,7 @@ private:
 	std::vector <VertexInfo> vertices;
 	std::vector <IndexInfo> indexes;
 	GLfloat radius;
+	GLfloat orbit_radius = 0.0f;  // 추가: 궤도 반지름 저장
 
 public:
 	GLfloat revolve_angle = 0.0f;
@@ -27,4 +28,8 @@ public:
 	GLvoid first_planet_update();
 	GLvoid second_planet_update();
 	GLvoid third_planet_update();
+	
+	// 추가: 궤도 반지름 설정 및 위치 업데이트
+	GLvoid setOrbitRadius(GLfloat orbit_r);
+	GLvoid updatePositionByOrbit();
 };
