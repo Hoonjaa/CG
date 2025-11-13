@@ -7,6 +7,7 @@
 #include "Tank_top_body.h"
 #include "cannon.h"
 #include "Tank_flag.h"
+#include "Ground.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -38,6 +39,7 @@ bool Timer = true;
 glm::mat4 Transform_matrix{ 1.0f };
 
 Coordinate_system* coordinate_system = nullptr;
+Ground* ground = nullptr;
 
 GLfloat camera_x = 0.0f, camera_z = 10.0f;
 
@@ -318,6 +320,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 	glutTimerFunc(16, TimerFunction, 1);
+	ground = new Ground();
 	coordinate_system = new Coordinate_system();
 	tank = new Tank();
 	tank->setup(shaderProgramID);
@@ -405,6 +408,8 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
 
+	setViewPerspectiveMatrix();
+	if (ground) ground->draw(shaderProgramID, Transform_matrix);
 	//if (coordinate_system) coordinate_system->draw(shaderProgramID,Transform_matrix);
 	if (tank) tank->render(Transform_matrix);
 
