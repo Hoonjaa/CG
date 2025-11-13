@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "Coordinate_system.h"
+#include "TreeNode.h"
+#include "TankPart.h"
+#include "Tank_low_body.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -31,6 +34,30 @@ bool Timer = false;
 glm::mat4 Transform_matrix{ 1.0f };
 
 Coordinate_system* coordinate_system = nullptr;
+
+class Tank {
+private:
+	std::shared_ptr<TreeNode> root;
+	std::shared_ptr<TankPart> lowBodyPart;
+
+public:
+	GLvoid setup(GLuint shader) {
+		root = std::make_shared<TreeNode>();
+
+		// 하부 몸체 생성
+		auto lowBodyObj = std::make_shared<Tank_low_body>();
+		lowBodyPart = std::make_shared<TankPart>(lowBodyObj, shader);
+		root->addChild(lowBodyPart);
+	}
+
+	GLvoid render(const glm::mat4& viewProjectionMatrix) {
+		if (root) {
+			root->render(viewProjectionMatrix);
+		}
+	}
+};
+
+Tank* tank = nullptr;
 
 char* filetobuf(const char* file)
 {
@@ -70,6 +97,8 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 	coordinate_system = new Coordinate_system();
+	tank = new Tank();
+	tank->setup(shaderProgramID);
 	setViewPerspectiveMatrix();
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
@@ -154,7 +183,8 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
 
-	if (coordinate_system) coordinate_system->draw();
+	//if (coordinate_system) coordinate_system->draw(shaderProgramID,Transform_matrix);
+	if (tank) tank->render(Transform_matrix);
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
@@ -228,7 +258,7 @@ GLvoid TimerFunction(int value)
 }
 
 GLvoid setViewPerspectiveMatrix() {
-	glm::mat4 view = glm::lookAt(glm::vec3(-2.0f, 2.0f, 5.0f),
+	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 2.0f, 10.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
