@@ -40,6 +40,8 @@ glm::mat4 Transform_matrix{ 1.0f };
 Coordinate_system* coordinate_system = nullptr;
 
 bool changeTopBody = false;
+bool g_key = false;
+bool p_key = false;
 
 class Tank {
 private:
@@ -57,6 +59,8 @@ private:
 	GLfloat middleBodyRotation = 0.0f;
 	bool topBodyChange = false;
 	GLfloat topBodyChangeDistance = 0.0f;
+	GLfloat cannonElevation = 0.0f;
+	GLfloat flagRotation = 0.0f;
 public:
 	GLvoid setup(GLuint shader) {
 		root = std::make_shared<TreeNode>();
@@ -155,6 +159,64 @@ public:
 			transform2 = glm::translate(transform2, glm::vec3(-1.0f + topBodyChangeDistance * 1.0f, 0.6f, 0.0f));
 			topBody2Part->setTransform(transform2);
 		}
+	}
+
+	GLvoid CannonRotate() {
+		static bool isElevating = true;
+
+		if (cannonElevation >= glm::radians(30.0f))
+			isElevating = false;
+		else if (cannonElevation <= glm::radians(-10.0f))
+			isElevating = true;
+
+		if (isElevating)
+			cannonElevation += glm::radians(0.5f);
+		else
+			cannonElevation -= glm::radians(0.5f);
+		
+
+		// Æ÷½Å 1
+		glm::mat4 transform1 = glm::mat4(1.0f);
+		transform1 = glm::translate(transform1, glm::vec3(0.0f, 0.0f, 0.9f));
+		transform1 = glm::rotate(transform1, cannonElevation, glm::vec3(0.0f, 1.0f, 0.0f));
+		transform1 = glm::translate(transform1, glm::vec3(0.0f, 0.0f, 0.9f));
+		cannon1Part->setTransform(transform1);
+
+		// Æ÷½Å 2
+		glm::mat4 transform2 = glm::mat4(1.0f);
+		transform2 = glm::translate(transform2, glm::vec3(0.0f, 0.0f, 0.9f));
+		transform2 = glm::rotate(transform2, cannonElevation, glm::vec3(0.0f, -1.0f, 0.0f));
+		transform2 = glm::translate(transform2, glm::vec3(0.0f, 0.0f, 0.9f));
+		cannon2Part->setTransform(transform2);
+	}
+
+	GLvoid FlagRotate() {
+		static bool flag_moving = true;
+
+		if (flagRotation >= glm::radians(30.0f))
+			flag_moving = false;
+		else if (flagRotation <= glm::radians(-30.0f))
+			flag_moving = true;
+
+		if (flag_moving)
+			flagRotation += glm::radians(0.5f);
+		else
+			flagRotation -= glm::radians(0.5f);
+
+
+		// ±ê´ë 1
+		glm::mat4 transform1 = glm::mat4(1.0f);
+		transform1 = glm::translate(transform1, glm::vec3(0.0f, 0.4f, -0.2f));
+		transform1 = glm::rotate(transform1, flagRotation, glm::vec3(0.0f, 0.0f, 1.0f));
+		transform1 = glm::translate(transform1, glm::vec3(0.0f, 0.4f, 0.0f));
+		flag1Part->setTransform(transform1);
+
+		// ±ê´ë 2
+		glm::mat4 transform2 = glm::mat4(1.0f);
+		transform2 = glm::translate(transform2, glm::vec3(0.0f, 0.4f, -0.2f));
+		transform2 = glm::rotate(transform2, flagRotation, glm::vec3(0.0f, 0.0f, -1.0f));
+		transform2 = glm::translate(transform2, glm::vec3(0.0f, 0.4f, 0.0f));
+		flag2Part->setTransform(transform2);
 	}
 
 	GLvoid render(const glm::mat4& viewProjectionMatrix) {
@@ -354,6 +416,12 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'l':
 		changeTopBody = !changeTopBody;
 		break;
+	case 'g':
+		g_key = !g_key;
+		break;
+	case 'p':
+		p_key = !p_key;
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -379,6 +447,8 @@ GLvoid SpecialKeyboard(int key, int x, int y)
 
 GLvoid TimerFunction(int value)
 {
+	if (p_key) tank->FlagRotate();
+	if (g_key) tank->CannonRotate();
 	if (changeTopBody) tank->ChangeTopBody();
 	glutPostRedisplay();
 	if (Timer) {
