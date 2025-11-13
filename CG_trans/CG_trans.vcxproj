@@ -141,6 +141,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="cannon.cpp" />
     <ClCompile Include="Coordinate_system.cpp" />
     <ClCompile Include="Hexahedron.cpp" />
     <ClCompile Include="Object.cpp" />
@@ -163,6 +164,7 @@
     <ClCompile Include="Tank_top_body.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cannon.h" />
     <ClInclude Include="Coordinate_system.h" />
     <ClInclude Include="Hexahedron.h" />
     <ClInclude Include="Object.h" />

@@ -5,6 +5,7 @@
 #include "Tank_low_body.h"
 #include "Tank_middle_body.h"
 #include "Tank_top_body.h"
+#include "cannon.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -44,6 +45,8 @@ private:
 	std::shared_ptr<TankPart> middleBodyPart;
 	std::shared_ptr<TankPart> topBody1Part;
 	std::shared_ptr<TankPart> topBody2Part;
+	std::shared_ptr<TankPart> cannon1Part;
+	std::shared_ptr<TankPart> cannon2Part;
 
 public:
 	GLvoid setup(GLuint shader) {
@@ -71,6 +74,18 @@ public:
 		topBody2Part = std::make_shared<TankPart>(topBodyObj2, shader);
 		topBody2Part->translate(glm::vec3(-1.0f, 0.6f, 0.0f)); // 상부 몸체를 중간 몸체 위로 올리기
 		middleBodyPart->addChild(topBody2Part);
+
+		// 포신1 생성
+		auto cannonObj1 = std::make_shared<cannon>();
+		cannon1Part = std::make_shared<TankPart>(cannonObj1, shader);
+		cannon1Part->translate(glm::vec3(0.0f, 0.0f, 1.8f));
+		topBody1Part->addChild(cannon1Part);
+
+		// 포신2 생성
+		auto cannonObj2 = std::make_shared<cannon>();
+		cannon2Part = std::make_shared<TankPart>(cannonObj2, shader);
+		cannon2Part->translate(glm::vec3(0.0f, 0.0f, 1.8f));	
+		topBody2Part->addChild(cannon2Part);
 	}
 
 	GLvoid render(const glm::mat4& viewProjectionMatrix) {
