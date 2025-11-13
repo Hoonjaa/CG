@@ -218,6 +218,54 @@ public:
 		transform2 = glm::translate(transform2, glm::vec3(0.0f, 0.4f, 0.0f));
 		flag2Part->setTransform(transform2);
 	}
+	
+	GLvoid reset() {
+		position = { 0.0f, 0.0f, 0.0f };
+		middleBodyRotation = 0.0f;
+		topBodyChange = false;
+		topBodyChangeDistance = 0.0f;
+		cannonElevation = 0.0f;
+		flagRotation = 0.0f;
+
+		// 루트(탱크 전체 위치) 초기화
+		glm::mat4 rootTransform = glm::mat4(1.0f);
+		root->setTransform(rootTransform);
+
+		// 중간 몸체 초기화
+		glm::mat4 middleTransform = glm::mat4(1.0f);
+		middleTransform = glm::translate(middleTransform, glm::vec3(0.0f, 0.7f, 0.0f));
+		middleBodyPart->setTransform(middleTransform);
+
+		// 상부 몸체1 초기화
+		glm::mat4 topBody1Transform = glm::mat4(1.0f);
+		topBody1Transform = glm::translate(topBody1Transform, glm::vec3(1.0f, 0.6f, 0.0f));
+		topBody1Part->setTransform(topBody1Transform);
+
+		// 상부 몸체2 초기화
+		glm::mat4 topBody2Transform = glm::mat4(1.0f);
+		topBody2Transform = glm::translate(topBody2Transform, glm::vec3(-1.0f, 0.6f, 0.0f));
+		topBody2Part->setTransform(topBody2Transform);
+
+		// 포신1 초기화
+		glm::mat4 cannon1Transform = glm::mat4(1.0f);
+		cannon1Transform = glm::translate(cannon1Transform, glm::vec3(0.0f, 0.0f, 1.8f));
+		cannon1Part->setTransform(cannon1Transform);
+
+		// 포신2 초기화
+		glm::mat4 cannon2Transform = glm::mat4(1.0f);
+		cannon2Transform = glm::translate(cannon2Transform, glm::vec3(0.0f, 0.0f, 1.8f));
+		cannon2Part->setTransform(cannon2Transform);
+
+		// 깃발1 초기화
+		glm::mat4 flag1Transform = glm::mat4(1.0f);
+		flag1Transform = glm::translate(flag1Transform, glm::vec3(0.0f, 0.8f, -0.2f));
+		flag1Part->setTransform(flag1Transform);
+
+		// 깃발2 초기화
+		glm::mat4 flag2Transform = glm::mat4(1.0f);
+		flag2Transform = glm::translate(flag2Transform, glm::vec3(0.0f, 0.8f, -0.2f));
+		flag2Part->setTransform(flag2Transform);
+	}
 
 	GLvoid render(const glm::mat4& viewProjectionMatrix) {
 		if (root) {
@@ -421,6 +469,17 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		break;
 	case 'p':
 		p_key = !p_key;
+		break;
+	case 'o':
+		changeTopBody = false;
+		g_key = false;
+		p_key = false;
+		break;
+	case 'c':
+		tank->reset();
+		changeTopBody = false;
+		g_key = false;
+		p_key = false;
 		break;
 	}
 	glutPostRedisplay();
