@@ -34,10 +34,12 @@ GLuint vertexShader;													//--- 버텍스 세이더 객체
 GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
 GLint WindowWidth = 800, WindowHeight = 800;
-bool Timer = false;
+bool Timer = true;
 glm::mat4 Transform_matrix{ 1.0f };
 
 Coordinate_system* coordinate_system = nullptr;
+
+bool changeTopBody = false;
 
 class Tank {
 private:
@@ -53,6 +55,8 @@ private:
 
 	glm::vec3 position{ 0.0f, 0.0f, 0.0f };
 	GLfloat middleBodyRotation = 0.0f;
+	bool topBodyChange = false;
+	GLfloat topBodyChangeDistance = 0.0f;
 public:
 	GLvoid setup(GLuint shader) {
 		root = std::make_shared<TreeNode>();
@@ -120,6 +124,39 @@ public:
 		middleBodyPart->setTransform(transform);
 	}
 
+	GLvoid ChangeTopBody() {
+		if (topBodyChangeDistance >= 2.0f) {
+			topBodyChange = false;
+			changeTopBody = false;
+		}
+		else if (topBodyChangeDistance <= 0.0f) {
+			topBodyChange = true;
+			changeTopBody = false;
+		}
+		if (topBodyChange) {
+			topBodyChangeDistance += 0.02f;
+
+			glm::mat4 transform1 = glm::mat4(1.0f);
+			transform1 = glm::translate(transform1, glm::vec3(1.0f + topBodyChangeDistance * -1.0f, 0.6f, 0.0f));
+			topBody1Part->setTransform(transform1);
+
+			glm::mat4 transform2 = glm::mat4(1.0f);
+			transform2 = glm::translate(transform2, glm::vec3(-1.0f + topBodyChangeDistance * 1.0f, 0.6f, 0.0f));
+			topBody2Part->setTransform(transform2);
+		}
+		else {
+			topBodyChangeDistance -= 0.02f;
+
+			glm::mat4 transform1 = glm::mat4(1.0f);
+			transform1 = glm::translate(transform1, glm::vec3(1.0f + topBodyChangeDistance * -1.0f, 0.6f, 0.0f));
+			topBody1Part->setTransform(transform1);
+
+			glm::mat4 transform2 = glm::mat4(1.0f);
+			transform2 = glm::translate(transform2, glm::vec3(-1.0f + topBodyChangeDistance * 1.0f, 0.6f, 0.0f));
+			topBody2Part->setTransform(transform2);
+		}
+	}
+
 	GLvoid render(const glm::mat4& viewProjectionMatrix) {
 		if (root) {
 			root->render(viewProjectionMatrix);
@@ -128,6 +165,7 @@ public:
 };
 
 Tank* tank = nullptr;
+
 
 char* filetobuf(const char* file)
 {
@@ -166,6 +204,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
+	glutTimerFunc(16, TimerFunction, 1);
 	coordinate_system = new Coordinate_system();
 	tank = new Tank();
 	tank->setup(shaderProgramID);
@@ -312,6 +351,9 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'T':
 		tank->MiddleBodyRotate(glm::radians(-2.0f));
 		break;
+	case 'l':
+		changeTopBody = !changeTopBody;
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -337,7 +379,7 @@ GLvoid SpecialKeyboard(int key, int x, int y)
 
 GLvoid TimerFunction(int value)
 {
-
+	if (changeTopBody) tank->ChangeTopBody();
 	glutPostRedisplay();
 	if (Timer) {
 		glutTimerFunc(16, TimerFunction, 1);
