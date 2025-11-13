@@ -52,7 +52,7 @@ private:
 	std::shared_ptr<TankPart> flag2Part;
 
 	glm::vec3 position{ 0.0f, 0.0f, 0.0f };
-
+	GLfloat middleBodyRotation = 0.0f;
 public:
 	GLvoid setup(GLuint shader) {
 		root = std::make_shared<TreeNode>();
@@ -110,6 +110,14 @@ public:
 		glm::mat4 transform = glm::mat4(1.0f);
 		transform = glm::translate(transform, position);
 		root->setTransform(transform);
+	}
+
+	GLvoid MiddleBodyRotate(GLfloat angle) {
+		middleBodyRotation += angle;
+		glm::mat4 transform = glm::mat4(1.0f);
+		transform = glm::translate(transform, glm::vec3(0.0f, 0.7f, 0.0f));
+		transform = glm::rotate(transform, middleBodyRotation, glm::vec3(0.0f, 1.0f, 0.0f));
+		middleBodyPart->setTransform(transform);
 	}
 
 	GLvoid render(const glm::mat4& viewProjectionMatrix) {
@@ -297,6 +305,12 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 			glDisable(GL_CULL_FACE);
 		else
 			glEnable(GL_CULL_FACE);
+		break;
+	case 't':
+		tank->MiddleBodyRotate(glm::radians(2.0f));
+		break;
+	case 'T':
+		tank->MiddleBodyRotate(glm::radians(-2.0f));
 		break;
 	}
 	glutPostRedisplay();
