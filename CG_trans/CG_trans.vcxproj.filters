@@ -90,6 +90,9 @@
     <ClCompile Include="cannon.cpp">
       <Filter>소스 파일\객체\탱크</Filter>
     </ClCompile>
+    <ClCompile Include="Tank_flag.cpp">
+      <Filter>소스 파일\객체\탱크</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -129,6 +132,9 @@
       <Filter>소스 파일\객체\탱크</Filter>
     </ClInclude>
     <ClInclude Include="cannon.h">
+      <Filter>소스 파일\객체\탱크</Filter>
+    </ClInclude>
+    <ClInclude Include="Tank_flag.h">
       <Filter>소스 파일\객체\탱크</Filter>
     </ClInclude>
   </ItemGroup>

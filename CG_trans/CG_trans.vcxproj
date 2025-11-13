@@ -159,6 +159,7 @@
     <ClCompile Include="practice_20.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Square_horn.cpp" />
+    <ClCompile Include="Tank_flag.cpp" />
     <ClCompile Include="Tank_low_body.cpp" />
     <ClCompile Include="Tank_middle_body.cpp" />
     <ClCompile Include="Tank_top_body.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="Planet.h" />
     <ClInclude Include="Square_horn.h" />
     <ClInclude Include="TankPart.h" />
+    <ClInclude Include="Tank_flag.h" />
     <ClInclude Include="Tank_low_body.h" />
     <ClInclude Include="Tank_middle_body.h" />
     <ClInclude Include="Tank_top_body.h" />

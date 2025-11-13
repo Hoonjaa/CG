@@ -6,6 +6,7 @@
 #include "Tank_middle_body.h"
 #include "Tank_top_body.h"
 #include "cannon.h"
+#include "Tank_flag.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -47,6 +48,8 @@ private:
 	std::shared_ptr<TankPart> topBody2Part;
 	std::shared_ptr<TankPart> cannon1Part;
 	std::shared_ptr<TankPart> cannon2Part;
+	std::shared_ptr<TankPart> flag1Part;
+	std::shared_ptr<TankPart> flag2Part;
 
 public:
 	GLvoid setup(GLuint shader) {
@@ -86,6 +89,18 @@ public:
 		cannon2Part = std::make_shared<TankPart>(cannonObj2, shader);
 		cannon2Part->translate(glm::vec3(0.0f, 0.0f, 1.8f));	
 		topBody2Part->addChild(cannon2Part);
+
+		// 깃발1 생성
+		auto flagObj1 = std::make_shared<Tank_flag>();
+		flag1Part = std::make_shared<TankPart>(flagObj1, shader);
+		flag1Part->translate(glm::vec3(0.0f, 0.8f, -0.2f));
+		topBody1Part->addChild(flag1Part);
+
+		// 깃발2 생성
+		auto flagObj2 = std::make_shared<Tank_flag>();
+		flag2Part = std::make_shared<TankPart>(flagObj2, shader);
+		flag2Part->translate(glm::vec3(0.0f, 0.8f, -0.2f));
+		topBody2Part->addChild(flag2Part);
 	}
 
 	GLvoid render(const glm::mat4& viewProjectionMatrix) {
