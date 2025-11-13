@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "Tank_low_body.h"
+#include "Tank_middle_body.h"
 
-Tank_low_body::Tank_low_body()
+Tank_middle_body::Tank_middle_body()
 {
-	vColor = glm::vec3(0.4f, 0.4f, 0.4f);
+	vColor = glm::vec3(0.2f, 0.2f, 0.2f);
 	setVertexInfo();
 
 	// VBO: 정점 데이터
@@ -13,7 +13,7 @@ Tank_low_body::Tank_low_body()
 	// 위치(0), 색상(1)
 	setVertexAttrib(0, 3, GL_FLOAT, 6 * sizeof(GLfloat), (void*)0);
 	setVertexAttrib(1, 3, GL_FLOAT, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
-	
+
 	// EBO: 인덱스 데이터
 	allocateIndex(sizeof(indexes), GL_STATIC_DRAW);
 	uploadIndex(indexes, sizeof(indexes));
@@ -21,11 +21,11 @@ Tank_low_body::Tank_low_body()
 	setDrawMode(GL_TRIANGLES);
 }
 
-Tank_low_body::~Tank_low_body()
+Tank_middle_body::~Tank_middle_body()
 {
 }
 
-GLvoid Tank_low_body::draw(const GLuint& ShaderID, const glm::mat4& main_matirx)
+GLvoid Tank_middle_body::draw(const GLuint& ShaderID, const glm::mat4& main_matirx)
 {
 	glUseProgram(ShaderID);
 
@@ -37,7 +37,7 @@ GLvoid Tank_low_body::draw(const GLuint& ShaderID, const glm::mat4& main_matirx)
 	glDrawElements(DrawMode, 36, GL_UNSIGNED_INT, 0);
 }
 
-GLvoid Tank_low_body::update()
+GLvoid Tank_middle_body::update()
 {
 	return GLvoid();
 }

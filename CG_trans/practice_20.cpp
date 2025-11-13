@@ -3,6 +3,7 @@
 #include "TreeNode.h"
 #include "TankPart.h"
 #include "Tank_low_body.h"
+#include "Tank_middle_body.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -39,6 +40,7 @@ class Tank {
 private:
 	std::shared_ptr<TreeNode> root;
 	std::shared_ptr<TankPart> lowBodyPart;
+	std::shared_ptr<TankPart> middleBodyPart;
 
 public:
 	GLvoid setup(GLuint shader) {
@@ -48,6 +50,12 @@ public:
 		auto lowBodyObj = std::make_shared<Tank_low_body>();
 		lowBodyPart = std::make_shared<TankPart>(lowBodyObj, shader);
 		root->addChild(lowBodyPart);
+
+		// 중간 몸체 생성
+		auto middleBodyObj = std::make_shared<Tank_middle_body>();
+		middleBodyPart = std::make_shared<TankPart>(middleBodyObj, shader);
+		middleBodyPart->translate(glm::vec3(0.0f, 0.7f, 0.0f)); // 중간 몸체를 하부 몸체 위로 올리기
+		lowBodyPart->addChild(middleBodyPart);
 	}
 
 	GLvoid render(const glm::mat4& viewProjectionMatrix) {
