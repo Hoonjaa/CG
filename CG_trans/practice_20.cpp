@@ -51,6 +51,8 @@ private:
 	std::shared_ptr<TankPart> flag1Part;
 	std::shared_ptr<TankPart> flag2Part;
 
+	glm::vec3 position{ 0.0f, 0.0f, 0.0f };
+
 public:
 	GLvoid setup(GLuint shader) {
 		root = std::make_shared<TreeNode>();
@@ -101,6 +103,13 @@ public:
 		flag2Part = std::make_shared<TankPart>(flagObj2, shader);
 		flag2Part->translate(glm::vec3(0.0f, 0.8f, -0.2f));
 		topBody2Part->addChild(flag2Part);
+	}
+
+	GLvoid MoveTank(const glm::vec3& distance) {
+		position += distance;
+		glm::mat4 transform = glm::mat4(1.0f);
+		transform = glm::translate(transform, position);
+		root->setTransform(transform);
 	}
 
 	GLvoid render(const glm::mat4& viewProjectionMatrix) {
@@ -296,7 +305,18 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 GLvoid SpecialKeyboard(int key, int x, int y)
 {
 	switch (key) {
-
+		case GLUT_KEY_UP:
+			tank->MoveTank(glm::vec3(0.0f, 0.0f, 0.1f));
+			break;
+		case GLUT_KEY_DOWN:
+			tank->MoveTank(glm::vec3(0.0f, 0.0f, -0.1f));
+			break;
+		case GLUT_KEY_LEFT:
+			tank->MoveTank(glm::vec3(-0.1f, 0.0f, 0.0f));
+			break;
+		case GLUT_KEY_RIGHT:
+			tank->MoveTank(glm::vec3(0.1f, 0.0f, 0.0f));
+			break;
 	}
 	glutPostRedisplay();
 }
