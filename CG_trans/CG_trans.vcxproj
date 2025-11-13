@@ -149,9 +149,16 @@
     <ClCompile Include="practice_17.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="practice_19.cpp" />
+    <ClCompile Include="practice_19.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="practice_20.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Square_horn.cpp" />
+    <ClCompile Include="Tank_low_body.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coordinate_system.h" />
@@ -161,6 +168,9 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Planet.h" />
     <ClInclude Include="Square_horn.h" />
+    <ClInclude Include="TankPart.h" />
+    <ClInclude Include="Tank_low_body.h" />
+    <ClInclude Include="TreeNode.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment.glsl" />

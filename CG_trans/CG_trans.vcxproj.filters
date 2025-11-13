@@ -19,37 +19,67 @@
     <Filter Include="소스 파일\객체">
       <UniqueIdentifier>{2f280eab-7432-43aa-8466-05c92574034e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\객체\좌표계">
+      <UniqueIdentifier>{b19ee737-8277-4413-a6d6-5ba6d0a244c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\객체\정육면체">
+      <UniqueIdentifier>{5f34c0bf-79ef-46cf-8fab-199b5e85f267}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\객체\궤도">
+      <UniqueIdentifier>{d7b4cf9f-caa0-49a9-a591-04f9b52b6a85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\객체\행성">
+      <UniqueIdentifier>{62498812-db92-4ed6-8644-b16ea6670930}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\객체\사각뿔">
+      <UniqueIdentifier>{e31f0720-af0d-42cc-8d08-9a18f583b266}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\메인 파일">
+      <UniqueIdentifier>{a29c3267-e9bb-4b02-9768-45b31eb12b0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\트리 구조">
+      <UniqueIdentifier>{be5d47e8-8ba5-42d7-a446-4629d369aa6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\객체\탱크">
+      <UniqueIdentifier>{497397d7-0d10-4874-b72a-a82da0ef7b0a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="base.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Object.cpp">
-      <Filter>소스 파일\객체</Filter>
-    </ClCompile>
-    <ClCompile Include="Coordinate_system.cpp">
-      <Filter>소스 파일\객체</Filter>
-    </ClCompile>
-    <ClCompile Include="Hexahedron.cpp">
-      <Filter>소스 파일\객체</Filter>
-    </ClCompile>
-    <ClCompile Include="practice_17.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Square_horn.cpp">
-      <Filter>소스 파일\객체</Filter>
-    </ClCompile>
-    <ClCompile Include="practice_19.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Planet.cpp">
-      <Filter>소스 파일\객체</Filter>
-    </ClCompile>
-    <ClCompile Include="Orbit.cpp">
       <Filter>소스 파일\객체</Filter>
     </ClCompile>
     <ClCompile Include="Random.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Coordinate_system.cpp">
+      <Filter>소스 파일\객체\좌표계</Filter>
+    </ClCompile>
+    <ClCompile Include="Hexahedron.cpp">
+      <Filter>소스 파일\객체\정육면체</Filter>
+    </ClCompile>
+    <ClCompile Include="Orbit.cpp">
+      <Filter>소스 파일\객체\궤도</Filter>
+    </ClCompile>
+    <ClCompile Include="Planet.cpp">
+      <Filter>소스 파일\객체\행성</Filter>
+    </ClCompile>
+    <ClCompile Include="Square_horn.cpp">
+      <Filter>소스 파일\객체\사각뿔</Filter>
+    </ClCompile>
+    <ClCompile Include="practice_17.cpp">
+      <Filter>소스 파일\메인 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="practice_19.cpp">
+      <Filter>소스 파일\메인 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="base.cpp">
+      <Filter>소스 파일\메인 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="practice_20.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Tank_low_body.cpp">
+      <Filter>소스 파일\객체\탱크</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -60,19 +90,28 @@
       <Filter>소스 파일\객체</Filter>
     </ClInclude>
     <ClInclude Include="Coordinate_system.h">
-      <Filter>소스 파일\객체</Filter>
+      <Filter>소스 파일\객체\좌표계</Filter>
     </ClInclude>
     <ClInclude Include="Hexahedron.h">
-      <Filter>소스 파일\객체</Filter>
-    </ClInclude>
-    <ClInclude Include="Square_horn.h">
-      <Filter>소스 파일\객체</Filter>
-    </ClInclude>
-    <ClInclude Include="Planet.h">
-      <Filter>소스 파일\객체</Filter>
+      <Filter>소스 파일\객체\정육면체</Filter>
     </ClInclude>
     <ClInclude Include="Orbit.h">
-      <Filter>소스 파일\객체</Filter>
+      <Filter>소스 파일\객체\궤도</Filter>
+    </ClInclude>
+    <ClInclude Include="Planet.h">
+      <Filter>소스 파일\객체\행성</Filter>
+    </ClInclude>
+    <ClInclude Include="Square_horn.h">
+      <Filter>소스 파일\객체\사각뿔</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeNode.h">
+      <Filter>소스 파일\트리 구조</Filter>
+    </ClInclude>
+    <ClInclude Include="TankPart.h">
+      <Filter>소스 파일\객체\탱크</Filter>
+    </ClInclude>
+    <ClInclude Include="Tank_low_body.h">
+      <Filter>소스 파일\객체\탱크</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
