@@ -39,6 +39,9 @@ glm::mat4 Transform_matrix{ 1.0f };
 
 Coordinate_system* coordinate_system = nullptr;
 
+GLfloat camera_x = 0.0f, camera_z = 10.0f;
+
+
 bool changeTopBody = false;
 bool g_key = false;
 bool p_key = false;
@@ -481,6 +484,22 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		g_key = false;
 		p_key = false;
 		break;
+	case'x':
+		camera_x += 0.5f;
+		setViewPerspectiveMatrix();
+		break;
+	case'X':
+		camera_x -= 0.5f;
+		setViewPerspectiveMatrix();
+		break;
+	case'z':
+		camera_z += 0.5f;
+		setViewPerspectiveMatrix();
+		break;
+	case'Z':
+		camera_z -= 0.5f;
+		setViewPerspectiveMatrix();
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -516,7 +535,7 @@ GLvoid TimerFunction(int value)
 }
 
 GLvoid setViewPerspectiveMatrix() {
-	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 2.0f, 10.0f),
+	glm::mat4 view = glm::lookAt(glm::vec3(camera_x, 2.0f, camera_z),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
