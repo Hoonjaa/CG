@@ -84,6 +84,9 @@
     <ClCompile Include="Tank_middle_body.cpp">
       <Filter>소스 파일\객체\탱크</Filter>
     </ClCompile>
+    <ClCompile Include="Tank_top_body.cpp">
+      <Filter>소스 파일\객체\탱크</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -117,6 +120,9 @@
       <Filter>소스 파일\객체\탱크</Filter>
     </ClInclude>
     <ClInclude Include="Tank_middle_body.h">
+      <Filter>소스 파일\객체\탱크</Filter>
+    </ClInclude>
+    <ClInclude Include="Tank_top_body.h">
       <Filter>소스 파일\객체\탱크</Filter>
     </ClInclude>
   </ItemGroup>

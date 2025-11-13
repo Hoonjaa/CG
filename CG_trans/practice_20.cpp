@@ -4,6 +4,7 @@
 #include "TankPart.h"
 #include "Tank_low_body.h"
 #include "Tank_middle_body.h"
+#include "Tank_top_body.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -41,6 +42,8 @@ private:
 	std::shared_ptr<TreeNode> root;
 	std::shared_ptr<TankPart> lowBodyPart;
 	std::shared_ptr<TankPart> middleBodyPart;
+	std::shared_ptr<TankPart> topBody1Part;
+	std::shared_ptr<TankPart> topBody2Part;
 
 public:
 	GLvoid setup(GLuint shader) {
@@ -56,6 +59,18 @@ public:
 		middleBodyPart = std::make_shared<TankPart>(middleBodyObj, shader);
 		middleBodyPart->translate(glm::vec3(0.0f, 0.7f, 0.0f)); // 중간 몸체를 하부 몸체 위로 올리기
 		lowBodyPart->addChild(middleBodyPart);
+
+		// 상부 몸체1 생성
+		auto topBodyObj = std::make_shared<Tank_top_body>();
+		topBody1Part = std::make_shared<TankPart>(topBodyObj, shader);
+		topBody1Part->translate(glm::vec3(1.0f, 0.6f, 0.0f)); // 상부 몸체를 중간 몸체 위로 올리기
+		middleBodyPart->addChild(topBody1Part);
+
+		//상부 몸체2 생성
+		auto topBodyObj2 = std::make_shared<Tank_top_body>();
+		topBody2Part = std::make_shared<TankPart>(topBodyObj2, shader);
+		topBody2Part->translate(glm::vec3(-1.0f, 0.6f, 0.0f)); // 상부 몸체를 중간 몸체 위로 올리기
+		middleBodyPart->addChild(topBody2Part);
 	}
 
 	GLvoid render(const glm::mat4& viewProjectionMatrix) {
