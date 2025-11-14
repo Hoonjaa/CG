@@ -78,9 +78,6 @@
     <ClCompile Include="base.cpp">
       <Filter>소스 파일\메인 파일</Filter>
     </ClCompile>
-    <ClCompile Include="practice_20.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Tank_low_body.cpp">
       <Filter>소스 파일\객체\탱크</Filter>
     </ClCompile>
@@ -98,6 +95,12 @@
     </ClCompile>
     <ClCompile Include="Ground.cpp">
       <Filter>소스 파일\객체\바닥</Filter>
+    </ClCompile>
+    <ClCompile Include="practice_20.cpp">
+      <Filter>소스 파일\메인 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="practice_21.cpp">
+      <Filter>소스 파일\메인 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

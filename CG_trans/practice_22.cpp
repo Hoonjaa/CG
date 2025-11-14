@@ -154,7 +154,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
 
-	if (coordinate_system) coordinate_system->draw(shaderProgramID, Transform_matrix);
+	if (coordinate_system) coordinate_system->draw(shaderProgramID,Transform_matrix);
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
@@ -213,7 +213,7 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 GLvoid SpecialKeyboard(int key, int x, int y)
 {
 	switch (key) {
-	
+
 	}
 	glutPostRedisplay();
 }
