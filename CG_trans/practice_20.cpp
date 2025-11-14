@@ -42,11 +42,14 @@ Coordinate_system* coordinate_system = nullptr;
 Ground* ground = nullptr;
 
 GLfloat camera_x = 0.0f, camera_z = 10.0f;
+GLfloat camera_y_rotation = 0.0f;		//카메라 자전
+GLfloat camera_orbit_rotation = 0.0f;	//카메라 공전
 
 
 bool changeTopBody = false;
 bool g_key = false;
 bool p_key = false;
+bool a_key = false;
 
 class Tank {
 private:
@@ -478,16 +481,21 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'p':
 		p_key = !p_key;
 		break;
+	case 'a':
+		a_key = !a_key;
+		break;
 	case 'o':
 		changeTopBody = false;
 		g_key = false;
 		p_key = false;
+		a_key = false;
 		break;
 	case 'c':
 		tank->reset();
 		changeTopBody = false;
 		g_key = false;
 		p_key = false;
+		a_key = false;
 		break;
 	case'x':
 		camera_x += 0.5f;
@@ -503,6 +511,22 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		break;
 	case'Z':
 		camera_z -= 0.5f;
+		setViewPerspectiveMatrix();
+		break;
+	case'y':
+		camera_y_rotation += glm::radians(5.0f);
+		setViewPerspectiveMatrix();
+		break;
+	case'Y':
+		camera_y_rotation -= glm::radians(5.0f);
+		setViewPerspectiveMatrix();
+		break;
+	case'r':
+		camera_orbit_rotation += glm::radians(5.0f);
+		setViewPerspectiveMatrix();
+		break;
+	case'R':
+		camera_orbit_rotation -= glm::radians(5.0f);
 		setViewPerspectiveMatrix();
 		break;
 	}
@@ -530,6 +554,10 @@ GLvoid SpecialKeyboard(int key, int x, int y)
 
 GLvoid TimerFunction(int value)
 {
+	if (a_key) {
+		camera_orbit_rotation += glm::radians(1.0f);  // 매 프레임마다 1도씩 회전
+		setViewPerspectiveMatrix();
+	}
 	if (p_key) tank->FlagRotate();
 	if (g_key) tank->CannonRotate();
 	if (changeTopBody) tank->ChangeTopBody();
@@ -540,9 +568,25 @@ GLvoid TimerFunction(int value)
 }
 
 GLvoid setViewPerspectiveMatrix() {
-	glm::mat4 view = glm::lookAt(glm::vec3(camera_x, 2.0f, camera_z),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f));
+	// 1. 먼저 공전(orbit) 적용: 카메라의 기본 위치를 원점 중심으로 회전
+	GLfloat orbited_x = camera_x * cos(camera_orbit_rotation) - camera_z * sin(camera_orbit_rotation);
+	GLfloat orbited_z = camera_x * sin(camera_orbit_rotation) + camera_z * cos(camera_orbit_rotation);
+
+	// 공전된 카메라 위치
+	glm::vec3 cameraPos(orbited_x, 2.0f, orbited_z);
+
+	// 2. 자전(rotation) 적용: 카메라가 바라보는 방향을 회전
+	// 초기 시선 방향 (원점을 향함)
+	glm::vec3 lookDirection = glm::normalize(glm::vec3(0.0f, 0.0f, 0.0f) - cameraPos);
+
+	// y축을 중심으로 시선 방향 회전
+	glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), camera_y_rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::vec4 rotatedDirection = rotationMatrix * glm::vec4(lookDirection, 0.0f);
+
+	// 카메라가 바라볼 목표점 = 카메라 위치 + 회전된 방향
+	glm::vec3 target = cameraPos + glm::vec3(rotatedDirection);
+
+	glm::mat4 view = glm::lookAt(cameraPos, target, glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
 
 	Transform_matrix = projection * view;
