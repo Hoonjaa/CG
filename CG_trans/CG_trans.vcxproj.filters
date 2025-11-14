@@ -46,6 +46,12 @@
     <Filter Include="소스 파일\객체\바닥">
       <UniqueIdentifier>{2ffda53b-d4b6-417d-a385-b212e2b7269b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\객체\로봇">
+      <UniqueIdentifier>{49bb81bc-2543-4f7a-8dcd-4fcdd36727cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\객체\무대">
+      <UniqueIdentifier>{15284452-eee7-4b13-82e3-00723fd3e19a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Object.cpp">
@@ -99,8 +105,11 @@
     <ClCompile Include="practice_20.cpp">
       <Filter>소스 파일\메인 파일</Filter>
     </ClCompile>
-    <ClCompile Include="practice_21.cpp">
+    <ClCompile Include="practice_22.cpp">
       <Filter>소스 파일\메인 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>소스 파일\객체\무대</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +157,9 @@
     </ClInclude>
     <ClInclude Include="Ground.h">
       <Filter>소스 파일\객체\바닥</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.h">
+      <Filter>소스 파일\객체\무대</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

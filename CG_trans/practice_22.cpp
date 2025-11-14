@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Coordinate_system.h"
+#include "Stage.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -31,6 +32,9 @@ bool Timer = false;
 glm::mat4 Transform_matrix{ 1.0f };
 
 Coordinate_system* coordinate_system = nullptr;
+
+//무대 관련 변수
+Stage* stage = nullptr;
 
 char* filetobuf(const char* file)
 {
@@ -70,6 +74,8 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 	coordinate_system = new Coordinate_system();
+	stage = new Stage();
+
 	setViewPerspectiveMatrix();
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
@@ -155,6 +161,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glPointSize(5.0);
 
 	if (coordinate_system) coordinate_system->draw(shaderProgramID,Transform_matrix);
+	if (stage) stage->draw(shaderProgramID, Transform_matrix);
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
@@ -228,7 +235,7 @@ GLvoid TimerFunction(int value)
 }
 
 GLvoid setViewPerspectiveMatrix() {
-	glm::mat4 view = glm::lookAt(glm::vec3(-2.0f, 2.0f, 5.0f),
+	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 20.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);

@@ -163,9 +163,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="practice_21.cpp" />
+    <ClCompile Include="practice_22.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Square_horn.cpp" />
+    <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Tank_flag.cpp" />
     <ClCompile Include="Tank_low_body.cpp" />
     <ClCompile Include="Tank_middle_body.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Planet.h" />
     <ClInclude Include="Square_horn.h" />
+    <ClInclude Include="Stage.h" />
     <ClInclude Include="TankPart.h" />
     <ClInclude Include="Tank_flag.h" />
     <ClInclude Include="Tank_low_body.h" />
