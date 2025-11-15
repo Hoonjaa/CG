@@ -129,6 +129,9 @@
     <ClCompile Include="Obstacle.cpp">
       <Filter>소스 파일\객체\장애물</Filter>
     </ClCompile>
+    <ClCompile Include="practice_23.cpp">
+      <Filter>소스 파일\메인 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
