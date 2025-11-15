@@ -28,13 +28,14 @@ GLuint vertexShader;													//--- 버텍스 세이더 객체
 GLuint fragmentShader;													//--- 프래그먼트 세이더 객체
 
 GLint WindowWidth = 800, WindowHeight = 800;
-bool Timer = false;
+bool Timer = true;
 glm::mat4 Transform_matrix{ 1.0f };
 
 Coordinate_system* coordinate_system = nullptr;
 
 //무대 관련 변수
 Stage* stage = nullptr;
+bool stage_open = false;
 
 char* filetobuf(const char* file)
 {
@@ -71,11 +72,11 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	shaderProgramID = make_shaderProgram();
 	//--- 세이더 프로그램 만들기
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 	coordinate_system = new Coordinate_system();
 	stage = new Stage();
 
+	glutTimerFunc(16, TimerFunction, 1);
 	setViewPerspectiveMatrix();
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
@@ -160,8 +161,12 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
 
-	if (coordinate_system) coordinate_system->draw(shaderProgramID,Transform_matrix);
+	//if (coordinate_system) coordinate_system->draw(shaderProgramID,Transform_matrix);
+
+	glFrontFace(GL_CW);
 	if (stage) stage->draw(shaderProgramID, Transform_matrix);
+
+	glFrontFace(GL_CCW);
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
@@ -213,6 +218,9 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		else
 			glEnable(GL_CULL_FACE);
 		break;
+	case'o':
+		stage_open = true;
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -227,7 +235,14 @@ GLvoid SpecialKeyboard(int key, int x, int y)
 
 GLvoid TimerFunction(int value)
 {
-
+	if (stage_open) {
+		stage->front_angle += 1.0f;
+		if (stage->front_angle >= 120.0f) {
+			stage_open = false;
+			glEnable(GL_CULL_FACE);
+			stage->front_angle = 0.0f;
+		}
+	}
 	glutPostRedisplay();
 	if (Timer) {
 		glutTimerFunc(16, TimerFunction, 1);

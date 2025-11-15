@@ -33,9 +33,9 @@ GLvoid Stage::draw(const GLuint& ShaderID, const glm::mat4& main_matirx)
 
         if (i == 0) {
             vColor = glm::vec3(0.3f, 0.3f, 0.3f); // ¾Õ¸é
-            modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 0.5f, 0.5f));
+            modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 3.0f, 3.0f));
             modelMatrix = glm::rotate(modelMatrix, glm::radians(front_angle), glm::vec3(-1.0f, 0.0f, 0.0f));
-            modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, -0.5f, -0.5f));
+            modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, -3.0f, -3.0f));
         }
         else  if (i == 1) {
             vColor = glm::vec3(0.5f, 0.5f, 0.5f); // ¿ÞÂÊ¸é
