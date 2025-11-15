@@ -411,7 +411,34 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
 
+	// 뷰포트 1: 원근 투영 (왼쪽, 전체 높이의 화면)
+	glViewport(0, 0, WindowWidth / 2, WindowHeight);
 	setViewPerspectiveMatrix();
+	if (ground) ground->draw(shaderProgramID, Transform_matrix);
+	if (tank) tank->render(Transform_matrix);
+
+	// 뷰포트 2: XZ 평면 직각 투영 (오른쪽 상단)
+	glViewport(WindowWidth / 2, WindowHeight / 2, WindowWidth / 2, WindowHeight / 2);
+	glm::mat4 viewXZ = glm::lookAt(
+		glm::vec3(0.0f, 10.0f, 0.0f),  // 위에서 내려다봄
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 0.0f, -1.0f)
+	);
+	glm::mat4 projectionOrtho = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
+	Transform_matrix = projectionOrtho * viewXZ;
+	updateTransformMatrix();
+	if (ground) ground->draw(shaderProgramID, Transform_matrix);
+	if (tank) tank->render(Transform_matrix);
+
+	// 뷰포트 3: XY 평면 직각 투영 (오른쪽 하단)
+	glViewport(WindowWidth / 2, 0, WindowWidth / 2, WindowHeight / 2);
+	glm::mat4 viewXY = glm::lookAt(
+		glm::vec3(0.0f, 0.0f, 10.0f),  // 정면에서 봄
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f)
+	);
+	Transform_matrix = projectionOrtho * viewXY;
+	updateTransformMatrix();
 	if (ground) ground->draw(shaderProgramID, Transform_matrix);
 	//if (coordinate_system) coordinate_system->draw(shaderProgramID,Transform_matrix);
 	if (tank) tank->render(Transform_matrix);
