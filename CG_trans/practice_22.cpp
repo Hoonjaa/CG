@@ -64,6 +64,11 @@ private:
 	glm::vec3 position{ 0.0f, 0.0f, 0.0f };
 	GLfloat walk_angle = 0.0f;
 	GLfloat rotation_angle = 0.0f;
+	//걷는 모션
+	GLfloat limb_rotation = 0.0f;
+	bool limb_forward = true;
+	GLfloat walk_speed = 0.03f;
+	GLfloat MAX_LIMB_ROTATION = glm::radians(20.0f);
 
 public:
 	GLvoid setup(GLuint shader) {
@@ -125,8 +130,72 @@ public:
 	}
 
 	GLvoid Walk() {
-		position.x += 0.1f * sin(rotation_angle);
-		position.z += 0.1f * cos(rotation_angle);
+		position.x += walk_speed * sin(rotation_angle);
+		position.z += walk_speed * cos(rotation_angle);
+
+		// 팔다리 회전 각도 업데이트
+		if (limb_forward) {
+			limb_rotation += glm::radians(2.0f);
+			if (limb_rotation >= MAX_LIMB_ROTATION) {
+				limb_rotation = MAX_LIMB_ROTATION;
+				limb_forward = false;
+			}
+		}
+		else {
+			limb_rotation -= glm::radians(2.0f);
+			if (limb_rotation <= -MAX_LIMB_ROTATION) {
+				limb_rotation = -MAX_LIMB_ROTATION;
+				limb_forward = true;
+			}
+		}
+
+		// 오른팔 - 상단(어깨) 기준 회전
+		if (RightArmPart) {
+			glm::vec3 rightArmPos(-0.5f, 0.1f, 0.0f);
+			glm::vec3 pivotOffset(0.0f, 0.5f, 0.0f); // 팔 길이의 절반만큼 위로 (상단)
+
+			RightArmPart->setTransform(glm::mat4(1.0f));
+			RightArmPart->translate(rightArmPos);
+			RightArmPart->translate(pivotOffset); // 회전축으로 이동
+			RightArmPart->rotate(limb_rotation, glm::vec3(1.0f, 0.0f, 0.0f));
+			RightArmPart->translate(-pivotOffset); // 원위치
+		}
+
+		// 왼팔 - 상단(어깨) 기준 회전
+		if (LeftArmPart) {
+			glm::vec3 leftArmPos(0.5f, 0.1f, 0.0f);
+			glm::vec3 pivotOffset(0.0f, 0.5f, 0.0f);
+
+			LeftArmPart->setTransform(glm::mat4(1.0f));
+			LeftArmPart->translate(leftArmPos);
+			LeftArmPart->translate(pivotOffset);
+			LeftArmPart->rotate(-limb_rotation, glm::vec3(1.0f, 0.0f, 0.0f));
+			LeftArmPart->translate(-pivotOffset);
+		}
+
+		// 오른다리 - 상단(골반) 기준 회전
+		if (RightLegPart) {
+			glm::vec3 rightLegPos(-0.2f, -1.1f, 0.0f);
+			glm::vec3 pivotOffset(0.0f, 0.5f, 0.0f); // 다리 길이의 절반만큼 위로 (상단)
+
+			RightLegPart->setTransform(glm::mat4(1.0f));
+			RightLegPart->translate(rightLegPos);
+			RightLegPart->translate(pivotOffset);
+			RightLegPart->rotate(-limb_rotation, glm::vec3(1.0f, 0.0f, 0.0f));
+			RightLegPart->translate(-pivotOffset);
+		}
+
+		// 왼다리 - 상단(골반) 기준 회전
+		if (LeftLegPart) {
+			glm::vec3 leftLegPos(0.2f, -1.1f, 0.0f);
+			glm::vec3 pivotOffset(0.0f, 0.5f, 0.0f);
+
+			LeftLegPart->setTransform(glm::mat4(1.0f));
+			LeftLegPart->translate(leftLegPos);
+			LeftLegPart->translate(pivotOffset);
+			LeftLegPart->rotate(limb_rotation, glm::vec3(1.0f, 0.0f, 0.0f));
+			LeftLegPart->translate(-pivotOffset);
+		}
 	}
 
 	GLvoid RotateLeft() {
@@ -137,6 +206,69 @@ public:
 	GLvoid RotateRight() {
 		// 오른쪽으로 90도 회전
 		rotation_angle -= glm::radians(90.0f);
+	}
+
+	GLvoid resetMotion() {
+		GLfloat limb_rotation = 0.0f;
+		bool limb_forward = true;
+
+		if (RightArmPart) {
+			glm::vec3 rightArmPos(-0.5f, 0.1f, 0.0f);
+			RightArmPart->setTransform(glm::mat4(1.0f));
+			RightArmPart->translate(rightArmPos);
+		}
+
+		// 왼팔 초기 위치로 복원
+		if (LeftArmPart) {
+			glm::vec3 leftArmPos(0.5f, 0.1f, 0.0f);
+			LeftArmPart->setTransform(glm::mat4(1.0f));
+			LeftArmPart->translate(leftArmPos);
+		}
+
+		// 오른다리 초기 위치로 복원
+		if (RightLegPart) {
+			glm::vec3 rightLegPos(-0.2f, -1.1f, 0.0f);
+			RightLegPart->setTransform(glm::mat4(1.0f));
+			RightLegPart->translate(rightLegPos);
+		}
+
+		// 왼다리 초기 위치로 복원
+		if (LeftLegPart) {
+			glm::vec3 leftLegPos(0.2f, -1.1f, 0.0f);
+			LeftLegPart->setTransform(glm::mat4(1.0f));
+			LeftLegPart->translate(leftLegPos);
+		}
+	}
+
+	GLvoid increaseSpeed() {
+		walk_speed += 0.01f;
+		MAX_LIMB_ROTATION += glm::radians(5.0f);
+	}
+
+	GLvoid decreaseSpeed() {
+		walk_speed -= 0.01f;
+		if (walk_speed < 0.01f) walk_speed = 0.01f;  // 최소 속도 제한
+
+		MAX_LIMB_ROTATION -= glm::radians(5.0f);
+		if (MAX_LIMB_ROTATION < glm::radians(5.0f)) {
+			MAX_LIMB_ROTATION = glm::radians(5.0f);  // 최소 회전 각도 제한
+		}
+	}
+
+	GLvoid reset() {
+		// 위치 초기화
+		position = glm::vec3(0.0f, 0.0f, 0.0f);
+
+		// 회전 각도 초기화
+		rotation_angle = 0.0f;
+		walk_angle = 0.0f;
+
+		// 걷기 모션 초기화
+		resetMotion();
+
+		// 속도 및 회전 각도 초기화
+		walk_speed = 0.03f;
+		MAX_LIMB_ROTATION = glm::radians(20.0f);
 	}
 };
 
@@ -370,6 +502,17 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		if (robot) robot->RotateLeft();
 		if (robot) robot->RotateLeft();
 		break;
+	case '+':
+	case '=':
+		if (robot) robot->increaseSpeed();
+		break;
+	case '-':
+	case '_':
+		if (robot) robot->decreaseSpeed();
+		break;
+	case 'i':
+		if (robot) robot->reset();
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -378,6 +521,7 @@ GLvoid KeyboardUp(unsigned char key, int x, int y) {
 	switch (key) {
 	case 'w':
 		walking = false;
+		robot->resetMotion();
 		break;
 	}
 	glutPostRedisplay();
