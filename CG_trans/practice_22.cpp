@@ -5,6 +5,8 @@
 #include "Robot_part.h"
 #include "Robot_body.h"
 #include "Robot_arm.h"
+#include "Robot_head.h"
+#include "Robot_nose.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -48,6 +50,10 @@ private:
 	std::shared_ptr<Robot_Part> bodyPart;
 	std::shared_ptr<Robot_Part> RightArmPart;
 	std::shared_ptr<Robot_Part> LeftArmPart;
+	std::shared_ptr<Robot_Part> RightLegPart;
+	std::shared_ptr<Robot_Part> LeftLegPart;
+	std::shared_ptr<Robot_Part> headPart;
+	std::shared_ptr<Robot_Part> nosePart;
 
 public:
 	GLvoid setup(GLuint shader) {
@@ -56,6 +62,7 @@ public:
 		//몸체 생성
 		auto body = std::make_shared<Robot_body>();
 		bodyPart = std::make_shared<Robot_Part>(body, shader);
+		bodyPart->translate(glm::vec3(0.0f, -3.3f, 0.0f));
 		root->addChild(bodyPart);
 
 		//오른팔 생성
@@ -70,6 +77,31 @@ public:
 		LeftArmPart = std::make_shared<Robot_Part>(Larm, shader);
 		LeftArmPart->translate(glm::vec3(0.5f, 0.1f, 0.0f));
 		bodyPart->addChild(LeftArmPart);
+
+		//오른다리 생성
+		auto Rleg = std::make_shared<Robot_arm>();
+		Rleg->set_color(glm::vec3(0.0f, 0.6f, 0.6f)); //오른다리 보라색으로 설정
+		RightLegPart = std::make_shared<Robot_Part>(Rleg, shader);
+		RightLegPart->translate(glm::vec3(-0.2f, -1.1f, 0.0f));
+		bodyPart->addChild(RightLegPart);
+
+		//왼다리 생성
+		auto Lleg = std::make_shared<Robot_arm>();
+		LeftLegPart = std::make_shared<Robot_Part>(Lleg, shader);
+		LeftLegPart->translate(glm::vec3(0.2f, -1.1f, 0.0f));
+		bodyPart->addChild(LeftLegPart);
+
+		//머리 생성
+		auto head = std::make_shared<Robot_head>();
+		headPart = std::make_shared<Robot_Part>(head, shader);
+		headPart->translate(glm::vec3(0.0f, 0.9f, 0.0f));
+		bodyPart->addChild(headPart);
+
+		//코 생성
+		auto nose = std::make_shared<Robot_nose>();
+		nosePart = std::make_shared<Robot_Part>(nose, shader);
+		nosePart->translate(glm::vec3(0.0f, -0.05f, 0.25f));
+		headPart->addChild(nosePart);
 	}
 
 	GLvoid render(const glm::mat4& viewProjectionMatrix) {
@@ -211,7 +243,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	//if (coordinate_system) coordinate_system->draw(shaderProgramID,Transform_matrix);
 
 	glFrontFace(GL_CW);
-	//if (stage) stage->draw(shaderProgramID, Transform_matrix);
+	if (stage) stage->draw(shaderProgramID, Transform_matrix);
 
 	glFrontFace(GL_CCW);
 	if (robot) robot->render(Transform_matrix);
@@ -298,7 +330,7 @@ GLvoid TimerFunction(int value)
 }
 
 GLvoid setViewPerspectiveMatrix() {
-	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f),
+	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 20.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);

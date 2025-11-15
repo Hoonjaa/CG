@@ -7,14 +7,14 @@ private:
 
 	GLvoid setVertexInfo() {
 		GLfloat temp[48] = {
-			vPos.x + 3.0f, vPos.y + 3.0f, vPos.z + 3.0f,  vColor.r, vColor.g, vColor.b,
-			vPos.x - 3.0f, vPos.y + 3.0f, vPos.z + 3.0f,  vColor.r, vColor.g, vColor.b,
-			vPos.x - 3.0f, vPos.y - 3.0f, vPos.z + 3.0f,  vColor.r, vColor.g, vColor.b,
-			vPos.x + 3.0f, vPos.y - 3.0f, vPos.z + 3.0f,  vColor.r, vColor.g, vColor.b,
-			vPos.x + 3.0f, vPos.y + 3.0f, vPos.z - 3.0f,  vColor.r, vColor.g, vColor.b,
-			vPos.x - 3.0f, vPos.y + 3.0f, vPos.z - 3.0f,  vColor.r, vColor.g, vColor.b,
-			vPos.x - 3.0f, vPos.y - 3.0f, vPos.z - 3.0f,  vColor.r, vColor.g, vColor.b,
-			vPos.x + 3.0f, vPos.y - 3.0f, vPos.z - 3.0f,  vColor.r, vColor.g, vColor.b,
+			vPos.x + 5.0f, vPos.y + 5.0f, vPos.z + 5.0f,  vColor.r, vColor.g, vColor.b,
+			vPos.x - 5.0f, vPos.y + 5.0f, vPos.z + 5.0f,  vColor.r, vColor.g, vColor.b,
+			vPos.x - 5.0f, vPos.y - 5.0f, vPos.z + 5.0f,  vColor.r, vColor.g, vColor.b,
+			vPos.x + 5.0f, vPos.y - 5.0f, vPos.z + 5.0f,  vColor.r, vColor.g, vColor.b,
+			vPos.x + 5.0f, vPos.y + 5.0f, vPos.z - 5.0f,  vColor.r, vColor.g, vColor.b,
+			vPos.x - 5.0f, vPos.y + 5.0f, vPos.z - 5.0f,  vColor.r, vColor.g, vColor.b,
+			vPos.x - 5.0f, vPos.y - 5.0f, vPos.z - 5.0f,  vColor.r, vColor.g, vColor.b,
+			vPos.x + 5.0f, vPos.y - 5.0f, vPos.z - 5.0f,  vColor.r, vColor.g, vColor.b,
 		};
 		memcpy(vertices, temp, sizeof(temp));
 	}
