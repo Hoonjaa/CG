@@ -30,6 +30,16 @@ private:
 public:
 	Robot_arm();
 	~Robot_arm();
+
+	GLvoid set_color(const glm::vec3& color) {
+		vColor = color;
+		setVertexInfo(); // 정점 색상 정보 업데이트
+
+		// VBO 데이터 갱신
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		upload(vertices, sizeof(vertices));
+	}
+
 	GLvoid draw(const GLuint& ShaderID, const glm::mat4& main_matirx) override;
 	GLvoid update() override;
 };

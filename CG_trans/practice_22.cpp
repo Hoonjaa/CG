@@ -47,6 +47,7 @@ private:
 	std::shared_ptr<TreeNode> root;
 	std::shared_ptr<Robot_Part> bodyPart;
 	std::shared_ptr<Robot_Part> RightArmPart;
+	std::shared_ptr<Robot_Part> LeftArmPart;
 
 public:
 	GLvoid setup(GLuint shader) {
@@ -62,6 +63,13 @@ public:
 		RightArmPart = std::make_shared<Robot_Part>(Rarm, shader);
 		RightArmPart->translate(glm::vec3(-0.5f, 0.1f, 0.0f));
 		bodyPart->addChild(RightArmPart);
+
+		//¿ÞÆÈ »ý¼º
+		auto Larm = std::make_shared<Robot_arm>();
+		Larm->set_color(glm::vec3(0.0f, 0.6f, 0.6f)); //¿ÞÆÈ ÆÄ¶õ»öÀ¸·Î ¼³Á¤
+		LeftArmPart = std::make_shared<Robot_Part>(Larm, shader);
+		LeftArmPart->translate(glm::vec3(0.5f, 0.1f, 0.0f));
+		bodyPart->addChild(LeftArmPart);
 	}
 
 	GLvoid render(const glm::mat4& viewProjectionMatrix) {
