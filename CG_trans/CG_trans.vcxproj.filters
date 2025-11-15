@@ -114,6 +114,9 @@
     <ClCompile Include="Robot_body.cpp">
       <Filter>소스 파일\객체\로봇</Filter>
     </ClCompile>
+    <ClCompile Include="Robot_arm.cpp">
+      <Filter>소스 파일\객체\로봇</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -168,6 +171,9 @@
       <Filter>소스 파일\객체\로봇</Filter>
     </ClInclude>
     <ClInclude Include="Robot_body.h">
+      <Filter>소스 파일\객체\로봇</Filter>
+    </ClInclude>
+    <ClInclude Include="Robot_arm.h">
       <Filter>소스 파일\객체\로봇</Filter>
     </ClInclude>
   </ItemGroup>

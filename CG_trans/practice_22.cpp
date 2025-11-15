@@ -4,6 +4,7 @@
 #include "TreeNode.h"
 #include "Robot_part.h"
 #include "Robot_body.h"
+#include "Robot_arm.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -45,6 +46,7 @@ class Robot {
 private:
 	std::shared_ptr<TreeNode> root;
 	std::shared_ptr<Robot_Part> bodyPart;
+	std::shared_ptr<Robot_Part> RightArmPart;
 
 public:
 	GLvoid setup(GLuint shader) {
@@ -54,6 +56,12 @@ public:
 		auto body = std::make_shared<Robot_body>();
 		bodyPart = std::make_shared<Robot_Part>(body, shader);
 		root->addChild(bodyPart);
+
+		//오른팔 생성
+		auto Rarm = std::make_shared<Robot_arm>();
+		RightArmPart = std::make_shared<Robot_Part>(Rarm, shader);
+		RightArmPart->translate(glm::vec3(-0.5f, 0.1f, 0.0f));
+		bodyPart->addChild(RightArmPart);
 	}
 
 	GLvoid render(const glm::mat4& viewProjectionMatrix) {
@@ -282,7 +290,7 @@ GLvoid TimerFunction(int value)
 }
 
 GLvoid setViewPerspectiveMatrix() {
-	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 3.0f, 10.0f),
+	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
