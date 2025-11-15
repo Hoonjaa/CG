@@ -32,5 +32,9 @@ public:
 	~Obstacle();
 	GLvoid draw(const GLuint& ShaderID, const glm::mat4& main_matirx) override;
 	GLvoid update() override;
+
+	// 충돌 박스 반환 (장애물 크기: 0.8 x 0.8 x 0.8)
+	glm::vec3 getMin() const { return vPos - glm::vec3(0.4f, 0.4f, 0.4f); }
+	glm::vec3 getMax() const { return vPos + glm::vec3(0.4f, 0.4f, 0.4f); }
 };
 

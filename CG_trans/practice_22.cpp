@@ -83,6 +83,7 @@ private:
 	GLfloat gravity = 0.005f;
 	GLfloat max_jump_height = 2.0f;
 	GLfloat initial_y = 0.0f;
+
 public:
 	GLvoid setup(GLuint shader) {
 		root = std::make_shared<TreeNode>();
@@ -143,8 +144,47 @@ public:
 	}
 
 	GLvoid Walk() {
-		position.x += walk_speed * sin(rotation_angle);
-		position.z += walk_speed * cos(rotation_angle);
+		// 다음 이동할 위치 미리 계산
+		glm::vec3 nextPosition = position;
+		nextPosition.x += walk_speed * sin(rotation_angle);
+		nextPosition.z += walk_speed * cos(rotation_angle);
+
+		// 다음 위치에서의 바운딩 박스 계산
+		glm::vec3 nextMin = nextPosition + glm::vec3(-0.5f, -5.0f, -0.5f);
+		glm::vec3 nextMax = nextPosition + glm::vec3(0.5f, -3.0f, 0.5f);
+
+		// 다음 위치에서 충돌 체크
+		bool willCollide = false;
+
+		if (checkCollisionWithBox(nextMin, nextMax, obstacle1->getMin(), obstacle1->getMax()) ||
+			checkCollisionWithBox(nextMin, nextMax, obstacle2->getMin(), obstacle2->getMax()) ||
+			checkCollisionWithBox(nextMin, nextMax, obstacle3->getMin(), obstacle3->getMax())) {
+			willCollide = true;
+		}
+
+		// 충돌하지 않을 때만 이동
+		if (!willCollide) {
+			position = nextPosition;
+		}
+
+		// 현재 위치에서 장애물 체크 (발 아래)
+		bool onObstacle = false;
+		glm::vec3 currentMin = position + glm::vec3(-0.5f, -5.0f, -0.5f);
+		glm::vec3 currentMax = position + glm::vec3(0.5f, -3.0f, 0.5f);
+
+		if (checkCollisionWithBox(currentMin, currentMax, obstacle1->getMin(), obstacle1->getMax()) ||
+			checkCollisionWithBox(currentMin, currentMax, obstacle2->getMin(), obstacle2->getMax()) ||
+			checkCollisionWithBox(currentMin, currentMax, obstacle3->getMin(), obstacle3->getMax())) {
+			onObstacle = true;
+		}
+
+		// 장애물 위에 있지 않고, 점프/낙하 중이 아니며, 바닥보다 높은 곳에 있으면 낙하 시작
+		if (!onObstacle && !isJumping && !isFalling && position.y > 0.0f) {
+			isFalling = true;
+			initial_y = 0.0f;  // 목표 바닥 높이를 0으로 설정
+			jump_velocity = 0.0f;
+		}
+		
 
 		// 팔다리 회전 각도 업데이트
 		if (limb_forward) {
@@ -319,9 +359,25 @@ public:
 			jump_velocity += gravity;
 			position.y -= jump_velocity;
 
-			// 바닥에 도달 확인
-			if (position.y <= initial_y) {
-				position.y = initial_y;
+			// 장애물과의 충돌 체크
+			bool collided = false;
+			if (checkCollision(obstacle1->getMin(), obstacle1->getMax()) ||
+				checkCollision(obstacle2->getMin(), obstacle2->getMax()) ||
+				checkCollision(obstacle3->getMin(), obstacle3->getMax())) {
+				collided = true;
+			}
+
+			// 충돌 시 바닥 레벨을 장애물 위로 설정
+			if (collided) {
+				position.y = initial_y + 0.81f;
+				initial_y = position.y;  // 새로운 바닥 레벨 저장
+				isFalling = false;
+				jump_velocity = 0.0f;
+			}
+			// 원래 바닥(0.0f)에 도달 확인
+			else if (position.y <= 0.0f) {
+				position.y = 0.0f;
+				initial_y = 0.0f;  // 바닥 레벨을 원래대로 복원
 				isFalling = false;
 				jump_velocity = 0.0f;
 			}
@@ -338,6 +394,32 @@ public:
 	}
 
 	bool getIsJumping() const { return isJumping || isFalling; }
+
+	glm::vec3 getBoundingBoxMin() const {
+		return position + glm::vec3(-0.5f, -5.0f, -0.5f);
+	}
+	glm::vec3 getBoundingBoxMax() const {
+		return position + glm::vec3(0.5f, -3.0f, 0.5f);
+	}
+
+	bool checkCollision(const glm::vec3& obsMin, const glm::vec3& obsMax) {
+		glm::vec3 robotMin = getBoundingBoxMin();
+		glm::vec3 robotMax = getBoundingBoxMax();
+		bool collisionX = robotMax.x >= obsMin.x && robotMin.x <= obsMax.x;
+		bool collisionY = robotMax.y >= obsMin.y && robotMin.y <= obsMax.y;
+		bool collisionZ = robotMax.z >= obsMin.z && robotMin.z <= obsMax.z;
+		
+		return collisionX && collisionY && collisionZ;
+	}
+
+	bool checkCollisionWithBox(const glm::vec3& boxMin1, const glm::vec3& boxMax1,
+		const glm::vec3& boxMin2, const glm::vec3& boxMax2) {
+		bool collisionX = boxMax1.x >= boxMin2.x && boxMin1.x <= boxMax2.x;
+		bool collisionY = boxMax1.y >= boxMin2.y && boxMin1.y <= boxMax2.y;
+		bool collisionZ = boxMax1.z >= boxMin2.z && boxMin1.z <= boxMax2.z;
+
+		return collisionX && collisionY && collisionZ;
+	}
 };
 
 //로봇 관련 변수
