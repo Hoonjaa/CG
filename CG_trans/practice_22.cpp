@@ -43,6 +43,11 @@ Coordinate_system* coordinate_system = nullptr;
 Stage* stage = nullptr;
 bool stage_open = false;
 
+//카메라 관련 변수
+GLfloat camera_x = 0.0f, camera_z = 20.0f;
+GLfloat camera_y_rotation = 0.0f;		//카메라 자전
+GLfloat camera_orbit_rotation = 0.0f;	//카메라 공전
+
 //로봇 클래스
 class Robot {
 private:
@@ -54,6 +59,10 @@ private:
 	std::shared_ptr<Robot_Part> LeftLegPart;
 	std::shared_ptr<Robot_Part> headPart;
 	std::shared_ptr<Robot_Part> nosePart;
+
+	glm::vec3 position{ 0.0f, 0.0f, 0.0f };
+	GLfloat walk_angle = 0.0f;
+	GLfloat rotation_angle = 0.0f;
 
 public:
 	GLvoid setup(GLuint shader) {
@@ -106,13 +115,33 @@ public:
 
 	GLvoid render(const glm::mat4& viewProjectionMatrix) {
 		if (root) {
-			root->render(viewProjectionMatrix);
+			glm::mat4 robotTransform = glm::translate(glm::mat4(1.0f), position);
+			robotTransform = glm::rotate(robotTransform, rotation_angle, glm::vec3(0.0f, 1.0f, 0.0f));
+
+			glm::mat4 finalTransform = viewProjectionMatrix * robotTransform;
+			root->render(finalTransform);
 		}
+	}
+
+	GLvoid Walk() {
+		position.x += 0.1f * sin(rotation_angle);
+		position.z += 0.1f * cos(rotation_angle);
+	}
+
+	GLvoid RotateLeft() {
+		// 왼쪽으로 90도 회전
+		rotation_angle += glm::radians(90.0f);
+	}
+
+	GLvoid RotateRight() {
+		// 오른쪽으로 90도 회전
+		rotation_angle -= glm::radians(90.0f);
 	}
 };
 
 //로봇 관련 변수
 Robot* robot = nullptr;
+
 
 char* filetobuf(const char* file)
 {
@@ -301,6 +330,43 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case'o':
 		stage_open = true;
 		break;
+	case'x':
+		camera_x += 0.5f;
+		setViewPerspectiveMatrix();
+		break;
+	case'X':
+		camera_x -= 0.5f;
+		setViewPerspectiveMatrix();
+		break;
+	case'z':
+		camera_z += 0.5f;
+		setViewPerspectiveMatrix();
+		break;
+	case'Z':
+		camera_z -= 0.5f;
+		setViewPerspectiveMatrix();
+		break;
+	case'y':
+		camera_orbit_rotation += glm::radians(5.0f);
+		setViewPerspectiveMatrix();
+		break;
+	case'Y':
+		camera_orbit_rotation -= glm::radians(5.0f);
+		setViewPerspectiveMatrix();
+		break;
+	case 'w':
+		if (robot) robot->Walk();
+		break;
+	case 'a':
+		if (robot) robot->RotateLeft();
+		break;
+	case 'd':
+		if (robot) robot->RotateRight();
+		break;
+	case 's':
+		if (robot) robot->RotateLeft();
+		if (robot) robot->RotateLeft();
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -330,9 +396,25 @@ GLvoid TimerFunction(int value)
 }
 
 GLvoid setViewPerspectiveMatrix() {
-	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 20.0f),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f));
+	// 1. 먼저 공전(orbit) 적용: 카메라의 기본 위치를 원점 중심으로 회전
+	GLfloat orbited_x = camera_x * cos(camera_orbit_rotation) - camera_z * sin(camera_orbit_rotation);
+	GLfloat orbited_z = camera_x * sin(camera_orbit_rotation) + camera_z * cos(camera_orbit_rotation);
+
+	// 공전된 카메라 위치
+	glm::vec3 cameraPos(orbited_x, 0.0f, orbited_z);
+
+	// 2. 자전(rotation) 적용: 카메라가 바라보는 방향을 회전
+	// 초기 시선 방향 (원점을 향함)
+	glm::vec3 lookDirection = glm::normalize(glm::vec3(0.0f, 0.0f, 0.0f) - cameraPos);
+
+	// y축을 중심으로 시선 방향 회전
+	glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), camera_y_rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::vec4 rotatedDirection = rotationMatrix * glm::vec4(lookDirection, 0.0f);
+
+	// 카메라가 바라볼 목표점 = 카메라 위치 + 회전된 방향
+	glm::vec3 target = cameraPos + glm::vec3(rotatedDirection);
+
+	glm::mat4 view = glm::lookAt(cameraPos, target, glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
 
 	Transform_matrix = projection * view;
