@@ -16,6 +16,7 @@ GLvoid drawScene();
 GLvoid Reshape(int w, int h);
 // 키보드 이벤트 처리 함수
 GLvoid Keyboard(unsigned char key, int x, int y);
+GLvoid KeyboardUp(unsigned char key, int x, int y);
 GLvoid SpecialKeyboard(int key, int x, int y);
 // 마우스 이벤트 처리 함수
 GLvoid Mouse(int button, int state, int x, int y);
@@ -141,6 +142,7 @@ public:
 
 //로봇 관련 변수
 Robot* robot = nullptr;
+bool walking = false;
 
 
 char* filetobuf(const char* file)
@@ -189,6 +191,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
 	glutKeyboardFunc(Keyboard);
+	glutKeyboardUpFunc(KeyboardUp);
 	glutSpecialFunc(SpecialKeyboard);
 	glutMouseFunc(Mouse);
 	glutMotionFunc(Motion);
@@ -355,7 +358,7 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		setViewPerspectiveMatrix();
 		break;
 	case 'w':
-		if (robot) robot->Walk();
+		walking = true;
 		break;
 	case 'a':
 		if (robot) robot->RotateLeft();
@@ -371,6 +374,15 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	glutPostRedisplay();
 }
 
+GLvoid KeyboardUp(unsigned char key, int x, int y) {
+	switch (key) {
+	case 'w':
+		walking = false;
+		break;
+	}
+	glutPostRedisplay();
+}
+
 GLvoid SpecialKeyboard(int key, int x, int y)
 {
 	switch (key) {
@@ -381,6 +393,9 @@ GLvoid SpecialKeyboard(int key, int x, int y)
 
 GLvoid TimerFunction(int value)
 {
+	if (walking) {
+		if (robot) robot->Walk();
+	}
 	if (stage_open) {
 		stage->front_angle += 1.0f;
 		if (stage->front_angle >= 120.0f) {
