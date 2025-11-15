@@ -165,6 +165,7 @@
     </ClCompile>
     <ClCompile Include="practice_22.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="Robot_body.cpp" />
     <ClCompile Include="Square_horn.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Tank_flag.cpp" />
@@ -181,6 +182,8 @@
     <ClInclude Include="Orbit.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Planet.h" />
+    <ClInclude Include="Robot_body.h" />
+    <ClInclude Include="Robot_part.h" />
     <ClInclude Include="Square_horn.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="TankPart.h" />

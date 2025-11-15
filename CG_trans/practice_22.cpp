@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Coordinate_system.h"
 #include "Stage.h"
+#include "TreeNode.h"
+#include "Robot_part.h"
+#include "Robot_body.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -36,6 +39,32 @@ Coordinate_system* coordinate_system = nullptr;
 //무대 관련 변수
 Stage* stage = nullptr;
 bool stage_open = false;
+
+//로봇 클래스
+class Robot {
+private:
+	std::shared_ptr<TreeNode> root;
+	std::shared_ptr<Robot_Part> bodyPart;
+
+public:
+	GLvoid setup(GLuint shader) {
+		root = std::make_shared<TreeNode>();
+
+		//몸체 생성
+		auto body = std::make_shared<Robot_body>();
+		bodyPart = std::make_shared<Robot_Part>(body, shader);
+		root->addChild(bodyPart);
+	}
+
+	GLvoid render(const glm::mat4& viewProjectionMatrix) {
+		if (root) {
+			root->render(viewProjectionMatrix);
+		}
+	}
+};
+
+//로봇 관련 변수
+Robot* robot = nullptr;
 
 char* filetobuf(const char* file)
 {
@@ -75,6 +104,8 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glFrontFace(GL_CCW);
 	coordinate_system = new Coordinate_system();
 	stage = new Stage();
+	robot = new Robot();
+	robot->setup(shaderProgramID);
 
 	glutTimerFunc(16, TimerFunction, 1);
 	setViewPerspectiveMatrix();
@@ -164,9 +195,10 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	//if (coordinate_system) coordinate_system->draw(shaderProgramID,Transform_matrix);
 
 	glFrontFace(GL_CW);
-	if (stage) stage->draw(shaderProgramID, Transform_matrix);
+	//if (stage) stage->draw(shaderProgramID, Transform_matrix);
 
 	glFrontFace(GL_CCW);
+	if (robot) robot->render(Transform_matrix);
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
@@ -250,7 +282,7 @@ GLvoid TimerFunction(int value)
 }
 
 GLvoid setViewPerspectiveMatrix() {
-	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 20.0f),
+	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 3.0f, 10.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);

@@ -4,13 +4,13 @@
 #include "Object.h"
 
 // SceneNode와 Object를 연결하는 어댑터
-class TankPart : public TreeNode {
+class Robot_Part : public TreeNode {
 protected:
     std::shared_ptr<Object> renderObject;
     GLuint currentShaderID;
 
 public:
-    TankPart(std::shared_ptr<Object> obj, GLuint shaderID)
+    Robot_Part(std::shared_ptr<Object> obj, GLuint shaderID)
         : renderObject(obj), currentShaderID(shaderID) {
     }
 

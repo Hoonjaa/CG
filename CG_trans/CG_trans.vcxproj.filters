@@ -111,6 +111,9 @@
     <ClCompile Include="Stage.cpp">
       <Filter>소스 파일\객체\무대</Filter>
     </ClCompile>
+    <ClCompile Include="Robot_body.cpp">
+      <Filter>소스 파일\객체\로봇</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -160,6 +163,12 @@
     </ClInclude>
     <ClInclude Include="Stage.h">
       <Filter>소스 파일\객체\무대</Filter>
+    </ClInclude>
+    <ClInclude Include="Robot_part.h">
+      <Filter>소스 파일\객체\로봇</Filter>
+    </ClInclude>
+    <ClInclude Include="Robot_body.h">
+      <Filter>소스 파일\객체\로봇</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
