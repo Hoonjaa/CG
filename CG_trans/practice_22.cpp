@@ -7,6 +7,7 @@
 #include "Robot_arm.h"
 #include "Robot_head.h"
 #include "Robot_nose.h"
+#include "Obstacle.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -44,6 +45,11 @@ Coordinate_system* coordinate_system = nullptr;
 Stage* stage = nullptr;
 bool stage_open = false;
 
+//장애물 관련 변수
+Obstacle* obstacle1 = nullptr;
+Obstacle* obstacle2 = nullptr;
+Obstacle* obstacle3 = nullptr;
+
 //카메라 관련 변수
 GLfloat camera_x = 0.0f, camera_z = 20.0f;
 GLfloat camera_y_rotation = 0.0f;		//카메라 자전
@@ -70,6 +76,13 @@ private:
 	GLfloat walk_speed = 0.03f;
 	GLfloat MAX_LIMB_ROTATION = glm::radians(20.0f);
 
+	// 점프 관련 변수
+	bool isJumping = false;
+	bool isFalling = false;
+	GLfloat jump_velocity = 0.14f;
+	GLfloat gravity = 0.005f;
+	GLfloat max_jump_height = 2.0f;
+	GLfloat initial_y = 0.0f;
 public:
 	GLvoid setup(GLuint shader) {
 		root = std::make_shared<TreeNode>();
@@ -269,7 +282,62 @@ public:
 		// 속도 및 회전 각도 초기화
 		walk_speed = 0.03f;
 		MAX_LIMB_ROTATION = glm::radians(20.0f);
+
+		// 점프 상태 초기화
+		isJumping = false;
+		isFalling = false;
+		jump_velocity = 0.14f;
 	}
+
+	GLvoid Jump() {
+		if (!isJumping && !isFalling) {
+			isJumping = true;
+			initial_y = position.y;
+			jump_velocity = 0.14f;
+		}
+
+		if (isJumping) {
+			// 위로 이동
+			position.y += jump_velocity;
+			jump_velocity -= gravity;
+
+			// 최대 높이 도달 또는 속도가 0 이하가 되면 낙하 시작
+			if (jump_velocity <= 0.0f || position.y >= initial_y + max_jump_height) {
+				if (position.y > initial_y + max_jump_height) {
+					position.y = initial_y + max_jump_height;
+				}
+				isJumping = false;
+				isFalling = true;
+				jump_velocity = 0.0f;  // 낙하 시작 시 속도 0으로 초기화
+			}
+		}
+	}
+
+	GLvoid Fall() {
+		if (isFalling) {
+			// 아래로 이동
+			jump_velocity += gravity;
+			position.y -= jump_velocity;
+
+			// 바닥에 도달 확인
+			if (position.y <= initial_y) {
+				position.y = initial_y;
+				isFalling = false;
+				jump_velocity = 0.0f;
+			}
+		}
+	}
+
+	GLvoid updateJump() {
+		if (isJumping) {
+			Jump();
+		}
+		else if (isFalling) {
+			Fall();
+		}
+	}
+
+	bool getIsJumping() const { return isJumping || isFalling; }
 };
 
 //로봇 관련 변수
@@ -317,6 +385,10 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	stage = new Stage();
 	robot = new Robot();
 	robot->setup(shaderProgramID);
+	
+	obstacle1 = new Obstacle();
+	obstacle2 = new Obstacle();
+	obstacle3 = new Obstacle();
 
 	glutTimerFunc(16, TimerFunction, 1);
 	setViewPerspectiveMatrix();
@@ -411,6 +483,10 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 
 	glFrontFace(GL_CCW);
 	if (robot) robot->render(Transform_matrix);
+
+	if (obstacle1) obstacle1->draw(shaderProgramID, Transform_matrix);
+	if (obstacle2) obstacle2->draw(shaderProgramID, Transform_matrix);
+	if (obstacle3) obstacle3->draw(shaderProgramID, Transform_matrix);
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
@@ -513,6 +589,11 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'i':
 		if (robot) robot->reset();
 		break;
+	case 'j':
+		if (robot && !robot->getIsJumping()) {
+			robot->Jump();
+		}
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -537,6 +618,9 @@ GLvoid SpecialKeyboard(int key, int x, int y)
 
 GLvoid TimerFunction(int value)
 {
+	if (robot) {
+		robot->updateJump();
+	}
 	if (walking) {
 		if (robot) robot->Walk();
 	}

@@ -52,6 +52,9 @@
     <Filter Include="소스 파일\객체\무대">
       <UniqueIdentifier>{15284452-eee7-4b13-82e3-00723fd3e19a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\객체\장애물">
+      <UniqueIdentifier>{9b3f0d4e-e5f4-4b99-bb01-0e7547ef6d94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Object.cpp">
@@ -123,6 +126,9 @@
     <ClCompile Include="Robot_nose.cpp">
       <Filter>소스 파일\객체\로봇</Filter>
     </ClCompile>
+    <ClCompile Include="Obstacle.cpp">
+      <Filter>소스 파일\객체\장애물</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -187,6 +193,9 @@
     </ClInclude>
     <ClInclude Include="Robot_nose.h">
       <Filter>소스 파일\객체\로봇</Filter>
+    </ClInclude>
+    <ClInclude Include="Obstacle.h">
+      <Filter>소스 파일\객체\장애물</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

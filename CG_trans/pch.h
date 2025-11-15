@@ -20,3 +20,4 @@
 
 extern std::random_device rd;
 extern std::uniform_real_distribution<float> random_revolve_speed;
+extern std::uniform_real_distribution<float> random_obstacle;

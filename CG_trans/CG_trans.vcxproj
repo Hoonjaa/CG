@@ -146,6 +146,7 @@
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="Hexahedron.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Obstacle.cpp" />
     <ClCompile Include="Orbit.cpp" />
     <ClCompile Include="Planet.cpp" />
     <ClCompile Include="practice_17.cpp">
@@ -182,6 +183,7 @@
     <ClInclude Include="Ground.h" />
     <ClInclude Include="Hexahedron.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Orbit.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Planet.h" />
