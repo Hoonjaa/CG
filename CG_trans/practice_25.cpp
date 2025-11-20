@@ -157,6 +157,11 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
 
+
+	glm::mat4 model = glm::mat4(1.0f);
+	unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "model");
+	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+
 	if (coordinate_system) coordinate_system->draw(shaderProgramID, Transform_matrix);
 	if (hexahedron) hexahedron->draw(shaderProgramID, Transform_matrix);
 
