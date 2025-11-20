@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Coordinate_system.h"
+#include "Hexahedron.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -31,6 +32,7 @@ bool Timer = false;
 glm::mat4 Transform_matrix{ 1.0f };
 
 Coordinate_system* coordinate_system = nullptr;
+Hexahedron* hexahedron = nullptr;
 
 char* filetobuf(const char* file)
 {
@@ -70,6 +72,7 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 	coordinate_system = new Coordinate_system();
+	hexahedron = new Hexahedron();
 	setViewPerspectiveMatrix();
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
@@ -86,7 +89,7 @@ void make_vertexShaders()
 	GLchar* vertexSource;
 	//--- 버텍스 세이더 읽어 저장하고 컴파일 하기
 	//--- filetobuf: 사용자정의 함수로 텍스트를 읽어서 문자열에 저장하는 함수
-	vertexSource = filetobuf("vertex.glsl");
+	vertexSource = filetobuf("vertex_25.glsl");
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexSource, NULL);
 	glCompileShader(vertexShader);
@@ -106,7 +109,7 @@ void make_fragmentShaders()
 {
 	GLchar* fragmentSource;
 	//--- 프래그먼트 세이더 읽어 저장하고 컴파일하기
-	fragmentSource = filetobuf("fragment.glsl");						// 프래그세이더 읽어오기
+	fragmentSource = filetobuf("fragment_25.glsl");						// 프래그세이더 읽어오기
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
 	glCompileShader(fragmentShader);
@@ -155,6 +158,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glPointSize(5.0);
 
 	if (coordinate_system) coordinate_system->draw(shaderProgramID, Transform_matrix);
+	if (hexahedron) hexahedron->draw(shaderProgramID, Transform_matrix);
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
