@@ -55,6 +55,9 @@
     <Filter Include="소스 파일\객체\장애물">
       <UniqueIdentifier>{9b3f0d4e-e5f4-4b99-bb01-0e7547ef6d94}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\객체\큐브">
+      <UniqueIdentifier>{fbb3e704-b965-4a71-8648-db6d359a4d24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Object.cpp">
@@ -135,6 +138,9 @@
     <ClCompile Include="practice_25.cpp">
       <Filter>소스 파일\메인 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>소스 파일\객체\큐브</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -202,6 +208,9 @@
     </ClInclude>
     <ClInclude Include="Obstacle.h">
       <Filter>소스 파일\객체\장애물</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>소스 파일\객체\큐브</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
