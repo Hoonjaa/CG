@@ -17,5 +17,8 @@ public:
 	GLvoid update() override;
 
 	GLvoid setOrbitVertex();
+	
+	// 궤도 상의 위치를 반환하는 함수
+	glm::vec3 getPositionOnOrbit(GLfloat angle) const;
 };
 

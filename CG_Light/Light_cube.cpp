@@ -1,9 +1,8 @@
-#include "pch.h"
-#include "Cube.h"
+#include "Light_cube.h"
 
-Cube::Cube()
+Light_cube::Light_cube()
 {
-	vColor = glm::vec3(1.0f, 0.5f, 0.0f);
+	vColor = glm::vec3(0.2f, 0.2f, 0.2f);
 	setVertexInfo();
 	// VBO: 정점 데이터
 	allocate(sizeof(vertices), GL_STATIC_DRAW);
@@ -19,18 +18,20 @@ Cube::Cube()
 	setDrawMode(GL_TRIANGLES);
 }
 
-Cube::~Cube()
+Light_cube::~Light_cube()
 {
 }
 
-GLvoid Cube::draw(const GLuint& ShaderID, const glm::mat4& worldMatrix, const glm::mat4& viewProjMatrix)
+GLvoid Light_cube::draw(const GLuint& ShaderID, const glm::mat4& worldMatrix, const glm::mat4& viewProjMatrix)
 {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // 와이어프레임 모드
 	glBindVertexArray(VAO);
 
 	// modelTransform 행렬을 여기에서 변환
 	modelMatrix = glm::mat4(1.0f);
-	modelMatrix = glm::rotate(modelMatrix, glm::radians(y_angle), glm::vec3(0.0f, 1.0f, 0.0f));
+	modelMatrix = glm::translate(modelMatrix, vPos);
+	modelMatrix = glm::rotate(modelMatrix, glm::radians(y_rotate), glm::vec3(0.0f, 1.0f, 0.0f));
+	modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 0.0f, z_trans));
 
 
 	// main.cpp의 주석에서도 말했듯이 조명작업을 위해(노말 위치 필요해서임), 프래그먼트 셰이더에선 뷰,투영을 행하지 않은 모델 행렬이 필요함.
@@ -49,7 +50,7 @@ GLvoid Cube::draw(const GLuint& ShaderID, const glm::mat4& worldMatrix, const gl
 	glDrawElements(DrawMode, vertexCount, GL_UNSIGNED_INT, 0);
 }
 
-GLvoid Cube::update()
+GLvoid Light_cube::update()
 {
-	return GLvoid();
+    return GLvoid();
 }

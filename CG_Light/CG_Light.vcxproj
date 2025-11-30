@@ -128,15 +128,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Light_cube.cpp" />
     <ClCompile Include="practice_25.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Orbit.cpp" />
+    <ClCompile Include="Square_horn.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="Light_cube.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Orbit.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Square_horn.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment.glsl" />

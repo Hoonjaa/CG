@@ -25,6 +25,12 @@
     <Filter Include="소스 파일\객체\궤도">
       <UniqueIdentifier>{d88d6006-602a-4015-91b3-8e52515ecb73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\객체\빛 큐브">
+      <UniqueIdentifier>{c178512b-7635-4f57-bf14-a7c9a800dd4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\객체\사각뿔">
+      <UniqueIdentifier>{dcd264f4-cf81-44c0-baa9-93cd24b8148e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="practice_25.cpp">
@@ -39,6 +45,12 @@
     <ClCompile Include="Orbit.cpp">
       <Filter>소스 파일\객체\궤도</Filter>
     </ClCompile>
+    <ClCompile Include="Light_cube.cpp">
+      <Filter>소스 파일\객체\빛 큐브</Filter>
+    </ClCompile>
+    <ClCompile Include="Square_horn.cpp">
+      <Filter>소스 파일\객체\사각뿔</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -52,6 +64,12 @@
     </ClInclude>
     <ClInclude Include="Orbit.h">
       <Filter>소스 파일\객체\궤도</Filter>
+    </ClInclude>
+    <ClInclude Include="Light_cube.h">
+      <Filter>소스 파일\객체\빛 큐브</Filter>
+    </ClInclude>
+    <ClInclude Include="Square_horn.h">
+      <Filter>소스 파일\객체\사각뿔</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

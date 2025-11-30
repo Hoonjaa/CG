@@ -58,8 +58,12 @@ GLvoid Orbit::setOrbitVertex() {
 		VertexInfo vertex;
 		vertex.vPos = glm::vec3(radius * cosf(i), 0.0f, radius * sinf(i));
 		vertex.vColor = glm::vec3(1.0f, 0.0f, 0.0f);
-		vertex.vNormal = glm::vec3(0.0f, 1.0f, 0.0f); // 원형 궤도는 위를 향하는 법선
+		vertex.vNormal = glm::vec3(0.0f, 1.0f, 0.0f); // 노말 벡터를 위로 향하도록 설정
 
 		vertices.push_back(vertex);
 	}
+}
+
+glm::vec3 Orbit::getPositionOnOrbit(GLfloat angle) const {
+	return glm::vec3(radius * cosf(angle), 0.0f, radius * sinf(angle));
 }
