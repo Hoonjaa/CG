@@ -1,8 +1,9 @@
 #include "pch.h"
-#include "Cube.h"
 #include "Orbit.h"
 #include "Light_cube.h"
 #include "Square_horn.h"
+#include "Planet.h"
+#include "Ground.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -43,21 +44,43 @@ GLint WindowWidth = 800, WindowHeight = 800;
 bool Timer = true; // 타이머 사용중
 glm::mat4 Transform_matrix{ 1.0f };
 
-GLfloat LightColor = 1.0f;
-glm::vec3 LightPos = glm::vec3(0.0f, 0.0f, 2.0f);
+bool snowing = false;
 
-bool object_rotate = false;
-bool light_orbit_rotate = false;
-GLfloat light_orbit_angle = 0.0f;
-bool show_cube = true;  // true면 cube 표시, false면 사각뿔 표시
+GLfloat ambient = 0.01f;
+glm::vec3 LightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+glm::vec3 LightPos = glm::vec3(0.0f, 3.0f, 7.0f);
+bool lightMove = false;
+GLfloat lightOrbitAngle = 0.0f; // 추가: 조명 공전 각도
+glm::vec3 lightInitialPos = glm::vec3(0.0f, 3.0f, 7.0f);
+
+GLfloat planetOrbitAngle = 0.0f; // 행성 공전 각도
+GLfloat planet2OrbitAngle = 0.0f; // 행성2 공전 각도
+GLfloat planet3OrbitAngle = 0.0f; // 행성3 공전 각도
+
+// 눈 효과 관련 변수
+const int SNOW_COUNT = 30;
+Planet* snow[SNOW_COUNT];
+GLfloat snowMaxY[SNOW_COUNT];
+GLfloat snowFallSpeed[SNOW_COUNT];
+
 
 //Cube* cube = nullptr; 예시임 포인터로 객체 선언
 // 포인터로 하는 이유는 셰이더가 만들어지는 등 기본 세팅 코드가 먼저 작동해야 객체 생성가능
 // 따라서 main 함수 안에서 new로 객체 생성
-Cube* cube = nullptr;
 Square_horn* square_horn = nullptr;
 Orbit* orbit_1 = nullptr;
+Orbit* orbit_2 = nullptr;
+Orbit* orbit_3 = nullptr;
 Light_cube* light_cube = nullptr;
+Ground* ground = nullptr;
+Planet* planet_1 = nullptr;
+Planet* planet_2 = nullptr;
+Planet* planet_3 = nullptr;
+
+// 눈 효과용 함수
+GLfloat randomFloat(GLfloat min, GLfloat max) {
+	return min + static_cast<GLfloat>(rand()) / (static_cast<GLfloat>(RAND_MAX / (max - min)));
+}
 
 char* filetobuf(const char* file)
 {
@@ -99,15 +122,29 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 
 
 	// --------------기본 객체 생성 시 여기서 작업-------------
-	cube = new Cube();
 	square_horn = new Square_horn();
-	orbit_1 = new Orbit(2.0f);
+	orbit_1 = new Orbit(5.0f);
+	orbit_2 = new Orbit(3.0f);
+	orbit_3 = new Orbit(4.0f);
 	light_cube = new Light_cube();
-	
-	// Light_cube의 초기 위치를 orbit 위치로 설정
-	glm::vec3 initialOrbitPos = orbit_1->getPositionOnOrbit(light_orbit_angle);
-	LightPos = initialOrbitPos;
-	light_cube->setPosition(initialOrbitPos);
+	light_cube->setPosition(LightPos);
+	ground = new Ground();
+	planet_1 = new Planet(0.5f, 36, 18, glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(5.0f, 0.0f, 0.0f));
+	planet_1->setOrbitRadius(5.0f);
+	planet_2 = new Planet(0.5f, 36, 18, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(3.0f, 0.0f, 0.0f));
+	planet_2->setOrbitRadius(3.0f);
+	planet_3 = new Planet(0.5f, 36, 18, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(7.0f, 0.0f, 0.0f));
+	planet_3->setOrbitRadius(4.0f);
+
+	// 눈 효과 초기화
+	srand(static_cast<unsigned int>(time(NULL)));
+	for (int i = 0; i < SNOW_COUNT; ++i) {
+		GLfloat randomX = randomFloat(-5.0f, 5.0f);
+		GLfloat randomZ = randomFloat(-5.0f, 5.0f);
+		snowMaxY[i] = randomFloat(8.0f, 15.0f);
+		snowFallSpeed[i] = randomFloat(0.05f, 0.1f);
+		snow[i] = new Planet(0.2f, 36, 18, glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(randomX, snowMaxY[i], randomZ));
+	}
 
 	glutTimerFunc(16, TimerFunction, 1);
 	setViewPerspectiveMatrix();
@@ -148,7 +185,7 @@ void make_fragmentShaders()
 {
 	GLchar* fragmentSource;
 	//--- 프래그먼트 세이더 읽어 저장하고 컴파일하기
-	fragmentSource = filetobuf("fragment.glsl");						// 프래그세이더 읽어오기
+	fragmentSource = filetobuf("fragment_27.glsl");						// 프래그세이더 읽어오기
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
 	glCompileShader(fragmentShader);
@@ -196,10 +233,8 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glUseProgram(shaderProgramID);
 	glPointSize(5.0);
 
-	// 조명과 Light_cube의 위치를 항상 orbit 위치에 맞춤
-	glm::vec3 orbitPos = orbit_1->getPositionOnOrbit(light_orbit_angle);
-	LightPos = orbitPos;
-	light_cube->setPosition(orbitPos);
+
+	light_cube->setPosition(LightPos);
 
 	// 이 model 같은 경우엔 프래그먼트 셰이더에서 조명 계산할 때 필요함
 	// 뷰, 투영 제외한 월드 좌표계만 변환 행렬한거임
@@ -215,7 +250,9 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	unsigned int lightPosLocation = glGetUniformLocation(shaderProgramID, "lightPos"); //--- lightPos 값 전달: (0.0, 0.0, 5.0);
 	glUniform3f(lightPosLocation, LightPos[0], LightPos[1], LightPos[2]);
 	unsigned int lightColorLocation = glGetUniformLocation(shaderProgramID, "lightColor"); //--- lightColor 값 전달: (1.0, 1.0, 1.0) 백색
-	glUniform3f(lightColorLocation, LightColor, LightColor, LightColor);
+	glUniform3f(lightColorLocation, LightColor[0], LightColor[1], LightColor[2]);
+	unsigned int ambientLocation = glGetUniformLocation(shaderProgramID, "ambientLight");
+	glUniform1f(ambientLocation, ambient);
 
 	// ----------------여기서 객체 그리기--------------------
 	// cube->draw(shaderProgramID, Transform_matrix); 이런식
@@ -225,17 +262,33 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 
 	// 결과적으론 cube->draw(shaderProgramID, Transform_matrix); 함수 하나 만으로 애니메이션까지 다 처리 가능하게
 	orbit_1->draw(shaderProgramID, glm::mat4(1.0f), Transform_matrix);
-	
-	// n 키로 cube와 사각뿔 전환
-	if (show_cube) {
-		cube->draw(shaderProgramID, glm::mat4(1.0f), Transform_matrix);
-	}
-	else {
-		square_horn->draw(shaderProgramID, glm::mat4(1.0f), Transform_matrix);
-	}
-	
+
+	// orbit_2는 z축 기준 30도 회전
+	glm::mat4 orbit2Transform = glm::rotate(glm::mat4(1.0f), glm::radians(30.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	orbit_2->draw(shaderProgramID, orbit2Transform, Transform_matrix);
+
+	// orbit_3는 z축 기준 -40도 회전
+	glm::mat4 orbit3Transform = glm::rotate(glm::mat4(1.0f), glm::radians(-40.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	orbit_3->draw(shaderProgramID, orbit3Transform, Transform_matrix);
+
+	square_horn->draw(shaderProgramID, glm::mat4(1.0f), Transform_matrix);
+
 	light_cube->draw(shaderProgramID, glm::mat4(1.0f), Transform_matrix);
-	
+
+	ground->draw(shaderProgramID, glm::mat4(1.0f), Transform_matrix);
+
+	planet_1->draw(shaderProgramID, glm::mat4(1.0f), Transform_matrix);
+
+	// planet_2도 같은 회전 적용
+	planet_2->draw(shaderProgramID, orbit2Transform, Transform_matrix);
+
+	// planet_3도 같은 회전 적용
+	planet_3->draw(shaderProgramID, orbit3Transform, Transform_matrix);
+
+	// 눈 효과 그리기
+	for (int i = 0; i < SNOW_COUNT; ++i) {
+		snow[i]->draw(shaderProgramID, glm::mat4(1.0f), Transform_matrix);
+	}
 
 	glutSwapBuffers();													// 화면에 출력하기
 }
@@ -289,31 +342,33 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		else
 			glEnable(GL_CULL_FACE);
 		break;
-	case 'm':
-		if (LightColor == 1.0f)
-			LightColor = 0.0f;
-		else
-			LightColor = 1.0f;
-		break;
-	case 'y':
-		object_rotate = !object_rotate;
+	case 's':
+		snowing = !snowing;
 		break;
 	case 'r':
-		light_orbit_rotate = !light_orbit_rotate;
+		// 조명 공전 (y축 기준 회전)
+		lightMove = !lightMove;
 		break;
-	case 'z':
-		orbit_1->radius += 0.5f;
-		orbit_1->update();
+	case '+':
+	case '=':
+		LightColor += glm::vec3(0.1f, 0.1f, 0.1f);
+		if (LightColor.x > 1.0f) LightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+		if (LightColor.y > 1.0f) LightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+		if (LightColor.z > 1.0f) LightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 		break;
-	case 'Z':
-		orbit_1->radius -= 0.5f;
-		if (orbit_1->radius < 0.0f) {
-			orbit_1->radius = 0.0f;
-		}
-		orbit_1->update();
+	case '-':
+		LightColor -= glm::vec3(0.1f, 0.1f, 0.1f);
+		if (LightColor.x < 0.0f) LightColor = glm::vec3(0.0f, 0.0f, 0.0f);
+		if (LightColor.y < 0.0f) LightColor = glm::vec3(0.0f, 0.0f, 0.0f);
+		if (LightColor.z < 0.0f) LightColor = glm::vec3(0.0f, 0.0f, 0.0f);
 		break;
 	case 'n':
-		show_cube = !show_cube;
+		lightInitialPos.z -= 0.5f;
+		if (lightInitialPos.z < 1.0f) lightInitialPos.z = 1.0f;
+		break;
+	case 'f':
+		lightInitialPos.z += 0.5f;
+		if (lightInitialPos.z > 12.0f) lightInitialPos.z = 12.0f;
 		break;
 	}
 	glutPostRedisplay();
@@ -329,24 +384,61 @@ GLvoid KeyboardUp(unsigned char key, int x, int y) {
 GLvoid SpecialKeyboard(int key, int x, int y)
 {
 	switch (key) {
-	
+
 	}
 	glutPostRedisplay();
 }
 
 GLvoid TimerFunction(int value)
 {
-	if (object_rotate) {
-		cube->y_angle += 0.5f;
-		square_horn->y_angle += 0.5f;
+	if (lightMove) {
+		lightOrbitAngle += 1.0f; // 회전 속도 조절
+		if (lightOrbitAngle >= 360.0f) lightOrbitAngle -= 360.0f;
+
+		glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(lightOrbitAngle), glm::vec3(0.0f, 1.0f, 0.0f));
+		LightPos = glm::vec3(rotation * glm::vec4(lightInitialPos, 1.0f));
 	}
-	if (light_orbit_rotate) {
-		light_orbit_angle += 0.02f;
-		// 각도가 2π를 넘으면 0으로 리셋
-		if (light_orbit_angle >= 2.0f * 3.14159265359f) {
-			light_orbit_angle = 0.0f;
+
+	// 행성 공전 업데이트
+	planetOrbitAngle += 1.0f; // 공전 속도 조절
+	if (planetOrbitAngle >= 360.0f) planetOrbitAngle -= 360.0f;
+
+	glm::vec3 newPlanetPos = orbit_1->getPositionOnOrbit(glm::radians(planetOrbitAngle));
+	planet_1->setPosition(newPlanetPos);
+	planet_1->second_planet_update();
+
+	// 행성2 공전 업데이트
+	planet2OrbitAngle += 1.5f; // 공전 속도 조절 (planet_1보다 조금 빠르게)
+	if (planet2OrbitAngle >= 360.0f) planet2OrbitAngle -= 360.0f;
+
+	glm::vec3 newPlanet2Pos = orbit_2->getPositionOnOrbit(glm::radians(planet2OrbitAngle));
+	planet_2->setPosition(newPlanet2Pos);
+	planet_2->second_planet_update();
+
+	// 행성3 공전 업데이트
+	planet3OrbitAngle += 0.8f; // 공전 속도 조절 (planet_1보다 조금 느리게)
+	if (planet3OrbitAngle >= 360.0f) planet3OrbitAngle -= 360.0f;
+
+	glm::vec3 newPlanet3Pos = orbit_3->getPositionOnOrbit(glm::radians(planet3OrbitAngle));
+	planet_3->setPosition(newPlanet3Pos);
+	planet_3->second_planet_update();
+
+	// 눈 효과 업데이트
+	if (snowing) {
+		for (int i = 0; i < SNOW_COUNT; ++i) {
+			glm::vec3 currentPos = snow[i]->getPosition();
+			currentPos.y -= snowFallSpeed[i];
+
+			// 바닥에 도달하면 다시 위로
+			if (currentPos.y < -7.0f) {
+				currentPos.y = snowMaxY[i];
+			}
+
+			snow[i]->setPosition(currentPos);
+			snow[i]->second_planet_update();
 		}
 	}
+
 	glutPostRedisplay();
 	if (Timer) {
 		glutTimerFunc(16, TimerFunction, 1);
@@ -354,7 +446,7 @@ GLvoid TimerFunction(int value)
 }
 
 GLvoid setViewPerspectiveMatrix() {
-	glm::vec3 eye = glm::vec3(-2.0f, 2.0f, 10.0f);
+	glm::vec3 eye = glm::vec3(0.0f, 5.0f, 15.0f);
 	unsigned int viewPosLocation = glGetUniformLocation(shaderProgramID, "viewPos");
 	glUniform3f(viewPosLocation, eye.x, eye.y, eye.z);
 
@@ -368,7 +460,7 @@ GLvoid setViewPerspectiveMatrix() {
 }
 
 glm::mat4 getViewPerspectiveMatrix() {
-	glm::vec3 eye = glm::vec3(-2.0f, 2.0f, 10.0f);
+	glm::vec3 eye = glm::vec3(0.0f, 5.0f, 15.0f);
 	unsigned int viewPosLocation = glGetUniformLocation(shaderProgramID, "viewPos");
 	glUniform3f(viewPosLocation, eye.x, eye.y, eye.z);
 

@@ -87,6 +87,9 @@
     <ClCompile Include="Ground.cpp">
       <Filter>소스 파일\객체\탱크</Filter>
     </ClCompile>
+    <ClCompile Include="practice_28.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
