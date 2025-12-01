@@ -31,6 +31,9 @@
     <Filter Include="소스 파일\객체\사각뿔">
       <UniqueIdentifier>{dcd264f4-cf81-44c0-baa9-93cd24b8148e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\객체\구">
+      <UniqueIdentifier>{80d2a56e-37e8-4564-a4b4-354c5f1c6962}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="practice_25.cpp">
@@ -51,6 +54,12 @@
     <ClCompile Include="Square_horn.cpp">
       <Filter>소스 파일\객체\사각뿔</Filter>
     </ClCompile>
+    <ClCompile Include="Planet.cpp">
+      <Filter>소스 파일\객체\구</Filter>
+    </ClCompile>
+    <ClCompile Include="practice_26.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -70,6 +79,9 @@
     </ClInclude>
     <ClInclude Include="Square_horn.h">
       <Filter>소스 파일\객체\사각뿔</Filter>
+    </ClInclude>
+    <ClInclude Include="Planet.h">
+      <Filter>소스 파일\객체\구</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

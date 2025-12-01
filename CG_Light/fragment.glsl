@@ -13,7 +13,7 @@ uniform vec3 lightColor;
 
 void main()
 {
-	float ambientLight = 0.6f;
+	float ambientLight = 0.2f;
 	vec3 ambient = ambientLight * lightColor;
 
 	vec3 normalVector = normalize(Normal);

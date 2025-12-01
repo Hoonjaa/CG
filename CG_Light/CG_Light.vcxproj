@@ -129,9 +129,13 @@
   <ItemGroup>
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Light_cube.cpp" />
-    <ClCompile Include="practice_25.cpp" />
+    <ClCompile Include="Planet.cpp" />
+    <ClCompile Include="practice_25.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Orbit.cpp" />
+    <ClCompile Include="practice_26.cpp" />
     <ClCompile Include="Square_horn.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -140,6 +144,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="Orbit.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Planet.h" />
     <ClInclude Include="Square_horn.h" />
   </ItemGroup>
   <ItemGroup>
