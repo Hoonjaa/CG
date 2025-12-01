@@ -127,25 +127,42 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cannon.cpp" />
     <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Ground.cpp" />
     <ClCompile Include="Light_cube.cpp" />
     <ClCompile Include="Planet.cpp" />
+    <ClCompile Include="practice_20.cpp" />
     <ClCompile Include="practice_25.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Orbit.cpp" />
-    <ClCompile Include="practice_26.cpp" />
+    <ClCompile Include="practice_26.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Square_horn.cpp" />
+    <ClCompile Include="Tank_flag.cpp" />
+    <ClCompile Include="Tank_low_body.cpp" />
+    <ClCompile Include="Tank_middle_body.cpp" />
+    <ClCompile Include="Tank_top_body.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cannon.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="Ground.h" />
     <ClInclude Include="Light_cube.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="Object_part.h" />
     <ClInclude Include="Orbit.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Planet.h" />
     <ClInclude Include="Square_horn.h" />
+    <ClInclude Include="Tank_flag.h" />
+    <ClInclude Include="Tank_low_body.h" />
+    <ClInclude Include="Tank_middle_body.h" />
+    <ClInclude Include="Tank_top_body.h" />
+    <ClInclude Include="TreeNode.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment.glsl" />

@@ -34,6 +34,12 @@
     <Filter Include="소스 파일\객체\구">
       <UniqueIdentifier>{80d2a56e-37e8-4564-a4b4-354c5f1c6962}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\트리구조">
+      <UniqueIdentifier>{d11d5c06-6fe7-45af-8512-081ae0fb540d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\객체\탱크">
+      <UniqueIdentifier>{984baa83-f49d-4160-9ef9-2e086a26e75c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="practice_25.cpp">
@@ -60,6 +66,27 @@
     <ClCompile Include="practice_26.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="cannon.cpp">
+      <Filter>소스 파일\객체\탱크</Filter>
+    </ClCompile>
+    <ClCompile Include="Tank_flag.cpp">
+      <Filter>소스 파일\객체\탱크</Filter>
+    </ClCompile>
+    <ClCompile Include="Tank_low_body.cpp">
+      <Filter>소스 파일\객체\탱크</Filter>
+    </ClCompile>
+    <ClCompile Include="Tank_middle_body.cpp">
+      <Filter>소스 파일\객체\탱크</Filter>
+    </ClCompile>
+    <ClCompile Include="Tank_top_body.cpp">
+      <Filter>소스 파일\객체\탱크</Filter>
+    </ClCompile>
+    <ClCompile Include="practice_20.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Ground.cpp">
+      <Filter>소스 파일\객체\탱크</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -82,6 +109,30 @@
     </ClInclude>
     <ClInclude Include="Planet.h">
       <Filter>소스 파일\객체\구</Filter>
+    </ClInclude>
+    <ClInclude Include="Object_part.h">
+      <Filter>소스 파일\트리구조</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeNode.h">
+      <Filter>소스 파일\트리구조</Filter>
+    </ClInclude>
+    <ClInclude Include="cannon.h">
+      <Filter>소스 파일\객체\탱크</Filter>
+    </ClInclude>
+    <ClInclude Include="Tank_flag.h">
+      <Filter>소스 파일\객체\탱크</Filter>
+    </ClInclude>
+    <ClInclude Include="Tank_low_body.h">
+      <Filter>소스 파일\객체\탱크</Filter>
+    </ClInclude>
+    <ClInclude Include="Tank_middle_body.h">
+      <Filter>소스 파일\객체\탱크</Filter>
+    </ClInclude>
+    <ClInclude Include="Tank_top_body.h">
+      <Filter>소스 파일\객체\탱크</Filter>
+    </ClInclude>
+    <ClInclude Include="Ground.h">
+      <Filter>소스 파일\객체\탱크</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
