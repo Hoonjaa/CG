@@ -2,7 +2,7 @@
 
 Light_cube::Light_cube()
 {
-	vColor = glm::vec3(0.2f, 0.2f, 0.2f);
+	vColor = glm::vec3(1.0f, 0.2f, 0.2f);
 	setVertexInfo();
 	// VBO: 정점 데이터
 	allocate(sizeof(vertices), GL_STATIC_DRAW);

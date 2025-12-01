@@ -7,6 +7,7 @@
 #include "cannon.h"
 #include "Tank_flag.h"
 #include "Ground.h"
+#include "Light_cube.h"
 
 //--- 아래 5개 함수는 사용자 정의 함수임
 void make_vertexShaders();
@@ -38,15 +39,18 @@ bool Timer = true;
 glm::mat4 Transform_matrix{ 1.0f };
 
 Ground* ground = nullptr;
+Light_cube* light_cube = nullptr;
 
-GLfloat camera_x = 0.0f, camera_z = 10.0f;
+GLfloat camera_x = 0.0f, camera_z = 30.0f;
 GLfloat camera_y_rotation = 0.0f;		//카메라 자전
 GLfloat camera_orbit_rotation = 0.0f;	//카메라 공전
 
+GLfloat ambient = 0.8f;
 glm::vec3 LightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-glm::vec3 LightPos = glm::vec3(0.0f, 10.0f, 10.0f);
+glm::vec3 LightPos = glm::vec3(10.0f, 5.0f, 0.0f);
+bool lightMove = false;
 GLfloat lightOrbitAngle = 0.0f; // 추가: 조명 공전 각도
-const glm::vec3 lightInitialPos = glm::vec3(0.0f, 10.0f, 10.0f);
+const glm::vec3 lightInitialPos = glm::vec3(10.0f, 5.0f, 0.0f);
 
 
 bool changeTopBody = false;
@@ -343,6 +347,9 @@ void main(int argc, char** argv)										//--- 윈도우 출력하고 콜백함수 설정
 	ground = new Ground();
 	tank = new Tank();
 	tank->setup(shaderProgramID);
+	light_cube = new Light_cube();
+	light_cube->setPosition(LightPos);
+
 	setViewPerspectiveMatrix();
 	glutDisplayFunc(drawScene);											//--- 출력 콜백 함수
 	glutReshapeFunc(Reshape);
@@ -379,7 +386,7 @@ void make_fragmentShaders()
 {
 	GLchar* fragmentSource;
 	//--- 프래그먼트 세이더 읽어 저장하고 컴파일하기
-	fragmentSource = filetobuf("fragment.glsl");						// 프래그세이더 읽어오기
+	fragmentSource = filetobuf("fragment_27.glsl");						// 프래그세이더 읽어오기
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
 	glCompileShader(fragmentShader);
@@ -428,6 +435,7 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glPointSize(5.0);
 
 	setViewPerspectiveMatrix();
+	light_cube->setPosition(LightPos);
 	// 이 model 같은 경우엔 프래그먼트 셰이더에서 조명 계산할 때 필요함
 	// 뷰, 투영 제외한 월드 좌표계만 변환 행렬한거임
 	// 일단은 단위 행렬로 설정해야 해서 이렇게 둘거임
@@ -443,6 +451,8 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	glUniform3f(lightPosLocation, LightPos[0], LightPos[1], LightPos[2]);
 	unsigned int lightColorLocation = glGetUniformLocation(shaderProgramID, "lightColor"); //--- lightColor 값 전달: (1.0, 1.0, 1.0) 백색
 	glUniform3f(lightColorLocation, LightColor[0], LightColor[1], LightColor[2]);
+	unsigned int ambientLocation = glGetUniformLocation(shaderProgramID, "ambientLight");
+	glUniform1f(ambientLocation, ambient);
 
 	// ----------------여기서 객체 그리기--------------------
 	// cube->draw(shaderProgramID, Transform_matrix); 이런식
@@ -459,6 +469,11 @@ GLvoid drawScene()														//--- 콜백 함수: 그리기 콜백 함수
 	if (tank) {
 		std::cout << "Drawing tank..." << std::endl;
 		tank->render(Transform_matrix);
+	}
+
+	if (light_cube) {
+		std::cout << "Drawing light cube..." << std::endl;
+		light_cube->draw(shaderProgramID, glm::mat4(1.0f), Transform_matrix);
 	}
 
 	glutSwapBuffers();													// 화면에 출력하기
@@ -535,7 +550,7 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		p_key = false;
 		a_key = false;
 		break;
-	case 'c':
+	case 'i':
 		tank->reset();
 		changeTopBody = false;
 		g_key = false;
@@ -559,8 +574,11 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		setViewPerspectiveMatrix();
 		break;
 	case'y':
-		camera_y_rotation += glm::radians(5.0f);
-		setViewPerspectiveMatrix();
+		// 조명 공전 (y축 기준 회전)
+		lightMove = true;
+		break;
+	case 's':
+		lightMove = false;
 		break;
 	case'Y':
 		camera_y_rotation -= glm::radians(5.0f);
@@ -573,6 +591,24 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case'R':
 		camera_orbit_rotation -= glm::radians(5.0f);
 		setViewPerspectiveMatrix();
+		break;
+	case 'm':
+		if (ambient == 0.8f) {
+			ambient = 0.01f;
+		}
+		else {
+			ambient = 0.8f;
+		}
+		break;
+	case 'c':
+		if (LightColor == glm::vec3(1.0f, 1.0f, 1.0f))
+			LightColor = glm::vec3(1.0f, 0.0f, 0.0f); // 빨간색
+		else if (LightColor == glm::vec3(1.0f, 0.0f, 0.0f))
+			LightColor = glm::vec3(0.0f, 1.0f, 0.0f); // 초록색
+		else if (LightColor == glm::vec3(0.0f, 1.0f, 0.0f))
+			LightColor = glm::vec3(0.0f, 0.0f, 1.0f); // 파란색
+		else
+			LightColor = glm::vec3(1.0f, 1.0f, 1.0f); // 백색
 		break;
 	}
 	glutPostRedisplay();
@@ -599,6 +635,13 @@ GLvoid SpecialKeyboard(int key, int x, int y)
 
 GLvoid TimerFunction(int value)
 {
+	if (lightMove) {
+		lightOrbitAngle += 1.0f; // 회전 속도 조절
+		if (lightOrbitAngle >= 360.0f) lightOrbitAngle -= 360.0f;
+
+		glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(lightOrbitAngle), glm::vec3(0.0f, 1.0f, 0.0f));
+		LightPos = glm::vec3(rotation * glm::vec4(lightInitialPos, 1.0f));
+	}
 	if (a_key) {
 		camera_orbit_rotation += glm::radians(1.0f);  // 매 프레임마다 1도씩 회전
 		setViewPerspectiveMatrix();
@@ -618,7 +661,7 @@ GLvoid setViewPerspectiveMatrix() {
 	GLfloat orbited_z = camera_x * sin(camera_orbit_rotation) + camera_z * cos(camera_orbit_rotation);
 
 	// 공전된 카메라 위치
-	glm::vec3 cameraPos(orbited_x, 2.0f, orbited_z);
+	glm::vec3 cameraPos(orbited_x, 10.0f, orbited_z);
 
 	// 2. 자전(rotation) 적용: 카메라가 바라보는 방향을 회전
 	// 초기 시선 방향 (원점을 향함)
