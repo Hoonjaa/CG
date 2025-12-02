@@ -46,6 +46,8 @@ glm::mat4 Transform_matrix{ 1.0f };
 GLfloat LightColor = 1.0f;
 glm::vec3 LightPos = glm::vec3(0.0f, 0.0f, 2.0f);
 
+bool light_on = true;
+
 bool object_rotate = false;
 bool light_orbit_rotate = false;
 GLfloat light_orbit_angle = 0.0f;
@@ -290,10 +292,16 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 			glEnable(GL_CULL_FACE);
 		break;
 	case 'm':
-		if (LightColor == 1.0f)
-			LightColor = 0.0f;
-		else
-			LightColor = 1.0f;
+		if (light_on) {
+			unsigned int turnLocation = glGetUniformLocation(shaderProgramID, "turn_off");
+			glUniform1i(turnLocation, 1);
+			light_on = false;
+		}
+		else {
+			unsigned int turnLocation = glGetUniformLocation(shaderProgramID, "turn_off");
+			glUniform1i(turnLocation, 0);
+			light_on = true;
+		}
 		break;
 	case 'y':
 		object_rotate = !object_rotate;
